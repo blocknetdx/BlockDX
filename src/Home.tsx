@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import Header from './components/Header';
 
 export default function Home() {
     return (
-        <div className='bg-info'>
-            <h1>Main Page</h1>
+        <div>
+            <Header />
+            <h1>Main Content</h1>
         </div>
     );
 
