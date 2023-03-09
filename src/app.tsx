@@ -1,7 +1,10 @@
 import * as ReactDOM from 'react-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+import Home from './Home';
 
 function render() {
-  ReactDOM.render(<h2>Hello from React!</h2>, document.getElementById('root'));
+  ReactDOM.render(<Home />, document.getElementById('root'));
 }
 
 render();
