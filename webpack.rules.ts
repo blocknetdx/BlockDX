@@ -28,4 +28,13 @@ export const rules: Required<ModuleOptions>['rules'] = [
       },
     },
   },
+  {
+    test: /\.(js|jsx)$/,
+    exclude: /node_modules/,
+    use: ['babel-loader'],
+  },
+  {
+    test: /\.svg$/,
+    use: ['@svgr/webpack'],
+  },
 ];
