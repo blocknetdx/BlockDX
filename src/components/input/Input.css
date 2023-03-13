@@ -1,0 +1,14 @@
+::placeholder {
+    color: white;
+}
+
+.common-input {
+    border: 1px solid #293056;
+    background-color: #181C27;
+    border-radius: 4px;
+    padding: 14px 15px 13px 15px;
+}
+
+.common-input:focus {
+    
+}

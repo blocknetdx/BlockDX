@@ -1,51 +1,87 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { SvgIcon } from '../svg-icon';
+import './SideBar.css'
+import { SideBarContent, sideBarContentHeaderTitleType, sideBarContentHeaderTitles } from './SideBarContent';
 
 export default function SideBar() {
+    const sideBarTopIcons = [
+        'swap-horizontal',
+        'wallet',
+        'setting',
+        'help'
+    ]
+    const sideBarBottomIcons = [
+        'twitter',
+        'discord',
+        'github',
+        'email'
+    ]
+
+    const [showSideBarContent, setShowSideBarContent] = useState<sideBarContentHeaderTitleType>('none');
+
+    const handleShowSideBarContent = (type?: sideBarContentHeaderTitleType) => {
+        console.log('showSideBarContent: ', showSideBarContent, type);
+        
+        setShowSideBarContent(showSideBarContent === type ? 'none' : type);
+    }
+
+    const renderSideBarHeaderIcons = () => {
+        return (
+            <ul className="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mx-auto text-center justify-content-between w-100 px-3 align-items-center side-bar-icons-container">
+                {
+                    Object.keys(sideBarContentHeaderTitles).map((icon: sideBarContentHeaderTitleType) => {
+                        if (icon === 'none') return null;
+                        return (
+                            <li className="nav-item" key={`side-top-bar-${icon}`}>
+                                <SvgIcon 
+                                    classProp='nav-link py-3 px-2'
+                                    rightIconCategory='sideBar'
+                                    rightIcon={icon}
+                                    type={'button'}
+                                    onClick={() => handleShowSideBarContent(icon)}
+                                />
+                            </li>
+                        )
+                    })
+                }
+            </ul>
+        )
+    }
+    const renderSideBarBottomIcons = () => {
+        return (
+            <ul className="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mx-auto text-center justify-content-between w-100 px-3 align-items-center side-bar-icons-container">
+                {
+                    sideBarBottomIcons.map((icon) => {
+                        if (icon === 'none') return null;
+                        return (
+                            <li className="nav-item" key={`side-top-bar-${icon}`}>
+                                <SvgIcon 
+                                    classProp='nav-link py-3 px-2'
+                                    rightIconCategory='sideBar'
+                                    rightIcon={icon}
+                                    type='link'
+                                />
+                            </li>
+                        )
+                    })
+                }
+            </ul>
+        )
+    }
     return (
-        <div className="container-fluid">
-            <div className="row">
-
-                <div className="col-sm-auto bg-light sticky-top">
-
-                    <div className="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
-
-                        <a href="/" className="d-block p-3 link-dark text-decoration-none" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-
-                            <i className="bi-bootstrap fs-1"></i>
-
-                        </a>
-
-                        <ul className="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center justify-content-between w-100 px-3 align-items-center">
-
-                            <li className="nav-item">
-
-                                <a href="#" className="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
-
-                                    <i className="bi-house fs-1"></i>
-
-                                </a>
-
-                            </li>
-
-                            <li>
-
-                                <a href="#" className="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
-                                    <i className="bi-speedometer2 fs-1"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Orders">
-                                    <i className="bi-table fs-1"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Products">
-                                    <i className="bi-heart fs-1"></i>
-                                </a>
-                            </li>
-                        </ul>
+        <div className="container-fluid px-1 h-100">
+            <div className="row h-100">
+                <div className="col-sm-auto sticky-top h-100">
+                    <div className="d-flex flex-column flex-nowrap bg-dark align-items-center sticky-top h-100 justify-content-between">
+                        {renderSideBarHeaderIcons()}
+                        {renderSideBarBottomIcons()}
                     </div>
                 </div>
+                {
+                    showSideBarContent !== 'none' ? 
+                        <SideBarContent type={showSideBarContent} handleCloseSideBarContent={() => setShowSideBarContent('none')} /> :
+                        null
+                }
             </div>
         </div>
     );
