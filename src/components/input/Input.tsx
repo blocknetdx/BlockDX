@@ -1,8 +1,13 @@
 import React from 'react';
 import './Input.css';
 
-export const Input = () => {
+interface InputProps {
+    classProp?: string
+    placeholder?: string
+}
+
+export const Input = ({classProp, placeholder}: InputProps) => {
     return (
-        <input className='common-input' type='text' placeholder='Select asset' />
+        <input className={`common-input ${classProp}`} type='text' placeholder={placeholder} />
     );
 }

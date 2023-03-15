@@ -1,0 +1,15 @@
+.common-title {
+    font-size: 13px;
+    line-height: 16.9px;
+    font-weight: 500;
+    color: white;
+    font-family: 'IBM Plex Sans';
+}
+
+.common-body {
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+    font-family: 'IBM Plex Sans';
+    color: white;
+}

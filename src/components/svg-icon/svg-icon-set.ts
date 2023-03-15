@@ -14,6 +14,7 @@ import Video from '../../images/side-bar-content/video.svg';
 import Support from '../../images/side-bar-content/support.svg';
 import Doc from '../../images/side-bar-content/doc.svg';
 import OpenExternal from '../../images/side-bar-content/open-external.svg';
+import RightArrow from '../../images/side-bar-content/right-arrow.svg';
 
 export const SvgIconSet = ({
     common: {
@@ -37,5 +38,6 @@ export const SvgIconSet = ({
         'support': Support,
         'doc': Doc,
         'help': Help,
+        'right-arrow': RightArrow
     }
 })

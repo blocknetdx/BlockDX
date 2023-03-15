@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SvgIcon } from '../svg-icon';
 import './SideBar.css'
-import { SideBarContent, sideBarContentHeaderTitleType, sideBarContentHeaderTitles } from './SideBarContent';
+import { SideBarContent, SideBarContentHeaderTitleType, sideBarContentHeaderTitles } from './SideBarContent';
 
 export default function SideBar() {
     const sideBarTopIcons = [
@@ -17,9 +17,9 @@ export default function SideBar() {
         'email'
     ]
 
-    const [showSideBarContent, setShowSideBarContent] = useState<sideBarContentHeaderTitleType>('none');
+    const [showSideBarContent, setShowSideBarContent] = useState<SideBarContentHeaderTitleType>('none');
 
-    const handleShowSideBarContent = (type?: sideBarContentHeaderTitleType) => {
+    const handleShowSideBarContent = (type?: SideBarContentHeaderTitleType) => {
         console.log('showSideBarContent: ', showSideBarContent, type);
         
         setShowSideBarContent(showSideBarContent === type ? 'none' : type);
@@ -29,7 +29,7 @@ export default function SideBar() {
         return (
             <ul className="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mx-auto text-center justify-content-between w-100 px-3 align-items-center side-bar-icons-container">
                 {
-                    Object.keys(sideBarContentHeaderTitles).map((icon: sideBarContentHeaderTitleType) => {
+                    Object.keys(sideBarContentHeaderTitles).map((icon: SideBarContentHeaderTitleType) => {
                         if (icon === 'none') return null;
                         return (
                             <li className="nav-item" key={`side-top-bar-${icon}`}>

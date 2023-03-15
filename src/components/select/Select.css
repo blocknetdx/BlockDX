@@ -1,0 +1,10 @@
+.common-select {
+    background-color: #181C27;
+    border: 1px solid #293056;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'IBM PLEX SANS';
+    line-height: 18.2px;
+    color: white;
+}

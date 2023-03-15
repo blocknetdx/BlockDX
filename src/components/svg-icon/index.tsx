@@ -25,7 +25,18 @@ const RenderIcon = ({type, children, classProp, onClick}: RenderIconProps) => {
 }
 
 export const SvgIcon = (props: SvgIconProps) => {
-    const { classProp, category, type='', onClick, leftIcon, rightIcon, content, contentClass, leftIconCategory, rightIconCategory, containerClass } : SvgIconProps = props;
+    const { 
+        classProp, 
+        type='', 
+        onClick, 
+        leftIcon, 
+        rightIcon, 
+        content, 
+        contentClass, 
+        leftIconCategory, 
+        rightIconCategory, 
+        containerClass = ''
+    } : SvgIconProps = props;
     const leftCategory = leftIconCategory || categories.common
     const rightCategory = rightIconCategory || categories.common
 
@@ -34,16 +45,20 @@ export const SvgIcon = (props: SvgIconProps) => {
 
     return (
         <div className={`d-flex flex-row justify-content-between align-items-center ${containerClass}`}>
-            <div className='d-flex flex-row align-items-center'>
-                {
-                    leftIcon ?
-                        <div className='w-30'>
-                            <LeftIcon />
-                        </div> : 
-                    null
-                }
-                {content ? <span className={`${contentClass}`}>{content}</span> : null}
-            </div>
+            {
+                !leftIcon && !content ? 
+                    null :            
+                    <div className='d-flex flex-row align-items-center'>
+                        {
+                            leftIcon ?
+                                <div className='w-30'>
+                                    <LeftIcon />
+                                </div> : 
+                            null
+                        }
+                        {content ? <span className={`${contentClass}`}>{content}</span> : null}
+                    </div>
+            }
             {
                 rightIcon? 
                 <RenderIcon classProp={classProp}  onClick={onClick} type={type}>

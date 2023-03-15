@@ -7,8 +7,25 @@
     background-color: #181C27;
     border-radius: 4px;
     padding: 14px 15px 13px 15px;
+    color: white;
 }
 
 .common-input:focus {
     
+}
+
+.side-bar-input {
+    width: 140px;
+    height: 40px;
+}
+
+.middle-input {
+    width: 191px;
+    height: 36px;
+}
+
+.small-input {
+    width: 47px;
+    height: 35px;
+    padding: 8px 10px 8px 20px;
 }
