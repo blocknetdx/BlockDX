@@ -1,6 +1,7 @@
 import React from 'react';
 import { SvgIconSet } from './svg-icon-set';
 import { SvgIconProps, categories, CategoryTypes } from './svg-icon.props';
+import { Text } from '../text/Text';
 
 interface RenderIconProps {
     type: string
@@ -35,7 +36,8 @@ export const SvgIcon = (props: SvgIconProps) => {
         contentClass, 
         leftIconCategory, 
         rightIconCategory, 
-        containerClass = ''
+        containerClass = '',
+        leftContainerClass = ''
     } : SvgIconProps = props;
     const leftCategory = leftIconCategory || categories.common
     const rightCategory = rightIconCategory || categories.common
@@ -51,12 +53,12 @@ export const SvgIcon = (props: SvgIconProps) => {
                     <div className='d-flex flex-row align-items-center'>
                         {
                             leftIcon ?
-                                <div className='w-30'>
+                                <div className={`${leftContainerClass}`}>
                                     <LeftIcon />
                                 </div> : 
                             null
                         }
-                        {content ? <span className={`${contentClass}`}>{content}</span> : null}
+                        {content ? <Text classProp={`${contentClass}`}>{content}</Text> : null}
                     </div>
             }
             {

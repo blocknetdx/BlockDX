@@ -1,15 +1,39 @@
+.common {
+    color: white;
+    font-family: 'IBM Plex Sans';
+}
+
 .common-title {
     font-size: 13px;
     line-height: 16.9px;
     font-weight: 500;
-    color: white;
-    font-family: 'IBM Plex Sans';
+}
+
+.normal-title {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 400;
+    letter-spacing: -0.26px;
 }
 
 .common-body {
     font-size: 12px;
     line-height: 20px;
     font-weight: 400;
-    font-family: 'IBM Plex Sans';
-    color: white;
+}
+
+.market-pill {
+    padding: 3px 6px;
+    border: 1px solid #293056;
+    border-radius: 4px;
+    margin-right: 4px;
+    font-size: 10px;
+    line-height: 10px;
+    font-weight: 400;
+}
+
+.icon-button-content {
+    font-size: 14px;
+    line-height: 18.2px;
+    font-weight: 500;
 }

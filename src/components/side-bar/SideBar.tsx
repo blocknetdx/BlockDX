@@ -8,13 +8,13 @@ export default function SideBar() {
         'swap-horizontal',
         'wallet',
         'setting',
-        'help'
+        'help-circle-outline'
     ]
     const sideBarBottomIcons = [
         'twitter',
         'discord',
         'github',
-        'email'
+        'web'
     ]
 
     const [showSideBarContent, setShowSideBarContent] = useState<SideBarContentHeaderTitleType>('none');
@@ -32,9 +32,9 @@ export default function SideBar() {
                     Object.keys(sideBarContentHeaderTitles).map((icon: SideBarContentHeaderTitleType) => {
                         if (icon === 'none') return null;
                         return (
-                            <li className="nav-item" key={`side-top-bar-${icon}`}>
+                            <li className="nav-item side-bar-icon-container" key={`side-top-bar-${icon}`}>
                                 <SvgIcon 
-                                    classProp='nav-link py-3 px-2'
+                                    classProp='nav-link p-0'
                                     rightIconCategory='sideBar'
                                     rightIcon={icon}
                                     type={'button'}
@@ -54,9 +54,9 @@ export default function SideBar() {
                     sideBarBottomIcons.map((icon) => {
                         if (icon === 'none') return null;
                         return (
-                            <li className="nav-item" key={`side-top-bar-${icon}`}>
+                            <li className="nav-item side-bar-icon-container" key={`side-top-bar-${icon}`}>
                                 <SvgIcon 
-                                    classProp='nav-link py-3 px-2'
+                                    classProp='nav-link p-0'
                                     rightIconCategory='sideBar'
                                     rightIcon={icon}
                                     type='link'
@@ -71,8 +71,8 @@ export default function SideBar() {
     return (
         <div className="container-fluid px-1 h-100">
             <div className="row h-100">
-                <div className="col-sm-auto sticky-top h-100">
-                    <div className="d-flex flex-column flex-nowrap bg-dark align-items-center sticky-top h-100 justify-content-between">
+                <div className="col-sm-auto sticky-top h-100 side-bar-container">
+                    <div className="d-flex flex-column flex-nowrap align-items-center sticky-top h-100 justify-content-between common-bg-color">
                         {renderSideBarHeaderIcons()}
                         {renderSideBarBottomIcons()}
                     </div>

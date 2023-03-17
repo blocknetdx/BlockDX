@@ -19,4 +19,5 @@ export interface SvgIconProps {
     content?: string
     contentClass?: string
     containerClass?: string
+    leftContainerClass?: string
 }

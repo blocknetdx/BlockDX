@@ -9,6 +9,6 @@ interface TextProps {
 
 export const Text = ({content, classProp, children} : TextProps) => {
     return (
-        <span className={`${classProp}`}>{children ? children : content}</span>
+        <span className={`common ${classProp}`}>{children ? children : content}</span>
     );
 }
