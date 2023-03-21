@@ -8,6 +8,7 @@
     border-radius: 4px;
     padding: 14px 15px 13px 15px;
     color: white;
+    font-size: 13px;
 }
 
 .common-input:focus {

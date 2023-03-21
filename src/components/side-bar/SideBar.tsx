@@ -69,7 +69,7 @@ export default function SideBar() {
         )
     }
     return (
-        <div className="container-fluid px-1 h-100">
+        <div className="container-fluid h-100">
             <div className="row h-100">
                 <div className="col-sm-auto sticky-top h-100 side-bar-container">
                     <div className="d-flex flex-column flex-nowrap align-items-center sticky-top h-100 justify-content-between common-bg-color">

@@ -109,10 +109,10 @@ export const SideBarContent = ({ type, handleCloseSideBarContent }: SideBarConte
                             leftIcon={keyTitle}
                             rightIconCategory='sideBarContent'
                             rightIcon='open-external'
-                            contentClass='text-white mx-2'
+                            contentClass='help-content'
                             containerClass='p-v-10'
                             type='link'
-                            leftContainerClass='w-30'
+                            leftContainerClass='w-35 d-flex flex-row align-items-center'
                         />
                     ))
                 }
@@ -121,12 +121,12 @@ export const SideBarContent = ({ type, handleCloseSideBarContent }: SideBarConte
         } else if(type === 'wallet') {
             return (
                 <div className='d-flex flex-column'>
-                    <div className='side-bar-content-section common-border-bottom flex flex-grow-1'>
+                    <div className='side-bar-content-section flex flex-grow-1'>
                         <SvgIcon
                             content={'LOCAL WALLETS'}
                             leftIconCategory='sideBar'
                             leftIcon={'wallet'}
-                            contentClass='text-white mx-2'
+                            contentClass='common-title p-l-12'
                         />
                         <ul className='px-0 p-t-20'>
                             {
@@ -236,7 +236,7 @@ export const SideBarContent = ({ type, handleCloseSideBarContent }: SideBarConte
                 rightIconCategory='sideBarContent'
                 content={sideBarContentHeaderTitles[type].toUpperCase()}
                 rightIcon='close' 
-                contentClass='title'
+                contentClass='side-bar-content-title'
                 type='button'
                 onClick={handleCloseSideBarContent}
                 containerClass='title-container common-border-bottom'

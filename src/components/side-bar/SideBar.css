@@ -3,8 +3,8 @@
 }
 
 .side-bar-container {
-    padding: 2px;
-    padding-left: 12px;
+    padding: 0 2px 0 2px;
+    padding-bottom: 0;
 }
 
 .side-bar-icons-container {
@@ -14,10 +14,10 @@
 
 .side-bar-content-container {
     position: absolute;
-    top: 65px;
-    left: 65px;
+    top: 64px;
+    left: 61px;
+    bottom: 0;
     width: 400px;
-    height: 100%;
     background-color: #181C27;
     padding: 0;
 }
@@ -44,6 +44,7 @@
 .wallet-button-container {
     position: absolute;
     bottom: 20px;
+    border-top: 2px solid #121212;
 }
 
 .common-border-bottom {
@@ -59,8 +60,8 @@
     color: white;
 }
 
-.w-30 {
-    width: 30px;
+.w-35 {
+    width: 35px;
 }
 
 .arrow-right-button-container {
@@ -95,6 +96,10 @@
 
 .p-t-20 {
     padding-top: 20px;
+}
+
+.p-l-12 {
+    padding-left: 12px;
 }
 
 .p-b-4 {
