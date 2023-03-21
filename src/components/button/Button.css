@@ -1,0 +1,14 @@
+.common-button {
+    border: none;
+    color: white;
+}
+
+.primary-btn {
+    background-color: #1570EF;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'IBM PLEX SANS';
+    width: 360px;
+    height: 48px;
+    border-radius: 4px;
+}

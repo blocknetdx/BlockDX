@@ -1,6 +1,18 @@
+html, body {
+  height: 100%;
+}
+
 .main-body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
     padding: 0 0 2px;
     background-color: #121212;
+}
+
+#root {
+  height: 100%;
+}
+
+.main-content {
+  height: 100%;
 }

@@ -1,0 +1,56 @@
+.common {
+    color: white;
+    font-family: 'IBM Plex Sans';
+}
+
+.common-title {
+    font-size: 13px;
+    line-height: 16.9px;
+    font-weight: 500;
+}
+
+.normal-title {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 400;
+    letter-spacing: -0.26px;
+}
+
+.side-bar-content-title {
+    font-size: 13px;
+    line-height: 13px;
+    color: #53b1fd;
+    font-weight: 500;
+    padding: 0px;
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+.common-body {
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+}
+
+.market-pill {
+    padding: 3px 6px;
+    border: 1px solid #293056;
+    border-radius: 4px;
+    margin-right: 4px;
+    font-size: 10px;
+    line-height: 10px;
+    font-weight: 400;
+}
+
+.icon-button-content {
+    font-size: 14px;
+    line-height: 18.2px;
+    font-weight: 500;
+}
+
+.help-content {
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: normal;
+    opacity: 0.9;
+}

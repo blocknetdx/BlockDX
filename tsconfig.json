@@ -14,9 +14,10 @@
     "paths": {
       "*": ["node_modules/*"],
       "@/*": ["src/*"],
-      "@components*": ["src/components*"]
+      "@components*": ["src/components*"],
+      "@images*": ["src/images"]
     },
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "custom.d.ts"]
 }

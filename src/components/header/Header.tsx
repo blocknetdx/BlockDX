@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Logo from '../../images/logo.svg';
 import './header.css';
+import { SvgIcon } from '../svg-icon';
 
 interface headerNavItemProps {
     label: string
@@ -46,9 +46,7 @@ export default function Header() {
     return (
         <nav className="navbar navbar-expand-sm navbar-light bg">
             <div className="container-fluid">
-                <a className="navbar-brand logo">
-                    <Logo />
-                </a>
+                <SvgIcon classProp='navbar-brand logo' rightIcon='logo' type='link' />
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
