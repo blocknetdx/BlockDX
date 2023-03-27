@@ -12,3 +12,38 @@
     height: 48px;
     border-radius: 4px;
 }
+
+/* order form buttons */
+.buy-block-btn {
+    background: #181C27;
+    border: 1px solid #293056;
+    border-radius: 4px;
+    width: 165px;
+    height: 33px;
+    color: #6ce9a6;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: normal;
+    line-height: 13px;
+}
+
+.buy-block-btn__active {
+    border: 1px solid #6CE9A6;
+}
+
+.sell-block-btn {
+    background: #181C27;
+    border: 1px solid #293056;
+    border-radius: 4px;
+    width: 165px;
+    height: 33px;
+    color: #f97066;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: normal;
+    line-height: 13px;
+}
+
+.sell-block-btn__active {
+    border: 1px solid #fda29b;
+}

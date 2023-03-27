@@ -25,7 +25,7 @@
     background-color: #1570EF;
 }
 
-.switch {
+.normal-switch {
     display: block;
     width: 20px;
     height: 20px;
@@ -38,8 +38,29 @@
     transition: all 0.3s ease-in 0s;
 }
 
-.switch-active {
+.normal-switch-active {
     right: 0;
+}
+
+.small-switch {
+    display: block;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    position: absolute;
+    top: 5px;
+    border: 0 solid #bbb;
+    border-radius: 10px;
+    transition: all 0.3s ease-in 0s;
+}
+
+.small-switch-inactive {
+    left: 3px;
+}
+
+.small-switch-active {
+    right: 3px;
+    background: #000;
 }
 
 .checkbox:checked+.label .inner {

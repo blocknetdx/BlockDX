@@ -1,18 +1,17 @@
 import React from 'react';
 import './Button.css';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     content?: string
     children?: any
-    classProp?: string
-    onClick?: () => void
 }
 
-export const Button = ({content = '', classProp = '', children, onClick}: ButtonProps) => {
+export const Button = (props: ButtonProps) => {
+    const { content, children } = props;
     return (
         <button 
-            className={`common-button ${classProp}`}
-            onClick={onClick}
+            {...props}
+            className={`common-button ${props.className}`}
         >
             {children ? children : content}
         </button>
