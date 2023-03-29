@@ -7,11 +7,20 @@ interface ToggleSwitchProps {
     leftContentClass?: string
     initialActiveStatus?: boolean
     switchClass?: string
+    active?: boolean
+    setActive?: (active?: boolean) => void
 }
 
 export const ToggleSwitch = (props: ToggleSwitchProps) => {
-    const { leftContent, leftContentClass, initialActiveStatus = false, switchClass = 'normal-switch'} = props;
-    const [active, setActive] = useState(initialActiveStatus);
+    const { 
+        leftContent, 
+        leftContentClass, 
+        initialActiveStatus = false, 
+        switchClass = 'normal-switch',
+        active,
+        setActive
+    } = props;
+    // const [active, setActive] = useState(initialActiveStatus);
     return (
         <div className='d-flex flex-row align-items-center'>
             {

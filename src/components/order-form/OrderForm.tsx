@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import './OrderForm.css';
 
-import { Text } from '../text/Text';
-import { Button } from '../button/Button';
-import { InputWithText } from '../input/InputWithText';
-import { ToggleSwitch } from '../toggle-switch/ToggleSwitch';
-import RangeSlider from '../range-slider/RangeSlider';
-import { SvgIcon } from '../svg-icon';
+import {
+    Button,
+    Text,
+    InputWithText,
+    SvgIcon
+} from '../index'
+import { MainForm } from './MainForm';
 
 interface OrderFormProps extends React.HTMLProps<HTMLDivElement> {
     classProp?: string
@@ -42,98 +43,14 @@ export const OrderForm = (props : OrderFormProps) => {
             </div>
             {
                 step === 'main' ?
-                <div className='order-form-content-container flex-grow-1 d-flex flex-column justify-content-between'>
-                    <div>
-                        <div className='d-flex flex-row justify-content-between m-b-21'>
-                            <Button className={`buy-block-btn ${status === 'buy' ? 'buy-block-btn__active': ''}`} onClick={() => {setStatus('buy')}}>BUY BLOCK</Button>
-                            <Button className={`sell-block-btn ${status === 'sell' ? 'sell-block-btn__active' : ''}`} onClick={() => { setStatus('sell')}}>SELL BLOCK</Button>
-                        </div>
-
-                        <InputWithText 
-                            leftContent={ status === 'buy' ? 'Quantity to buy' : 'Quantity to sell'}
-                            leftContentClass='input-text-left flex-grow-1'
-                            rightContent='BLOCK'
-                            rightContentClass='input-text-right'
-                            className='common-input-text-container m-b-8-5'
-                            inputClass='no-border'
-                        />
-
-                        <div className='d-flex flex-row align-items-center justify-content-between'>
-                            <ToggleSwitch
-                                leftContent='Advanced mode'
-                                leftContentClass='advanced-mode'
-                                switchClass='small-switch'
-                            />
-
-                            {
-                                status !== 'buy' ? 
-                                <Text className='max'>Max</Text>
-                                : null
-                            }
-                        </div>
-
-                        <InputWithText 
-                            leftContent={ status === 'buy' ? 'Min buy qty' : 'Min sell qty'}
-                            leftContentClass='input-text-left'
-                            rightContent='BLOCK'
-                            rightContentClass='input-text-right'
-                            className='common-input-text-container m-b-10 m-t-21'
-                            inputClass='no-border'
-                            leftIcon='help-circle'
-                            leftIconCategory='orderForm'
-                        />
-
-                        <RangeSlider max={500} initialValue={250} className={ status === 'sell' ? 'sell-background' : ''} />
-
-                        <InputWithText 
-                            leftContent='LTC Price'
-                            leftContentClass='input-text-left flex-grow-1'
-                            rightContent='LTC'
-                            rightContentClass='input-text-right'
-                            className='common-input-text-container m-b-10 m-t-30'
-                            inputClass='no-border'
-                        />
-                        <InputWithText 
-                            leftContent='BTC Price'
-                            leftContentClass='input-text-left flex-grow-1'
-                            rightContent='BTC'
-                            rightContentClass='input-text-right'
-                            className='common-input-text-container'
-                            inputClass='no-border'
-                        />
-
-                        <div className='m-t-17' />
-
-                        {
-                            status === 'sell' ?
-                            <div className='m-t-17'>
-                                <SvgIcon 
-                                    leftIcon='icon-wallet'
-                                    leftIconCategory='orderForm'
-                                    content='=55.2366 LTC'
-                                    contentClass='asset-balance-content'
-                                    containerClass='justify-content-end m-b-5'
-                                />
-                                <InputWithText 
-                                    leftContent='Total'
-                                    leftContentClass='input-text-left flex-grow-1'
-                                    rightContent='LTC'
-                                    rightContentClass='input-text-right'
-                                    className='common-input-text-container'
-                                    inputClass='no-border'
-                                />
-                                <div className='d-flex justify-content-end m-t-5'>
-                                    <Text className='usd-amount'>approx $113.23 USD</Text>
-                                </div>
-                            </div>
-                            : null
-                        }
+                <div className='order-form-content-container flex-grow-1 d-flex flex-column'>
+                    <div className='d-flex flex-row justify-content-between m-b-21'>
+                        <Button className={`buy-block-btn ${status === 'buy' ? 'buy-block-btn__active': ''}`} onClick={() => {setStatus('buy')}}>BUY BLOCK</Button>
+                        <Button className={`sell-block-btn ${status === 'sell' ? 'sell-block-btn__active' : ''}`} onClick={() => { setStatus('sell')}}>SELL BLOCK</Button>
                     </div>
-
-                    <Button 
-                        className='primary-btn w-340 m-b-38' 
-                        content={ status === 'buy' ? 'PREVIEW BUY ORDER' : 'PREVIEW SELL ORDER'} 
-                        onClick={() => {setStep('preview')}}
+                    <MainForm
+                        status={status}
+                        setStep={setStep}
                     />
                 </div>
                 :

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './RangeSlider.css'
 import clsx from 'clsx';
 
@@ -13,10 +13,12 @@ interface RangeSliderTestProps {
   max?: number
   min?: number
   initialValue?: number
+  onChange?: (value: string) => void
 }
 
-const RangeSlider = (props: RangeSliderTestProps) => {
-  const { id, max = 0, min = 0, initialValue } = props;
+export const RangeSlider = (props: RangeSliderTestProps) => {
+  const { id, max = 0, min = 0, initialValue, onChange } = props;
+  
   const inputRef = useRef<HTMLInputElement>();
   const thumbRef = useRef<HTMLDivElement>();
   const rangeRef = useRef<HTMLDivElement>();
@@ -42,7 +44,6 @@ const RangeSlider = (props: RangeSliderTestProps) => {
     rangeSliderDisabled: false,
     thumbDisabled: false,
   };
-  const value = { min: 0, max: 0 };
   let startPos = 0;
   let isDragging = false;
 
@@ -51,36 +52,55 @@ const RangeSlider = (props: RangeSliderTestProps) => {
     progressTextRef.current.style['flexBasis'] = `${progress}%`
     maxTextRef.current.style['flexBasis'] = `${100 - progress}%`
     if (!compMountRef.current) {
-      if (initialValue) {
-        setValue(String(initialValue))
-        setRangeValue(initialValue)
-      }
       reset();
-
-      addNodeEventListener(elementRef.current, 'pointerdown', (e: any) => {
-        elementFocused(e);
-      })
-
-      addNodeEventListener(thumbRef.current, 'pointerdown', (e: any) => {
-        initiateThumbDrag(e, thumbRef.current)
-      })
-
-      addNodeEventListener(rangeRef.current, 'pointerdown', e => { initiateRangeDrag(e) })
-
-      addNodeEventListener(document, 'pointermove', e => {
-        drag(e)
-      })
-      addNodeEventListener(document, 'pointerup', () => {
-        if (isDragging) {
-          removeNodeAttribute(thumbRef.current, DATA_ACTIVE)
-          removeNodeAttribute(rangeRef.current, DATA_ACTIVE)
-          isDragging = false;
-
-        }
-      })
       compMountRef.current = true;
     }
-  }, [])
+    handleRemoveEventListeners();
+    handleAddEventListeners();
+
+    return () => {
+    }
+  }, [max])
+
+  const handleRemoveEventListeners = () => {
+    rangeRef.current.removeEventListener('pointerdown', () => {})
+    document.removeEventListener('pointerup', () => {})
+    document.removeEventListener('pointermove', () => {})
+    thumbRef.current.removeEventListener('pointerdown', () => {})
+    elementRef.current.removeEventListener('pointerdown', () => {})
+  }
+
+  useEffect(() => {
+    if (initialValue) {
+      setValue(String(initialValue))
+      setRangeValue(initialValue)
+    }
+  }, [initialValue])
+
+  const handleAddEventListeners = () => {
+
+    addNodeEventListener(elementRef.current, 'pointerdown', (e: any) => {
+      elementFocused(e);
+    })
+
+    addNodeEventListener(thumbRef.current, 'pointerdown', (e: any) => {
+      initiateThumbDrag(e, thumbRef.current)
+    })
+
+    addNodeEventListener(rangeRef.current, 'pointerdown', e => { initiateRangeDrag(e) })
+
+    addNodeEventListener(document, 'pointermove', e => {
+      drag(e)
+    })
+    addNodeEventListener(document, 'pointerup', () => {
+      if (isDragging) {
+        removeNodeAttribute(thumbRef.current, DATA_ACTIVE)
+        removeNodeAttribute(rangeRef.current, DATA_ACTIVE)
+        isDragging = false;
+
+      }
+    })
+  }
 
   const addNodeEventListener = (node: any, event: string, fn: (e: any) => void, isPointerEvent = true) => {
     node.addEventListener(event, fn, isPointerEvent ? { passive: false, capture: true } : {})
@@ -92,13 +112,13 @@ const RangeSlider = (props: RangeSliderTestProps) => {
 
   function drag(e: any) {
     if (isDragging) {
-      const lastPos = currentPosition(e, rangeRef.current);
+      const lastPos = currentPosition(e);
       const delta = lastPos - startPos;
       startPos = lastPos;
 
       setRangeValue(delta + Number(inputRef.current.value))
 
-      setValue(String(delta + Number(inputRef.current.value)))
+      onChange(String(delta + Number(inputRef.current.value)))
     }
 
   }
@@ -106,8 +126,8 @@ const RangeSlider = (props: RangeSliderTestProps) => {
   function updateRange() {
     const elementBounds = elementRef.current.getBoundingClientRect();
 
-    rangeRef.current.style['width'] = `${Number(inputRef.current.value) * elementBounds.width / max}px`;
-    thumbRef.current.style['left'] = `${Number(inputRef.current.value) * elementBounds.width / max}px`;
+    rangeRef.current.style['width'] = `${Number(inputRef.current.value) * 100 / max}%`;
+    thumbRef.current.style['left'] = `${Number(inputRef.current.value) * 100 / max}%`;
 
     rangePercentRef.current.style['flexBasis'] = `${Number(inputRef.current.value) * 100 / max - progress + 5}%`
     maxPercentRef.current.style['flexBasis'] = `${100 - Number(inputRef.current.value) * 100 / max - progress + 10}%`
@@ -118,23 +138,23 @@ const RangeSlider = (props: RangeSliderTestProps) => {
     setValue('');
   }
 
-  const setValue = (newValue: string, forceSet = false, callback = true) => {
+  const setValue = (newValue: string) => {
     const currentValue = inputRef.current?.value;
     inputRef.current.value = newValue || currentValue;
     updateRange();
   }
 
-  const elementFocused = (e: any, repeat = true) => {
-    const currPos = currentPosition(e, rangeRef.current)
-    if (currPos >= value.min) {
-      setValue(String(currPos), true, false)
+  const elementFocused = (e: any) => {
+    const currPos = currentPosition(e)
+    if (currPos >= 0) {
+      setValue(String(currPos))
       initiateThumbDrag(e, thumbRef.current)
     }
   }
 
   const initiateDrag = (e: any, node: HTMLElement) => {
     setNodeAttribute(node, DATA_ACTIVE)
-    startPos = currentPosition(e, node)
+    startPos = currentPosition(e)
 
     isDragging = true
   }
@@ -154,17 +174,11 @@ const RangeSlider = (props: RangeSliderTestProps) => {
   }
 
 
-  const currentPosition = (e: any, node: HTMLElement) => {
+  const currentPosition = (e: any) => {
     const elementBounds = elementRef.current.getBoundingClientRect();
 
     const currPos = (e[`clientX`] - elementBounds['left']) * max / elementBounds.width
 
-    // console.group('---- current position ----');
-
-    // console.log('currPos: ', currPos);
-    // console.log('e clientX: ', e['clientX']);
-
-    // console.groupEnd();
     return currPos;
   }
 
@@ -172,7 +186,7 @@ const RangeSlider = (props: RangeSliderTestProps) => {
     <div>
       <div className='d-flex flex-row m-b-9'>
         <Text innerRef={progressPercentRef} className='range-slider-content'>10%</Text>
-        <Text innerRef={rangePercentRef} className='range-slider-content'>{`${Number(inputRef.current?.value || 0) * 100 / max}%`}</Text>
+        <Text innerRef={rangePercentRef} className='range-slider-content'>{`${Math.round(Number(inputRef.current?.value || 0) * 100 / max)}%`}</Text>
         <Text innerRef={maxPercentRef} className='range-slider-content'>100%</Text>
       </div>
       <div className='range-slider-container'>
@@ -180,7 +194,7 @@ const RangeSlider = (props: RangeSliderTestProps) => {
           <input
             ref={inputRef} type='range' min={options.min} max={max}
             step={options.step}
-            // value={rangeValue} 
+            value={initialValue} 
             // value={props.value ? options.value : (compMountRef.current ? value.max : options.defaultValue)} 
             onChange={() => { }}
             disabled
@@ -200,5 +214,3 @@ const RangeSlider = (props: RangeSliderTestProps) => {
     </div>
   );
 }
-
-export default RangeSlider;

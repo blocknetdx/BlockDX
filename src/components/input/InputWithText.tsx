@@ -14,6 +14,8 @@ interface InputWithTextProps extends React.HTMLProps<HTMLDivElement> {
     leftIconCategory?: CategoryTypes
     content?: string
     contentClass?: string
+    value?: string | number | readonly string[]
+    onChange?: React.ChangeEventHandler<HTMLInputElement>
 }
 
 export const InputWithText = (props: InputWithTextProps) => {
@@ -27,6 +29,8 @@ export const InputWithText = (props: InputWithTextProps) => {
         leftIconCategory,
         content = '',
         contentClass = '',
+        value,
+        onChange
     } = props;
     return (
         <div className={`common-input-text-container ${props.className}`}>
@@ -46,7 +50,7 @@ export const InputWithText = (props: InputWithTextProps) => {
             }
             {
                 !content ?
-                <Input className={inputClass} placeholder='0' />
+                <Input className={inputClass} placeholder='0' value={value} onChange={onChange} />
                 : <Text content={content} className={contentClass} />
             }
             {
