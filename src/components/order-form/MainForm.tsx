@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Button,
     InputWithText,
@@ -8,20 +8,27 @@ import {
     SvgIcon
 } from '../index'
 
+const initialValues = {
+    quantity: 0,
+    minQuantity: 0
+}
+
 interface MainFormProps {
     status?: string
     setStep?: (param: string) => void
+    initialValues?: typeof initialValues
 }
 
-export const MainForm = (props: MainFormProps) => {
+export const MainForm = (props: MainFormProps) => {    
     const { status = 'buy', setStep } = props;
 
     const [advancedMode, setAdvancedMode] = useState(true);
 
-    const [state, setState] = useState({
-        quantity: 100,
-        minQuantity: 0
-    })
+    const [state, setState] = useState(initialValues)
+
+    useEffect(() => {
+        setState(initialValues)
+    }, [props])    
 
     function handleChange(type: string, value: any) {
         setState(pre => ({

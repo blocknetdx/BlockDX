@@ -71,10 +71,8 @@ export const RangeSlider = (props: RangeSliderTestProps) => {
   }
 
   useEffect(() => {
-    if (initialValue) {
-      setValue(String(initialValue))
-      setRangeValue(initialValue)
-    }
+    setValue(String(initialValue))
+    setRangeValue(initialValue)
   }, [initialValue])
 
   const handleAddEventListeners = () => {
@@ -124,13 +122,11 @@ export const RangeSlider = (props: RangeSliderTestProps) => {
   }
 
   function updateRange() {
-    const elementBounds = elementRef.current.getBoundingClientRect();
+    rangeRef.current.style['width'] = `${max ? Number(inputRef.current.value) * 100 / max : 0}%`;
+    thumbRef.current.style['left'] = `${max ? Number(inputRef.current.value) * 100 / max : 0}%`;
 
-    rangeRef.current.style['width'] = `${Number(inputRef.current.value) * 100 / max}%`;
-    thumbRef.current.style['left'] = `${Number(inputRef.current.value) * 100 / max}%`;
-
-    rangePercentRef.current.style['flexBasis'] = `${Number(inputRef.current.value) * 100 / max - progress + 5}%`
-    maxPercentRef.current.style['flexBasis'] = `${100 - Number(inputRef.current.value) * 100 / max - progress + 10}%`
+    rangePercentRef.current.style['flexBasis'] = `${(max ? Number(inputRef.current.value) * 100 / max : 0) - progress + 5}%`
+    maxPercentRef.current.style['flexBasis'] = `${100 - (max ? Number(inputRef.current.value) * 100 / max : 0) - progress + 10}%`
   }
 
   const reset = () => {
@@ -147,7 +143,8 @@ export const RangeSlider = (props: RangeSliderTestProps) => {
   const elementFocused = (e: any) => {
     const currPos = currentPosition(e)
     if (currPos >= 0) {
-      setValue(String(currPos))
+      // setValue(String(currPos))
+      onChange(String(currPos))
       initiateThumbDrag(e, thumbRef.current)
     }
   }
@@ -186,7 +183,7 @@ export const RangeSlider = (props: RangeSliderTestProps) => {
     <div>
       <div className='d-flex flex-row m-b-9'>
         <Text innerRef={progressPercentRef} className='range-slider-content'>10%</Text>
-        <Text innerRef={rangePercentRef} className='range-slider-content'>{`${Math.round(Number(inputRef.current?.value || 0) * 100 / max)}%`}</Text>
+        <Text innerRef={rangePercentRef} className='range-slider-content'>{`${max ? Math.round(Number(inputRef.current?.value || 0) * 100 / max) : 0}%`}</Text>
         <Text innerRef={maxPercentRef} className='range-slider-content'>100%</Text>
       </div>
       <div className='range-slider-container'>

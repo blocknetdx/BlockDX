@@ -17,6 +17,10 @@ export const OrderForm = (props : OrderFormProps) => {
     const [status, setStatus] = useState('buy');
     const [step, setStep] = useState('main');
     const [error, setError] = useState(false);
+    const [mainFormInitialValues, setMainFormInitialValues] = useState({
+        quantity: 0,
+        minQuantity: 0
+    })
 
     const reset = () => {
         setStatus('buy')
@@ -32,8 +36,8 @@ export const OrderForm = (props : OrderFormProps) => {
                     className='reset-form' 
                     content={step === 'main' ? 'Reset form' : 'Back'}
                     onClick={() => {
-                        if (step === 'main') {
-
+                        if (step === 'main') {                            
+                            setMainFormInitialValues({...mainFormInitialValues})
                         } else if (step === 'preview') {
                             setStatus('buy')
                             setStep('main');
@@ -51,6 +55,7 @@ export const OrderForm = (props : OrderFormProps) => {
                     <MainForm
                         status={status}
                         setStep={setStep}
+                        initialValues={mainFormInitialValues}
                     />
                 </div>
                 :
