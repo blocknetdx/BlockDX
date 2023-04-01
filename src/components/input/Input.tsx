@@ -1,13 +1,8 @@
 import React from 'react';
 import './Input.css';
 
-interface InputProps {
-    classProp?: string
-    placeholder?: string
-}
-
-export const Input = ({classProp, placeholder}: InputProps) => {
+export const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => {
     return (
-        <input className={`common-input ${classProp}`} type='text' placeholder={placeholder} />
+        <input {...props} className={`common-input ${props.className}`} />
     );
 }

@@ -23,6 +23,9 @@ import VideoOutline from '../../images/side-bar-content/video-outline.svg';
 import Lifebuoy from '../../images/side-bar-content/lifebuoy.svg';
 import FileDocumentOutline from '../../images/side-bar-content/file-document-outline.svg';
 
+import HelpCircleInner from '../../images/order-form/help-circle.svg';
+import SmallWalletIcon from '../../images/order-form/icon-wallet.svg'
+
 export const SvgIconSet = ({
     common: {
         'logo': Logo
@@ -50,5 +53,9 @@ export const SvgIconSet = ({
         'arrow-right': ArrowRight,
         'lifebuoy': Lifebuoy,
         'file-document-outline': FileDocumentOutline
+    },
+    orderForm: {
+        'help-circle': HelpCircleInner,
+        'icon-wallet': SmallWalletIcon
     }
 })
