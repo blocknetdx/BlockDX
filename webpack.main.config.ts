@@ -1,5 +1,7 @@
 import type { Configuration } from 'webpack';
 
+const path = require('path');
+
 import { rules } from './webpack.rules';
 
 export const mainConfig: Configuration = {
@@ -13,6 +15,10 @@ export const mainConfig: Configuration = {
     rules,
   },
   resolve: {
+    alias: {
+      '@components': path.resolve(__dirname, './src/components'),
+      '@images': path.resolve(__dirname, './src/images'),
+    },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
 };

@@ -54,3 +54,16 @@
     font-weight: normal;
     opacity: 0.9;
 }
+
+/* order tabs */
+.order-tab-header-title {
+    font-size: 13px;
+    line-height: 13px;
+    font-weight: 500;
+}
+.order-tab-header-active {
+    font-size: 13px;
+    line-height: 13px;
+    font-weight: 500;
+    color: #2e90fa;
+}

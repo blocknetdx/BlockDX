@@ -7,17 +7,17 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
       "*": ["node_modules/*"],
-      "@/*": ["src/*"],
-      "@components*": ["src/components*"],
-      "@images*": ["src/images"]
+      "@/*": ["./*"],
+      "@components*": ["./components*"],
+      "@images/*": ["./images/*"]
     },
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*", "custom.d.ts"]
+  "include": ["src/**/*", "custom.d.ts", "src", "src/components", "src/images"]
 }
