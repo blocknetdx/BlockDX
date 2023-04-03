@@ -16,6 +16,74 @@
     letter-spacing: -0.26px;
 }
 
+/* order form */
+.order-form-header .title {
+    font-size: 13px;
+    line-height: 13px;
+    font-weight: 500;
+    letter-spacing: normal;
+}
+
+.order-form-header .reset-form {
+    font-size: 13px;
+    font-weight: 500;
+    color: #98a2b3;
+    line-height: normal;
+    letter-spacing: normal;
+    background: none;
+    border: none;
+}
+
+.max {
+    padding: 3px 8px 4px 8px;
+    border: 1px solid #293056;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 11px;
+}
+
+.asset-balance-content {
+    font-size: 11px;
+    font-weight: 500;
+    color: #98a2b3;
+    margin-left: 5px;
+    line-height: 11px;
+}
+
+.usd-amount {
+    font-size: 12px;
+    line-height: 12px;
+    color: #98a2b3;
+    font-weight: 500;
+}
+
+.preview-title {
+    font-size: 13px;
+    line-height: 13px;
+    text-align: center;
+    flex-grow: 1;
+    padding-bottom: 12px;
+}
+
+.preview-title__buy {
+    color: #6ce9a6;
+    border-bottom: 2px solid #6ce9a6;
+}
+
+.preview-title__sell {
+    color: #f97066;
+    border-bottom: 2px solid #f97066;
+}
+
+.preview-amount-text {
+    font-size: 13px;
+    line-height: 13px;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+/* side bar */
 .side-bar-content-title {
     font-size: 13px;
     line-height: 13px;
@@ -66,4 +134,38 @@
     line-height: 13px;
     font-weight: 500;
     color: #2e90fa;
+}
+/* input with pre, subfix */
+.input-text-right {
+    font-size: 13px;
+    line-height: 13px;
+    color: #53b1fd;
+    font-weight: 500;
+    /* flex-basis: 40px; */
+    text-align: right;
+}
+
+.input-text-left {
+    font-size: 13px;
+    line-height: 13px;
+    font-weight: 500;
+    margin-right: 9px;
+}
+
+.advanced-mode {
+    color: #98a2b3;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 12.2px;
+    letter-spacing: normal;
+    margin-right: 6px;
+}
+
+/* range slider */
+.range-slider-content {
+    position: relative;
+    font-size: 10px;
+    color: #98a2b3;
+    line-height: 10px;
+    text-align: right;
 }

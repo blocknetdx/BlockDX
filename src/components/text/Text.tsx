@@ -1,14 +1,15 @@
 import React from 'react';
 import './Text.css'
 
-interface TextProps {
+interface TextProps extends React.HTMLProps<HTMLSpanElement> {
     content?: string
-    classProp?: string
     children?: any
+    innerRef?: React.MutableRefObject<HTMLSpanElement>
 }
 
-export const Text = ({content, classProp, children} : TextProps) => {
+export const Text = (props : TextProps) => {
+    const { content, children, innerRef} = props;
     return (
-        <span className={`common ${classProp}`}>{children ? children : content}</span>
+        <span {...props} ref={innerRef} className={`common ${props.className}`}>{children ? children : content}</span>
     );
 }

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import SideBar from './components/side-bar/SideBar';
-import Header from './components/header/Header';
+import SideBar from '../../components/side-bar/SideBar';
+import Header from '../../components/header/Header';
 import './home.css';
-import { OrderTabs } from '@components/order-tabs/OrderTabs';
+import { OrderForm } from '../../components/order-form/OrderForm';
 
 export default function Home() {
     return (
@@ -10,7 +10,8 @@ export default function Home() {
             <Header />
             <div className='main-content d-flex flex-row'>
                 <SideBar />
-                <OrderTabs />
+                <div className='flex-grow-1'></div>
+                <OrderForm />
             </div>
         </React.Fragment>
     );

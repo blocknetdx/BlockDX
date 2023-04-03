@@ -3,20 +3,20 @@ import { SvgIconSet } from './svg-icon-set';
 import { SvgIconProps, categories, CategoryTypes } from './svg-icon.props';
 import { Text } from '../text/Text';
 
-interface RenderIconProps {
-    type: string
+interface RenderIconProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    btnType: string
     children: any
-    classProp: string,
-    onClick: (type: string) => void
+    classProp: string
+    onClick: (type?: any) => void
 }
 
-const RenderIcon = ({type, children, classProp, onClick}: RenderIconProps) => {
+const RenderIcon = ({btnType, children, classProp, onClick}: RenderIconProps) => {
     return (
-        type === 'link' ? (
+        btnType === 'link' ? (
             <a className={classProp}>
                 {children}
             </a>
-        ) : type === 'button' ? (
+        ) : btnType === 'button' ? (
             <button className={classProp} onClick={() => onClick()}>{children}</button>
         ) : (
             <React.Fragment>{children}</React.Fragment>
@@ -46,24 +46,25 @@ export const SvgIcon = (props: SvgIconProps) => {
     const RightIcon = SvgIconSet[rightCategory][rightIcon];
 
     return (
-        <div className={`d-flex flex-row justify-content-between align-items-center ${containerClass}`}>
+        <div className={`d-flex flex-row align-items-center ${containerClass}`}>
             {
                 !leftIcon && !content ? 
                     null :            
                     <div className='d-flex flex-row align-items-center'>
                         {
                             leftIcon ?
+                            leftContainerClass ?
                                 <div className={`${leftContainerClass}`}>
                                     <LeftIcon />
-                                </div> : 
+                                </div> : <LeftIcon /> :
                             null
                         }
-                        {content ? <Text classProp={`${contentClass}`}>{content}</Text> : null}
+                        {content ? <Text className={`${contentClass}`}>{content}</Text> : null}
                     </div>
             }
             {
                 rightIcon? 
-                <RenderIcon classProp={classProp}  onClick={onClick} type={type}>
+                <RenderIcon classProp={classProp}  onClick={onClick} btnType={type}>
                     <RightIcon /> 
                 </RenderIcon>
                     : null

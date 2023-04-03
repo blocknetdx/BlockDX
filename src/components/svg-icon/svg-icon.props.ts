@@ -2,7 +2,8 @@ export const categories = {
     common: 'common',
     sideBar: 'sideBar',
     sideBarContent: 'sideBarContent',
-    orderTabs: 'orderTabs'
+    orderTabs: 'orderTabs',
+    orderForm: 'orderForm',
 }
 
 export type CategoryTypes = keyof typeof categories

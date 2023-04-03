@@ -1,0 +1,127 @@
+.range-slider {
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 3px;
+  background: #475467;
+  border-radius: 4px;
+}
+
+.range-slider-container .sell-background {
+  background: #f97066;
+}
+
+.range-slider[data-vertical] {
+  height: 100%;
+  width: 8px;
+}
+
+.range-slider[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.range-slider .range-slider__thumb {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 16px;
+  width: 16px;
+  background: #133049;
+  border-radius: 50%;
+  border: 1px solid #fff;
+}
+
+.range-slider .range-slider__thumb:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 6px rgba(33, 150, 243, 0.5);
+}
+
+.range-slider[data-vertical] .range-slider__thumb {
+  left: 50%;
+}
+
+.range-slider .range-slider__thumb[data-disabled] {
+  z-index: 2;
+}
+
+.range-slider .range-slider__range {
+  position: absolute;
+  z-index: 1;
+  transform: translate(0, -50%);
+  top: 50%;
+  width: 0;
+  height: 100%;
+  background: #98a2b3;
+}
+
+.range-slider[data-vertical] .range-slider__range {
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.range-slider input[type="range"] {
+  -webkit-appearance: none;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+
+.range-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.range-slider input[type="range"]::-moz-range-thumb {
+  width: 0;
+  height: 0;
+  border: 0;
+}
+
+.range-slider input[type="range"]:focus {
+  outline: 0;
+}
+
+.range-slider__thumb[data-lower] {
+  width: 0;
+}
+
+.range-slider__thumb[data-upper] {
+  z-index: 5;
+}
+
+.thumb-inner-circle {
+  background-color: white;
+  height: 8px;
+  width: 8px;
+  border-radius: 4px;
+  position: relative;
+  left: 3px;
+  top: 3px;
+}
+
+.range-slider__progress {
+  width: 10%;
+  height: 3px;
+  background: #f97066;
+  z-index: 4;
+  position: absolute;
+}
+
+.range-slider-container {
+  border: 1px solid #d0d5dd;
+  background-color: #181c27;
+  border-radius: 4px;
+  padding: 1px;
+}

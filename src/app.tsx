@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import "@fontsource/ibm-plex-sans";
-import Home from './Home';
+import Home from './pages/home/Home';
 
 
 const container = document.getElementById('root');

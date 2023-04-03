@@ -20,14 +20,12 @@ export default function SideBar() {
     const [showSideBarContent, setShowSideBarContent] = useState<SideBarContentHeaderTitleType>('none');
 
     const handleShowSideBarContent = (type?: SideBarContentHeaderTitleType) => {
-        console.log('showSideBarContent: ', showSideBarContent, type);
-        
         setShowSideBarContent(showSideBarContent === type ? 'none' : type);
     }
 
     const renderSideBarHeaderIcons = () => {
         return (
-            <ul className="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mx-auto text-center justify-content-between w-100 px-3 align-items-center side-bar-icons-container">
+            <ul className="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mx-auto text-center justify-content-between w-100 align-items-center side-bar-icons-container">
                 {
                     Object.keys(sideBarContentHeaderTitles).map((icon: SideBarContentHeaderTitleType) => {
                         if (icon === 'none') return null;
@@ -49,7 +47,7 @@ export default function SideBar() {
     }
     const renderSideBarBottomIcons = () => {
         return (
-            <ul className="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mx-auto text-center justify-content-between w-100 px-3 align-items-center side-bar-icons-container">
+            <ul className="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mx-auto text-center justify-content-between w-100 align-items-center side-bar-icons-container">
                 {
                     sideBarBottomIcons.map((icon) => {
                         if (icon === 'none') return null;
@@ -69,9 +67,9 @@ export default function SideBar() {
         )
     }
     return (
-        <div className="h-100">
-            <div className="row h-100">
-                <div className="col-sm-auto sticky-top h-100 side-bar-container">
+        // <div className="h-100">
+            <div className="h-100">
+                <div className="sticky-top h-100 side-bar-container">
                     <div className="d-flex flex-column flex-nowrap align-items-center sticky-top h-100 justify-content-between common-bg-color">
                         {renderSideBarHeaderIcons()}
                         {renderSideBarBottomIcons()}
@@ -83,6 +81,6 @@ export default function SideBar() {
                         null
                 }
             </div>
-        </div>
+        // </div>
     );
 }

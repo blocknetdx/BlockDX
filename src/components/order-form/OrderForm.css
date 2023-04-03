@@ -1,5 +1,24 @@
 .common-order-form-container {
     background-color: #181C27;
     height: 100%;
-    
+    width: 370px;
+}
+
+.order-form-header {
+    padding: 8px 15px;
+}
+
+.order-form-content-container {
+    padding: 21px 15px 0 15px;
+}
+
+.blur-container {
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    left: 0;
+    backdrop-filter: blur(4px);
+    background-color: #181C27db;
 }
