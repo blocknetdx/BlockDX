@@ -23,7 +23,11 @@ import VideoOutline from '@images/side-bar-content/video-outline.svg';
 import Lifebuoy from '@images/side-bar-content/lifebuoy.svg';
 import FileDocumentOutline from '@images/side-bar-content/file-document-outline.svg';
 
+//order-tabs
 import ArrowExpandAll from '@images/order-tabs/arrow-expand-all.svg'
+import Cancel from '@images/order-tabs/cancel.svg'
+import TableSort from '@images/order-tabs/table-sort.svg'
+import Check from '@images/order-tabs/check.svg'
 
 import HelpCircleInner from '../../images/order-form/help-circle.svg';
 import SmallWalletIcon from '../../images/order-form/icon-wallet.svg'
@@ -58,6 +62,9 @@ export const SvgIconSet = ({
     },
     orderTabs: {
         'arrow-expand-all': ArrowExpandAll,
+        'cancel': Cancel,
+        'table-sort': TableSort,
+        'check': Check
     },
     orderForm: {
         'help-circle': HelpCircleInner,

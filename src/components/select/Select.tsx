@@ -3,15 +3,16 @@ import './Select.css';
 
 interface SelectProps extends React.HTMLProps<HTMLSelectElement> {
     lists?: string[]
+    optionClass?: string
 }
 
 export const Select = (props: SelectProps) => {
-    const { lists } = props;
+    const { lists, optionClass = '' } = props;
     return (
         <select {...props} className={`common-select ${props.className}`}>
             {
                 lists.map(item => (
-                    <option selected key={`select-${item}`}>{item}</option>
+                    <option className={optionClass} selected key={`select-${item}`}>{item}</option>
                 ))
             }
         </select>

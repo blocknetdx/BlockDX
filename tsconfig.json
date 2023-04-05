@@ -14,8 +14,9 @@
     "paths": {
       "*": ["node_modules/*"],
       "@/*": ["./*"],
-      "@components*": ["./components*"],
-      "@images/*": ["./images/*"]
+      "@components/*": ["./components/*"],
+      "@images/*": ["./images/*"],
+      "@pages/*": ["./pages/*"]
     },
     "jsx": "react-jsx"
   },
