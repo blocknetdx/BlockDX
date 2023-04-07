@@ -1,7 +1,13 @@
 import React from 'react';
-import { SvgIconSet } from './svg-icon-set';
-import { SvgIconProps, categories, CategoryTypes } from './svg-icon.props';
-import { Text } from '../text/Text';
+
+import {
+    Text,
+    Button,
+    SvgIconSet,
+    SvgIconProps,
+    categories,
+    CategoryTypes
+} from '@components/index'
 
 interface RenderIconProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     btnType: string
@@ -17,7 +23,7 @@ const RenderIcon = ({btnType, children, classProp, onClick}: RenderIconProps) =>
                 {children}
             </a>
         ) : btnType === 'button' ? (
-            <button className={classProp} onClick={() => onClick()}>{children}</button>
+            <Button className={classProp} onClick={() => onClick()}>{children}</Button>
         ) : (
             <React.Fragment>{children}</React.Fragment>
         )

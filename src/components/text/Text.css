@@ -3,6 +3,14 @@
     font-family: 'IBM Plex Sans';
 }
 
+.text-success {
+    color: #6ce9a6;
+}
+
+.text-error {
+    color: #f97066;
+}
+
 .common-title {
     font-size: 13px;
     line-height: 16.9px;
@@ -123,6 +131,43 @@
     opacity: 0.9;
 }
 
+/* order tabs */
+.order-tab-table-header-title {
+    font-size: 12px;
+    line-height: 15.6px;
+    font-weight: 500;
+}
+.order-table-content {
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 400;
+}
+.order-status {
+    background: #d0d5dd;
+    border-radius: 4px;
+    color: black;
+    padding: 2px 4px;
+}
+
+.order-table-type-content-buy {
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #6ce9a6;
+}
+.order-table-type-content-sell {
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #fda29b;
+}
+
+.order-table-status-cancel {
+    font-size: 11px;
+    color: #f97066;
+    margin-left: 5px;
+}
+
 /* input with pre, subfix */
 .input-text-right {
     font-size: 13px;
@@ -156,4 +201,11 @@
     color: #98a2b3;
     line-height: 10px;
     text-align: right;
+}
+
+/* Select */
+.order-tab-option-text {
+    font-size: 11px;
+    line-height: 11px;
+    font-weight: 400;
 }

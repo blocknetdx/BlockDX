@@ -47,3 +47,23 @@
 .sell-block-btn__active {
     border: 1px solid #fda29b;
 }
+
+/* order tabs btn */
+.table-sort-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    height: 18px;
+}
+
+.active-tab {
+    color: #2e90fa;
+}
+
+.order-tab-header-title {
+    font-size: 12px;
+    line-height: 15.6px;
+    font-weight: 500;
+    background: none;
+    border: none;
+}

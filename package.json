@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans": "^4.5.13",
+    "@tanstack/react-table": "^8.8.5",
     "bootstrap": "^5.2.3",
     "clsx": "^1.2.1",
     "electron-squirrel-startup": "^1.0.0",

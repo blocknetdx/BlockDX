@@ -1,0 +1,11 @@
+.horizontal-separator {
+    border-left: 1px solid #475467;
+    margin: 0px 15px;
+    height: 15px;
+}
+
+.vertical-common-separator {
+    border-bottom: 2px solid #121212;
+    top: 27px;
+    position: relative;
+}

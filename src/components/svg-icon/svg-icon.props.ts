@@ -2,6 +2,7 @@ export const categories = {
     common: 'common',
     sideBar: 'sideBar',
     sideBarContent: 'sideBarContent',
+    orderTabs: 'orderTabs',
     orderForm: 'orderForm',
 }
 
