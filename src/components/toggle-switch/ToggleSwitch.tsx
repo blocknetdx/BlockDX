@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
 import './ToggleSwitch.css';
-import { Text } from '../text/Text';
+import { Text } from '@components/index'
 
 interface ToggleSwitchProps {
     leftContent?: string
@@ -14,13 +13,11 @@ interface ToggleSwitchProps {
 export const ToggleSwitch = (props: ToggleSwitchProps) => {
     const { 
         leftContent, 
-        leftContentClass, 
-        initialActiveStatus = false, 
+        leftContentClass,
         switchClass = 'normal-switch',
         active,
         setActive
     } = props;
-    // const [active, setActive] = useState(initialActiveStatus);
     return (
         <div className='d-flex flex-row align-items-center'>
             {
