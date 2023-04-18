@@ -42,7 +42,7 @@ export const OrderTabs = () => {
     return (
         <div className='common-container'>
             <div className='d-flex flex-row justify-content-between p-10 common-border-bottom'>
-                <div className='d-flex flex-row'>
+                <div className='d-flex flex-row align-items-center'>
                     {
                         orderTabs.map((tab, index) => {
                             return (
