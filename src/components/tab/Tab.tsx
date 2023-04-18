@@ -4,6 +4,8 @@ import {
     Separator 
 } from '@components/index';
 
+import './Tab.css';
+
 interface TabProps extends React.HTMLProps<HTMLDivElement> {
     tabs: string[],
     activeTab: string,
@@ -17,7 +19,7 @@ export const Tab = ({
 } : TabProps) => {
 
     return (
-        <div className='d-flex flex-row'>
+        <div className='d-flex flex-row align-items-center tab-container'>
             {
                 tabs.map((tab, index) => {
                     return (

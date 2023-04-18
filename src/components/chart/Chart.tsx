@@ -18,7 +18,7 @@ export const Chart = () => {
         return <DepthChart />;
     }
     return (
-        <div>
+        <div className='m-r-2'>
             <Tab
                 tabs={chartTabs}
                 activeTab={activeTab}

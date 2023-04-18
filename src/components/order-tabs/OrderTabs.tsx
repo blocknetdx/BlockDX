@@ -34,7 +34,7 @@ export const OrderTabs = () => {
     }
     return (
         <div className='common-container'>
-            <div className='d-flex flex-row justify-content-between p-10 common-border-bottom'>
+            <div className='d-flex flex-row justify-content-between p-h-10 common-border-bottom p-l-0'>
                 <Tab
                     tabs={orderTabs}
                     activeTab={activeTab}
