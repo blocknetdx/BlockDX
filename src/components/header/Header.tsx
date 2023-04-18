@@ -45,7 +45,7 @@ export default function Header() {
     }
     return (
         <nav className="navbar navbar-expand-sm navbar-light bg">
-            <div className="container-fluid">
+            <div className="d-flex flex-row justify-content-between">
                 <a className="navbar-brand logo">
                     <Logo />
                 </a>
