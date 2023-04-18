@@ -180,7 +180,7 @@ export const RangeSlider = (props: RangeSliderTestProps) => {
   }
 
   return (
-    <div>
+    <div className='m-h-4'>
       <div className='d-flex flex-row m-b-9'>
         <Text innerRef={progressPercentRef} className='range-slider-content'>10%</Text>
         <Text innerRef={rangePercentRef} className='range-slider-content'>{`${max ? Math.round(Number(inputRef.current?.value || 0) * 100 / max) : 0}%`}</Text>
@@ -200,7 +200,7 @@ export const RangeSlider = (props: RangeSliderTestProps) => {
             <div className='thumb-inner-circle'></div>
           </div>
           <div ref={rangeRef} className='range-slider__range' />
-          <div className='range-slider__progress' />
+          {/* <div className='range-slider__progress' /> */}
         </div>
       </div>
       <div className='d-flex flex-row m-t-9'>

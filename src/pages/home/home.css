@@ -69,9 +69,16 @@
     margin-right: 8px;
 }
 
+/* margin horizontal */
+.m-h-4 {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
 /* padding horizontal */
 .p-h-10 {
-    padding: 0 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 /* padding top */
