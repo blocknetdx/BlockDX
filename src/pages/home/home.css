@@ -8,12 +8,19 @@
 }
 
 /* margin right */
+.m-t-2 {
+    margin-top: 2px;
+}
 .m-t-5 {
     margin-top: 5px;
 }
 
 .m-t-9 {
     margin-top: 9px;
+}
+
+.m-t-10 {
+    margin-top: 10px;
 }
 
 .m-t-17 {
@@ -76,6 +83,10 @@
 /* margin left */
 .m-l-10 {
     margin-left: 10px;
+}
+
+.m-l-21 {
+    margin-left: 21px;
 }
 
 /* margin vertical */

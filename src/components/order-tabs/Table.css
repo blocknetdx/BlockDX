@@ -1,3 +1,9 @@
 .table-container {
     height: 335px;
 }
+
+.table-header-bottom {
+    border-bottom-width: 2px;
+    border-bottom-color: #121212;
+    border-bottom-style: solid;
+}

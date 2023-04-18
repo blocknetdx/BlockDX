@@ -144,14 +144,16 @@ export const OrdersDataTable = (props: OrdersDataTableProps) => {
 
     const renderSortHeader = (title: string) => {
         return (
-            <SvgIcon 
-                content={title}
-                contentClass='order-tab-table-header-title'
-                rightIcon='table-sort'
-                rightIconCategory='orderTabs'
-                type='link'
-                classProp='table-sort-btn'
-            />
+            <div className='m-b-5 m-t-2'>
+                <SvgIcon 
+                    content={title}
+                    contentClass='order-tab-table-header-title'
+                    rightIcon='table-sort'
+                    rightIconCategory='orderTabs'
+                    type='link'
+                    classProp='table-sort-btn'
+                />
+            </div>
         );
     }
 
@@ -175,8 +177,9 @@ export const OrdersDataTable = (props: OrdersDataTableProps) => {
 
     const columns = [
         columnHelper.accessor('type', {
-            header: () => renderSortHeader('Type'),
-            cell: info => <Text className={`order-table-type-content-${info.getValue().toLowerCase()}`}>{info.getValue()}</Text>
+            // header: () => renderSortHeader('Type'),
+            header: () => <div className='m-l-21'> {renderSortHeader('Type')}</div>,
+            cell: info => <Text className={`order-table-type-content-${info.getValue().toLowerCase()} m-l-21`}>{info.getValue()}</Text>
         }),
         columnHelper.accessor('market', {
             header: () => renderSortHeader('Market'),

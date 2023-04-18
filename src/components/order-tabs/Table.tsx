@@ -23,10 +23,9 @@ export const Table = ({columns = [], data = [], className = '', containerClass =
     })
     return (
         <div className={containerClass}>
-            <div className='vertical-common-separator' />
-            <div className='p-h-20 flex-grow-1 table-container'>
+            <div className='flex-grow-1 table-container'>
                 <table className={`full-width ${className}`}>
-                    <thead className='h-24'>
+                    <thead className='h-24 table-header-bottom'>
                         {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map(header => (
@@ -55,11 +54,13 @@ export const Table = ({columns = [], data = [], className = '', containerClass =
                         ))}
                     </thead>
                     <tbody>
-                        {table.getRowModel().rows.map(row => (
+                        {table.getRowModel().rows.map((row, index) => (
                             <tr key={row.id}>
                                 {row.getVisibleCells().map(cell => (
                                     <td key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        <div className={index === 0 ? 'm-t-5' : ''}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </div>
                                     </td>
                                 ))}
                             </tr>

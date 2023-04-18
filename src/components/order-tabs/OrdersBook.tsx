@@ -113,27 +113,35 @@ export const OrdersBookTable = () => {
         );
     }
 
+    const renderHeader = (title: string, titleClass?: string) => {
+        return (
+            <div className='m-b-5 m-t-2'>
+                <Text className={`order-tab-table-header-title ${titleClass}`}>{title}</Text>
+            </div>
+        );
+    }
+
     const getColumns = (type = 'buy') => {
         return [
             columnHelper.accessor('size', {
-                header: () => <Text className='order-tab-table-header-title'>Size (PIVX)</Text>,
+                header: () => renderHeader('Size (PIVX)'),
                 cell: info => renderContent(info.getValue())
             }),
             columnHelper.accessor('minSize', {
-                header: () => <Text className='order-tab-table-header-title'>Min Size</Text>,
+                header: () => renderHeader('Min Size'),
                 cell: info => renderContent(info.getValue())
             }),
             columnHelper.accessor('priceBTC', {
-                header: () => <Text className='order-tab-table-header-title'>Price (BTC)</Text>,
+                header: () => renderHeader('Price (BTC)'),
                 cell: info => renderContent(info.getValue(), type === 'buy' ? 'text-success' : 'text-error')
             }),
             columnHelper.accessor('priceLTC', {
-                header: () => <Text className='order-tab-table-header-title'>Price (LTC)</Text>,
+                header: () => renderHeader('Price (LTC)'),
                 cell: info => renderContent(info.getValue(), type === 'buy' ? 'text-success' : 'text-error')
             }),
             columnHelper.accessor('totalLTC', {
-                header: () => <Text className='order-tab-table-header-title'>Total (LTC)</Text>,
-                cell: info => renderContent(info.getValue())
+                header: () => renderHeader('Total (LTC)', type === 'sell' ? 'm-r-10' : ''),
+                cell: info => renderContent(info.getValue(), type === 'sell' && 'm-r-10')
             }),
         ]
     }
