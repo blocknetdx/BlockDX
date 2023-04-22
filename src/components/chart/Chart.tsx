@@ -7,6 +7,8 @@ import {
 import { StockChart } from './StockChart'
 import { DepthChart } from './DepthChart'
 
+import './Chart.css';
+
 const chartTabs = ['PRICE CHART', 'DEPTH CHART']
 
 export const Chart = () => {

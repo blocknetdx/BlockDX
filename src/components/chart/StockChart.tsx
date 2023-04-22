@@ -10,6 +10,8 @@ export const StockChart = () => {
 
         let root = am5.Root.new("chartdiv");
 
+        root._logo.dispose();
+
         root.setThemes([
             am5themes_Animated.new(root)
         ]);
@@ -26,14 +28,20 @@ export const StockChart = () => {
             panY: true
         }));
 
+        let yValueAxis = am5xy.AxisRendererY.new(root, {
+            pan: "zoom",
+        })
+
+        yValueAxis.labels.template.setAll({
+            fill: am5.color(0xFFFFFF)
+        })
+
         let valueAxis = mainPanel.yAxes.push(am5xy.ValueAxis.new(root, {
-            renderer: am5xy.AxisRendererY.new(root, {
-                pan: "zoom"
-            }),
+            renderer: yValueAxis,
             extraMin: 0.1,
             tooltip: am5.Tooltip.new(root, {}),
             numberFormat: "#,###.00",
-            extraTooltipPrecision: 2
+            extraTooltipPrecision: 2,
         }));
 
         let dateAxis = mainPanel.xAxes.push(am5xy.GaplessDateAxis.new(root, {
@@ -62,11 +70,6 @@ export const StockChart = () => {
 
         stockChart.set("stockSeries", valueSeries);
 
-        let valueLegend = mainPanel.plotContainer.children.push(am5stock.StockLegend.new(root, {
-            stockChart: stockChart
-        }));
-
-        valueLegend.data.setAll([valueSeries]);
         mainPanel.set("cursor", am5xy.XYCursor.new(root, {
             yAxis: valueAxis,
             xAxis: dateAxis,

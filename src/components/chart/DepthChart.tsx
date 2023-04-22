@@ -10,6 +10,8 @@ export const DepthChart = () => {
 
     let root = am5.Root.new("chartdiv");
 
+    root._logo.dispose();
+
     root.setThemes([
       am5themes_Animated.new(root)
     ]);
@@ -31,11 +33,18 @@ export const DepthChart = () => {
       centerX: am5.p50
     }))
 
+    let xValueAxis = am5xy.AxisRendererX.new(root, {
+      minGridDistance: 70
+    });
+
+    xValueAxis.labels.template.setAll({
+      fill: am5.color(0xFFFFFF)
+    })
+
+
     let xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
       categoryField: "value",
-      renderer: am5xy.AxisRendererX.new(root, {
-        minGridDistance: 70
-      }),
+      renderer: xValueAxis,
       tooltip: am5.Tooltip.new(root, {})
     }));
 
@@ -46,10 +55,16 @@ export const DepthChart = () => {
       return text;
     });
 
+    let yValueAxis = am5xy.AxisRendererY.new(root, {})
+
+    yValueAxis.labels.template.setAll({
+      fill: am5.color(0xFFFFFF)
+    })
+
     let yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
         maxDeviation: 0.1,
-        renderer: am5xy.AxisRendererY.new(root, {})
+        renderer: yValueAxis
       })
     );
 
