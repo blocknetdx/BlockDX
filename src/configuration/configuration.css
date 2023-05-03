@@ -19,6 +19,31 @@ input[type=radio]:checked {
     background-image: none !important;
 }
 
+input[type="checkbox"] {
+    appearance: none;
+    background: none;
+    margin: 0;
+    font: inherit;
+    color: #358FED;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid #358FED;
+    border-radius: 0;
+    transform: translateY(-0.075em);
+    margin-right: 10px;
+    margin-left: 0 !important;
+}
+
+input[type="checkbox"]::after {
+    margin-right: 10px;
+}
+
+
+input[type="checkbox"]:checked {
+    background: none;
+    color: #358FED;
+}
+
 .main-body {
     background-color: #0e2742;
     margin-left: 0;
@@ -30,6 +55,10 @@ input[type=radio]:checked {
 .logo-full {
     width: 100%;
     max-width: 300px;
+}
+
+.wallets-list-container {
+    background-color: #22354A;
 }
 
 /* padding */
@@ -60,8 +89,22 @@ input[type=radio]:checked {
     margin-bottom: 5px;
 }
 
+.m-v-10 {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
 .m-v-20 {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+}
+
+.m-h-20 {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.m-t-10 {
+    margin-top: 10px;
 }
 

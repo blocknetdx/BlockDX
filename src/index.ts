@@ -34,7 +34,7 @@ const openConfigurationWindow = (): void => {
     },
   });
   configurationWindow.loadURL(CONFIGURATION_WINDOW_WEBPACK_ENTRY);
-  // configurationWindow.webContents.openDevTools();
+  configurationWindow.webContents.openDevTools();
 };
 
 

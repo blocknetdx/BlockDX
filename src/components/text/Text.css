@@ -11,6 +11,10 @@
     color: #f97066;
 }
 
+.text-bold {
+    font-weight: 600;
+}
+
 .common-title {
     font-size: 13px;
     line-height: 16.9px;
