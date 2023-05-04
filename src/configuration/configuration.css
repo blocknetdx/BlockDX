@@ -61,6 +61,18 @@ input[type="checkbox"]:checked {
     background-color: #22354A;
 }
 
+.wallet-versions-container {
+    background-color: #122439;
+}
+
+.wallet-version-select-container {
+    background-color: #203649;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+}
+
 /* padding */
 
 .p-v-5 {
@@ -81,6 +93,10 @@ input[type="checkbox"]:checked {
 .p-h-40 {
     padding-left: 40px;
     padding-right: 40px;
+}
+
+.p-20 {
+    padding: 20px;
 }
 
 /* margin */
