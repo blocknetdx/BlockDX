@@ -71,7 +71,10 @@ export default function AddWalletQuick({
                 >
                     CANCEL
                 </Button>
-                <Button className='configuration-continue-btn'>CONTINUE</Button>
+                <Button
+                    className='configuration-continue-btn'
+                    onClick={() => handleNavigation(CONFIG_ROUTE.ADD_WALLET_QUICK_FINISH)}
+                >CONTINUE</Button>
             </div>
         </div>
     );

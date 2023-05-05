@@ -131,3 +131,12 @@ input[type="checkbox"]:checked {
 .m-r-10 {
     margin-right: 10px;
 }
+
+/* width */
+.w-p-55 {
+    width: 55%;
+}
+
+.bg-182a3e {
+    background-color: #182A3E;
+}
