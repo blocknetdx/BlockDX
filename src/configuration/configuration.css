@@ -59,6 +59,8 @@ input[type="checkbox"]:checked {
 
 .wallets-list-container {
     background-color: #22354A;
+    max-height: 283px;
+    overflow: overlay;
 }
 
 .wallet-versions-container {
@@ -139,4 +141,20 @@ input[type="checkbox"]:checked {
 
 .bg-182a3e {
     background-color: #182A3E;
+}
+
+.data-directory-input {
+    background: #203649;
+    border: none;
+    color: white;
+    padding-left: 10px;
+    height: 42px;
+}
+
+.data-directory-select-container {
+    background: none;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
 }

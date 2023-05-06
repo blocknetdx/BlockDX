@@ -89,3 +89,15 @@
     padding-bottom: 10px;
     font-size: 15px;
 }
+
+.configuration-browse-btn {
+    color: white;
+    background-color: #1267F8;
+    /* padding-top: 10px;
+    padding-bottom: 10px; */
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 15px;
+    margin-left: 10px;
+    height: 42px;
+}

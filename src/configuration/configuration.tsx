@@ -9,6 +9,7 @@ import AddWalletQuick from '@/configuration/add-wallet-quick';
 import AddWalletQuickFinish from '@/configuration/add-wallet-quick-finish';
 import ConfigurationComplete from '@/configuration/configuration-complete';
 import AddWalletExpert from '@/configuration/add-wallet-expert';
+import AddWalletExpertFinish from '@/configuration/add-wallet-expert-finish';
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -20,13 +21,14 @@ const configurationTitles = {
     addWalletQuick: 'add wallet - quick configuration setup',
     addWalletQuickFinish: 'add wallet - quick configuration setup',
     addWalletExpert: 'add wallet - expert configuration setup',
+    addWalletExpertFinish: 'add wallet - expert configuration setup',
     configurationComplete: 'configuration complete!',
 }
 
 export const Configuration: React.FC = () => {
     const [title, setTitle] = useState(CONFIG_ROUTE.SET_UP);
     // const [title, setTitle] = useState(configurationTitles['setUp']);
-    const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.ADD_WALLET_QUICK);
+    const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.ADD_WALLET_EXPERT);
 
     function handleNavigation(route: CONFIG_ROUTE) {
         setRoute(route);
@@ -48,6 +50,8 @@ export const Configuration: React.FC = () => {
                 return <ConfigurationComplete setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ADD_WALLET_EXPERT:
                 return <AddWalletExpert setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.ADD_WALLET_EXPERT_FINISH:
+                return <AddWalletExpertFinish setTitle={setTitle} handleNavigation={handleNavigation} />
             default:
                 return <></>;
         }
