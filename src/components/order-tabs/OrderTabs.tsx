@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
-    Separator,
-    Text,
     SvgIcon,
-    Button,
     Select,
+    Tab
 } from '@components/index';
 
 import './OrderTabs.css'
 
-import { Table, MemoTable } from './Table'
 import { OrdersDataTable } from '@components/order-tabs/OrdersDataTable';
 import { OrdersBookTable } from '@components/order-tabs/OrdersBook';
 
@@ -17,10 +14,6 @@ const orderTabs = ['OPEN ORDERS', 'ORDER BOOK', 'ORDER HISTORY', 'TRADE HISTORY'
 
 export const OrderTabs = () => {
     const [activeTab, setActiveTab] = useState('OPEN ORDERS');
-
-    const handleChangeTab = (tab: string = 'OPEN ORDERS') => {
-        setActiveTab(tab)
-    }
 
     const renderTable = () => {
         if (activeTab === 'OPEN ORDERS') {
@@ -41,30 +34,12 @@ export const OrderTabs = () => {
     }
     return (
         <div className='common-container'>
-            <div className='d-flex flex-row justify-content-between p-10 common-border-bottom'>
-                <div className='d-flex flex-row'>
-                    {
-                        orderTabs.map((tab, index) => {
-                            return (
-                                <React.Fragment key={tab}>
-                                    <Button
-                                        onClick={() => {
-                                            handleChangeTab(tab);
-                                        }}
-                                        className={`order-tab-header-title ${activeTab === tab ? 'active-tab' : ''}`}
-                                    >
-                                        {tab}
-                                    </Button>
-                                    {
-                                        index  < orderTabs.length - 1 ?
-                                        <Separator className='horizontal-separator' />
-                                        : null
-                                    }
-                                </React.Fragment>
-                            )
-                        })
-                    }
-                </div>
+            <div className='d-flex flex-row justify-content-between p-h-10 common-border-bottom p-l-0'>
+                <Tab
+                    tabs={orderTabs}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                />
                 <div className='d-flex flex-row'>
                     {
                         activeTab === 'ORDER BOOK' ?

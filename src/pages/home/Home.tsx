@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import SideBar from '../../components/side-bar/SideBar';
-import Header from '../../components/header/Header';
+import React from 'react';
 import './home.css';
-import { OrderForm } from '../../components/order-form/OrderForm';
-
 import {
-    OrderTabs
+    OrderTabs,
+    Chart,
+    OrderForm,
+    Header,
+    SideBar
 } from '@components/index'
 
 export default function Home() {
@@ -15,6 +15,7 @@ export default function Home() {
             <div className='main-content d-flex flex-row'>
                 <SideBar />
                 <div className='flex-grow-1'>
+                    <Chart />
                     <OrderTabs />
                 </div>
                 <OrderForm />

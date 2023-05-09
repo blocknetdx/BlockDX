@@ -1,8 +1,10 @@
 import React from 'react';
-import { Text } from '../text/Text';
-import { Input } from './Input';
-import { SvgIcon } from '../svg-icon'
-import { CategoryTypes } from '../svg-icon/svg-icon.props';
+import {
+    Text,
+    Input,
+    SvgIcon,
+    CategoryTypes
+} from '@components/index'
 
 interface InputWithTextProps extends React.HTMLProps<HTMLDivElement> {
     leftContent?: string

@@ -39,6 +39,7 @@
     "typescript": "~4.5.4"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.3.11",
     "@fontsource/ibm-plex-sans": "^4.5.13",
     "@tanstack/react-table": "^8.8.5",
     "bootstrap": "^5.2.3",
