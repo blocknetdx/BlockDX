@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { ipcRenderer } from 'electron';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE, ConfigurationMenuOptionsType
 } from './configuration.type';
@@ -9,11 +8,8 @@ export default function AddWalletExpert({
     setTitle,
     handleNavigation
 }: ConfigurationMenuProps): React.ReactElement {
-    useEffect(() => {
-        ipcRenderer.on('result', (event, result) => {
-            console.log(result);
-        });
-    }, []);
+    const [dataPath, setDataPath] = useState('');
+
     const options: ConfigurationMenuOptionsType[] = [
         {
             option: 'Configuration Setup',
@@ -27,10 +23,12 @@ export default function AddWalletExpert({
         }
     ]
 
-    const handleOpenDialog = () => {
-        ipcRenderer.invoke('open-dialog').then(result => {
-            console.log(result); 
-        });
+    const handleOpenDialog = async () => {
+        // ipcRenderer.sendSync('openDialog');
+        if (!!window) {
+            const directoryPath = await window?.api.openDialog();
+            setDataPath(directoryPath);
+        }
     };
     return (
         <div className='d-flex flex-column flex-grow-1'>
@@ -78,9 +76,8 @@ export default function AddWalletExpert({
                                         className='flex-grow-1 data-directory-input'
                                         type="text"
                                         name="walletCheckbox"
-                                        value='selectAll'
-                                        onChange={() => {
-                                        }}
+                                        disabled={true}
+                                        value={dataPath}
                                     />
                                     <Button className='configuration-browse-btn' onClick={handleOpenDialog}>BROWSE</Button>
                                 </div>
