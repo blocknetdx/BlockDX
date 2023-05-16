@@ -26,7 +26,7 @@ export default function AddWalletExpert({
     const handleOpenDialog = async () => {
         // ipcRenderer.sendSync('openDialog');
         if (!!window) {
-            const directoryPath = await window?.api.openDialog();
+            const directoryPath = await window.api.openDialog();
             setDataPath(directoryPath);
         }
     };

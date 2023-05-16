@@ -48,22 +48,25 @@ const onReady = new Promise(resolve => app.on('ready', resolve));
 // app.on('ready', openAppWindow);
 
 
+
 type dialogOptionsType = {
   title: string
   properties: ("openDirectory" | "openFile" | "multiSelections" | "showHiddenFiles" | "createDirectory" | "promptToCreate" | "noResolveAliases" | "treatPackageAsDirectory" | "dontAddToRecent")[]
 }
 
+ipcMain.handle('open-dialog', async (event, args) => {
+  const options: dialogOptionsType = {
+    title: 'Open File',
+    properties: ['openDirectory']
+  };
+  const result = await dialog.showOpenDialog(options);
+  return result.filePaths[0];
+});
+
 (async function() {
   await onReady;
 
-  ipcMain.handle('open-dialog', async (event, args) => {
-    const options: dialogOptionsType = {
-      title: 'Open File',
-      properties: ['openDirectory']
-    };
-    const result = await dialog.showOpenDialog(options);
-    return result.filePaths[0];
-  })
+
   openConfigurationWindow();
 
   // openAppWindow();
@@ -81,17 +84,4 @@ app.on('activate', () => {
   }
 });
 
-// type dialogOptionsType = {
-//   title: string
-//   properties: ("openDirectory" | "openFile" | "multiSelections" | "showHiddenFiles" | "createDirectory" | "promptToCreate" | "noResolveAliases" | "treatPackageAsDirectory" | "dontAddToRecent")[]
-// }
-
-// ipcMain.handle('open-dialog', async (event, arg) => {
-//   const options: dialogOptionsType = {
-//     title: 'Open File',
-//     properties: ['openDirectory']
-//   };
-//   const result = await dialog.showOpenDialog(options);
-//   return result.filePaths[0];
-// });
 
