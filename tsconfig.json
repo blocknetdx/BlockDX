@@ -16,7 +16,9 @@
       "@/*": ["./*"],
       "@components/*": ["./components/*"],
       "@images/*": ["./images/*"],
-      "@pages/*": ["./pages/*"]
+      "@pages/*": ["./pages/*"],
+      "@context": ["./context"],
+      "@src-back": ["./src-back"]
     },
     "jsx": "react-jsx"
   },

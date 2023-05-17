@@ -18,6 +18,10 @@ export const mainConfig: Configuration = {
     alias: {
       '@components': path.resolve(__dirname, './src/components'),
       '@images': path.resolve(__dirname, './src/images'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@context': path.resolve(__dirname, './src/context'),
+      '@src-back': path.resolve(__dirname, './src/src-back'),
+      '@': path.resolve(__dirname, './src'),
     },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
