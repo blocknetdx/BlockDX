@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SvgIcon } from '@components/index';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
@@ -10,6 +10,8 @@ import AddWalletQuickFinish from '@/configuration/add-wallet-quick-finish';
 import ConfigurationComplete from '@/configuration/configuration-complete';
 import AddWalletExpert from '@/configuration/add-wallet-expert';
 import AddWalletExpertFinish from '@/configuration/add-wallet-expert-finish';
+import { ManifestType } from '@/main.type';
+import { Set } from 'immutable';
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -29,6 +31,66 @@ export const Configuration: React.FC = () => {
     const [title, setTitle] = useState(CONFIG_ROUTE.SET_UP);
     // const [title, setTitle] = useState(configurationTitles['setUp']);
     const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.ADD_WALLET_EXPERT);
+
+    useEffect(() => {
+        if (!!window) {
+            getManifest();
+            // console.log('manifest list: ', window.api.getManifest());
+        }
+    }, []);
+
+    async function getCustomDirectory(token: string) {
+        if (!!window) {
+            return await window.api.getTokenPath(token)
+        }
+
+        return '';
+    }
+
+    async function getManifest() {
+        let wallets:ManifestType[] = await window.api.getManifest();
+
+        let filterdWallets = wallets.map(w => {
+            const {versions= []} = w;
+            return {name : w.blockchain || '',
+            abbr : w.ticker || '',
+            versionId : w.ver_id || '',
+            versionName : w.ver_name || '',
+            dirNameLinux : w.dir_name_linux || '',
+            dirNameMac : w.dir_name_mac || '',
+            dirNameWin : w.dir_name_win || '',
+            repoURL : w.repo_url || '',
+            versions : versions,
+            xBridgeConf : w.xbridge_conf || '',
+            walletConf : w.wallet_conf || '',
+            confName : w.conf_name || '',
+            error : false,
+            username : '',
+            password : '',
+            port : '',
+            version : versions.length > 0 ? versions[versions.length - 1] : '',
+            directory : getCustomDirectory(w.ticker || ''),}
+        })
+        const blockIdx = filterdWallets.findIndex(w => w.abbr === 'BLOCK');
+        const others = [
+          ...filterdWallets.slice(0, blockIdx),
+          ...filterdWallets.slice(blockIdx + 1)
+    
+        ].sort((a, b) => a.name.localeCompare(b.name));
+        filterdWallets = [
+          filterdWallets[blockIdx],
+          ...others
+        ];
+
+        const selectedWallets = await window?.api.getSelectedWallets();
+    
+        let selectedWalletIds = Set([
+          filterdWallets[0].versionId,
+          ...selectedWallets
+        ]);
+
+        console.log('filterdWallets: ', filterdWallets);
+    }
 
     function handleNavigation(route: CONFIG_ROUTE) {
         setRoute(route);
