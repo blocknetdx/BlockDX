@@ -11,13 +11,25 @@ export type ContextBridgeApi = {
   openDialog: () => Promise<string>
   getManifest: () => ManifestType[]
   getTokenPath: () => Promise<string>
+  getXbridgeConfPath: () => Promise<string>
+  getXbridgeConf: () => Promise<any>
   getSelectedWallets: () => any
+  getDefaultDirectory: () => Promise<string>
+}
+
+type DefaultHomePaths = {
+  dirNameWin: string;
+  dirNameLinux: string;
+  dirNameMac: string;
 }
 
 
 contextBridge.exposeInMainWorld('api', {
   openDialog: () => ipcRenderer.invoke('open-dialog'),
   getManifest: () => ipcRenderer.invoke('getManifest'),
-  getTokenPath: (args:string) => ipcRenderer.invoke('getTokenPath', args),
-  getSelectedWallets: () => ipcRenderer.invoke('getSelected')
+  getTokenPath: (token: string) => ipcRenderer.invoke('getTokenPath', token) ,
+  getSelectedWallets: () => ipcRenderer.invoke('getSelected'),
+  getXbridgeConfPath: () => ipcRenderer.invoke('getXbridgeConfPath'),
+  getXbridgeConf: (path: string) => ipcRenderer.invoke('getXbridgeConf', path),
+  getDefaultDirectory: (defaultPaths: DefaultHomePaths) => ipcRenderer.invoke('getDefaultDirectory', defaultPaths)
 });

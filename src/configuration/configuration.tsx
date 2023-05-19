@@ -12,6 +12,9 @@ import AddWalletExpert from '@/configuration/add-wallet-expert';
 import AddWalletExpertFinish from '@/configuration/add-wallet-expert-finish';
 import { ManifestType } from '@/main.type';
 import { Set } from 'immutable';
+import Wallet from './modules/wallet';
+import path from 'path';
+
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -41,55 +44,55 @@ export const Configuration: React.FC = () => {
 
     async function getCustomDirectory(token: string) {
         if (!!window) {
-            return await window.api.getTokenPath(token)
+            const customDir = await window.api.getTokenPath(token)
+            return customDir ? customDir : await window.api.getDefaultDirectory
         }
 
         return '';
     }
 
     async function getManifest() {
-        let wallets:ManifestType[] = await window.api.getManifest();
+        let walletsOrigin: ManifestType[] = await window.api.getManifest();
 
-        let filterdWallets = wallets.map(w => {
-            const {versions= []} = w;
-            return {name : w.blockchain || '',
-            abbr : w.ticker || '',
-            versionId : w.ver_id || '',
-            versionName : w.ver_name || '',
-            dirNameLinux : w.dir_name_linux || '',
-            dirNameMac : w.dir_name_mac || '',
-            dirNameWin : w.dir_name_win || '',
-            repoURL : w.repo_url || '',
-            versions : versions,
-            xBridgeConf : w.xbridge_conf || '',
-            walletConf : w.wallet_conf || '',
-            confName : w.conf_name || '',
-            error : false,
-            username : '',
-            password : '',
-            port : '',
-            version : versions.length > 0 ? versions[versions.length - 1] : '',
-            directory : getCustomDirectory(w.ticker || ''),}
-        })
-        const blockIdx = filterdWallets.findIndex(w => w.abbr === 'BLOCK');
+        let wallets = walletsOrigin.map(w => new Wallet(w));
+
+        console.log('wallets: ', wallets);
+
+        const blockIdx = wallets.findIndex(w => w.abbr === 'BLOCK');
         const others = [
-          ...filterdWallets.slice(0, blockIdx),
-          ...filterdWallets.slice(blockIdx + 1)
-    
+            ...wallets.slice(0, blockIdx),
+            ...wallets.slice(blockIdx + 1)
+
         ].sort((a, b) => a.name.localeCompare(b.name));
-        filterdWallets = [
-          filterdWallets[blockIdx],
-          ...others
+        wallets = [
+            wallets[blockIdx],
+            ...others
         ];
 
         const selectedWallets = await window?.api.getSelectedWallets();
-    
+
         let selectedWalletIds = Set([
-          filterdWallets[0].versionId,
-          ...selectedWallets
+            wallets[0].versionId,
+            ...selectedWallets
         ]);
 
-        console.log('filterdWallets: ', filterdWallets);
+        let xbridgeConfPath = await window?.api.getXbridgeConfPath();
+        let xbridgeConf;
+
+        try {            
+            if (!xbridgeConfPath) {
+                xbridgeConfPath = path.join(await wallets.find(w => w.abbr === 'BLOCK').directory, 'xbridge.conf')
+            }
+            console.log('xbridgeConfPath: ', xbridgeConfPath);
+            xbridgeConf = await window?.api.getXbridgeConf(xbridgeConfPath);
+
+            console.log('xbridgeConf: ', xbridgeConf);
+            
+        } catch (error) {
+            console.log('xbridgeconfpath error: ', error);
+            
+        }
+
     }
 
     function handleNavigation(route: CONFIG_ROUTE) {

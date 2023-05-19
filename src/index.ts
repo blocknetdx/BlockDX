@@ -26,22 +26,20 @@ const { name, version } = fs.readJSONSync(path.join(app.getAppPath(), 'package.j
 let metaPath, user, password, port, pricingSource, apiKeys, pricingUnit, pricingFrequency, enablePricing, showWallet;
 
 let dataPath = '';
+const homePath = app.getPath('home');
+const appDataPath = app.getPath('appData');
 
 if (platform === 'win32') {
   dataPath = path.join(env.LOCALAPPDATA, name);
 } else {
   dataPath = app.getPath('userData');
 }
-
-console.log('dataPath: ', dataPath);
-
 logger.initialize(dataPath);
 
 metaPath = path.join(dataPath, 'app-meta.json');
 let storage = new SimpleStorage(metaPath);
 const defaultLocale = 'en';
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
@@ -144,9 +142,31 @@ ipcMain.handle('open-dialog', async (event, args) => {
 
 ipcMain.handle('getTokenPath', (e, token) => {
   const tokenPaths = storage.getItem('tokenPaths') || {};
-  console.log('tokenPaths[token]: ', tokenPaths[token]);
-  
   return tokenPaths[token] || '';
+});
+
+ipcMain.handle('getDefaultDirectory', (e, args) => {
+  const { dirNameWin, dirNameMac, dirNameLinux } = args;
+  const basePath = (platform === 'win32' || platform === 'darwin') ? appDataPath : homePath;
+  const folder = platform === 'win32' ? dirNameWin : platform === 'darwin' ? dirNameMac : '.' + dirNameLinux;
+  return path.join(basePath, folder)
+});
+
+ipcMain.handle('getSelected', e => {
+  const selectedWallets = storage.getItem('selectedWallets') || [];
+  return selectedWallets;
+});
+
+const getCustomXbridgeConfPath = () => {
+  return storage.getItem('xbridgeConfPath') || '';
+};
+
+ipcMain.handle('getXbridgeConfPath', (e) => {
+  return getCustomXbridgeConfPath();
+});
+
+ipcMain.handle('getXbridgeConf', (e, xbridgeConfPath) => {
+  return fs.readFileSync(xbridgeConfPath, 'utf8');
 });
 
 (async function() {
@@ -214,12 +234,6 @@ ipcMain.handle('getTokenPath', (e, token) => {
       openConfigurationWindow({isFirstRun: true});
       return;
     }
-
-    ipcMain.handle('getSelected', e => {
-      const selectedWallets = storage.getItem('selectedWallets') || [];
-      return selectedWallets;
-    });
-  
 
     openConfigurationWindow();
 

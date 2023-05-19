@@ -24,5 +24,8 @@ export const mainConfig: Configuration = {
       '@': path.resolve(__dirname, './src'),
     },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+    fallback: {
+      path: require.resolve('path-browserify')
+    }
   },
 };
