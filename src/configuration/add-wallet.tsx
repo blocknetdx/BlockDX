@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE, ConfigurationMenuOptionsType
 } from './configuration.type';
 import { Text, Button } from '@components/index';
+import { ConfigDataContext } from '@/context';
 
 export default function AddWallet({
     setTitle,
     handleNavigation,
+    configMode = 'Add'
 }: ConfigurationMenuProps) {
     const options: ConfigurationMenuOptionsType[] = [
         {
@@ -22,6 +24,7 @@ export default function AddWallet({
     ]
 
     const [selectedOption, setSelectedOption] = useState(options[0]);
+    const { updateConfigMode } = useContext(ConfigDataContext);
 
     return (
         <div className='d-flex flex-column flex-grow-1'>
@@ -72,6 +75,7 @@ export default function AddWallet({
                     className='configuration-continue-btn'
                     onClick={() => {
                         setTitle(selectedOption.route);
+                        updateConfigMode(configMode);
                         handleNavigation(selectedOption.route);
                     }}
                 >

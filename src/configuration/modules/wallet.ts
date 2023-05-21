@@ -11,9 +11,9 @@ const uuid = require('uuid');
 //   }
 // };
 
-type WalletType = {
-    [key: string]: string | string[] | Promise<string>
-}
+// type WalletType = {
+//     [key: string]: string | string[] | Promise<string>
+// }
 
 class Wallet {
     name: string;
@@ -33,7 +33,7 @@ class Wallet {
     password: string;
     port: string;
     version: string;
-    directory: Promise<string>;
+    directory: string;
 
   constructor(w?: ManifestType) {
     const { versions = [] } = w;
@@ -54,7 +54,8 @@ class Wallet {
     this.password = '';
     this.port = '';
     this.version = versions.length > 0 ? versions[versions.length - 1] : '';
-    this.directory = this.getCustomDirectory();
+    // this.directory = this.getCustomDirectory();
+    this.testFunction();
   }
 
   set(arg1: any, arg2: any) {
@@ -79,17 +80,24 @@ class Wallet {
     return { username, password };
   }
 
+  async testFunction() {
+    this.directory = await this.getCustomDirectory();
+  }
+
+
   async getCustomDirectory() {
     const customDir = await window.api.getTokenPath(this.abbr);
-    return customDir ? customDir : this.getDefaultDirectory();
+    return await customDir ? customDir : await this.getDefaultDirectory();
   }
 
   async getDefaultDirectory() {
-    return await window?.api.getDefaultDirectory({
+    const defaultDirectory: string = await window?.api.getDefaultDirectory({
         dirNameWin: this.dirNameWin,
         dirNameLinux: this.dirNameLinux,
         dirNameMc: this.dirNameMac
     });
+
+    return defaultDirectory;
   }
 
 //   saveWalletConf() {

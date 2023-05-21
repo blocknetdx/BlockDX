@@ -4,6 +4,7 @@
 
 import { ipcRenderer, contextBridge } from "electron";
 import { ManifestType } from "@/main.type";
+import Wallet from "@/configuration/modules/wallet";
 
 export type ContextBridgeApi = {
   // Declare a `readFile` function that will return a promise. This promise
@@ -14,7 +15,8 @@ export type ContextBridgeApi = {
   getXbridgeConfPath: () => Promise<string>
   getXbridgeConf: () => Promise<any>
   getSelectedWallets: () => any
-  getDefaultDirectory: () => Promise<string>
+  getDefaultDirectory: () => string
+  getFilteredWallets: (wallets: any) => any
 }
 
 type DefaultHomePaths = {
@@ -31,5 +33,6 @@ contextBridge.exposeInMainWorld('api', {
   getSelectedWallets: () => ipcRenderer.invoke('getSelected'),
   getXbridgeConfPath: () => ipcRenderer.invoke('getXbridgeConfPath'),
   getXbridgeConf: (path: string) => ipcRenderer.invoke('getXbridgeConf', path),
-  getDefaultDirectory: (defaultPaths: DefaultHomePaths) => ipcRenderer.invoke('getDefaultDirectory', defaultPaths)
+  getDefaultDirectory: (defaultPaths: DefaultHomePaths) => ipcRenderer.invoke('getDefaultDirectory', defaultPaths),
+  getFilteredWallets: (wallets: any) => ipcRenderer.invoke('getFilteredWallets', wallets)
 });
