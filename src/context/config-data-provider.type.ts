@@ -24,7 +24,7 @@ export type StateType = {
     selectedWallets?: any;
     selectedAbbrs?: any;
     lookForWallets?: boolean
-    wallets?: Wallet[]
+    wallets?: Wallet[];
 }
 
 export type ConfigDataContextType = {

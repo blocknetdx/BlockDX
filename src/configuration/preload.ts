@@ -17,6 +17,7 @@ export type ContextBridgeApi = {
   getSelectedWallets: () => any
   getDefaultDirectory: () => string
   getFilteredWallets: (wallets: any) => any
+  saveSelected: () => any
 }
 
 type DefaultHomePaths = {
@@ -34,5 +35,6 @@ contextBridge.exposeInMainWorld('api', {
   getXbridgeConfPath: () => ipcRenderer.invoke('getXbridgeConfPath'),
   getXbridgeConf: (path: string) => ipcRenderer.invoke('getXbridgeConf', path),
   getDefaultDirectory: (defaultPaths: DefaultHomePaths) => ipcRenderer.invoke('getDefaultDirectory', defaultPaths),
-  getFilteredWallets: (wallets: any) => ipcRenderer.invoke('getFilteredWallets', wallets)
+  getFilteredWallets: (wallets: any) => ipcRenderer.invoke('getFilteredWallets', wallets),
+  saveSelected: (selectedWallets: string[]) => ipcRenderer.invoke('saveSelected', selectedWallets)
 });

@@ -73,7 +73,7 @@ const openConfigurationWindow = (options?: ConfigWindowOptionsType): void => {
     },
   });
   configurationWindow.loadURL(CONFIGURATION_WINDOW_WEBPACK_ENTRY);
-  // configurationWindow.webContents.openDevTools();
+  configurationWindow.webContents.openDevTools();
 
   ipcMain.on('isFirstRun', e => {
     e.returnValue = isFirstRun;
@@ -182,7 +182,7 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
         return false;
       }
     })
-    .reduce((arr, w) => {
+    .reduce((arr:any, w) => {
       const idx = arr.findIndex(ww => ww.abbr === w.abbr);
       console.log('idx: ', idx, arr);
       
@@ -202,6 +202,15 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
   console.log('filteredWallets main index: ', filteredWallets);
   
   return filteredWallets;
+});
+
+ipcMain.handle('saveSelected', (e, selectedWallets = []) => {
+  try {
+    storage.setItem('selectedWallets', selectedWallets, true);
+    return true;
+  } catch (error) {
+    return false;
+  }
 });
 
 
