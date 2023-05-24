@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SvgIcon } from '@components/index';
+import { SvgIcon, Text } from '@components/index';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
 import ConfigurationMenu from './configuration-menu';
@@ -174,8 +174,7 @@ export const Configuration: React.FC = () => {
                 containerClass='justify-content-center p-v-20'
             />
 
-            {/* <h3>{title.toUpperCase()}</h3> */}
-            <h3>{configurationTitles[route]?.toUpperCase()}</h3>
+            <Text className='config-setup-title'>{configurationTitles[route]?.toUpperCase()}</Text>
             {renderContent()}
         </div>
     );

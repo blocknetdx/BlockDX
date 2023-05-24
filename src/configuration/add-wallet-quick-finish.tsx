@@ -29,14 +29,17 @@ export default function AddWalletQuickFinish({
         const addingWallets = configMode === 'Add';
         const updatingWallets = configMode === 'Update';
 
-        const { selectedWallets = [] } = state;
+        const { selectedWallets = [], wallets } = state;
+
+        const block = wallets.find(w => w.abbr === 'BLOCK');
+
 
         if (addingWallets) {
-            const saveSelectedRes = await window.api.saveSelected(selectedWallets);
-
-            console.log('saveSelectedRes: ', saveSelectedRes);
+            
+        } else if (updatingWallets) {
             
         }
+        const saveSelectedRes = await window.api.saveSelected(selectedWallets);
     }
     return (
         <div className='d-flex flex-column flex-grow-1'>
