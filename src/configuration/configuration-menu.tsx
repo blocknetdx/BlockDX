@@ -46,24 +46,14 @@ const ConfigurationMenu = ({
             <div className='p-h-20 flex-grow-1 m-t-10'>
                 {
                     options.map(({ option, content, route }, index) => (
-                        <div className="form-check m-v-10" key={`configuration-menu-${index}`}>
-                            <div>
-                                <input
-                                    className="form-check-input"
-                                    type="radio" name="exampleRadios"
-                                    id={`menu-${index}`}
-                                    value={route}
-                                    checked={selectedOption.route === route}
-                                    onChange={(e) => {
-                                        console.log('radio inside input: ', e.target.value)
-                                        setSelectedOption(options[index]);
-                                    }}
-                                />
-                                <Text className="configuration-setup-label" >
-                                    {option}
-                                </Text>
-                            </div>
-                            <Text>{content}</Text>
+                        <div key={`configuration-menu-${index}`}>
+                            <Button className='configuration-menu-option-btn' onClick={() => {setSelectedOption(options[index])}}>
+                                <div className='d-flex align-items-center'>
+                                    <Text className={` ${selectedOption.route === route ? 'blue-circle-fill' : 'blue-circle-empty'}`} />
+                                    <Text className="configuration-setup-label m-l-10 text-left">{option}</Text>
+                                </div>
+                                    <Text className='m-l-33 text-left'>{content}</Text>
+                            </Button>
                         </div>
                     ))
                 }

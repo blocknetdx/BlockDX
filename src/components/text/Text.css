@@ -250,3 +250,7 @@
     font-weight: bold;
     font-size: 19px;
 }
+
+.text-left {
+    text-align: left !important;
+}

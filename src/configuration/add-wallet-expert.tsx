@@ -14,7 +14,7 @@ export type DataPathsType = {
     [key: string]: string
 }
 
-type SubRouteType = 'selectWallet' | 'selectVersion' | 'selectDirectories' | 'rpcSettingsQuick' | 'rpcSettingsExpert'
+export type SubRouteType = 'selectWallet' | 'selectVersion' | 'selectDirectories' | 'rpcSettingsQuick' | 'rpcSettingsExpert'
 
 export default function AddWalletExpert({
     setTitle,
@@ -22,7 +22,7 @@ export default function AddWalletExpert({
 }: ConfigurationMenuProps): React.ReactElement {
     const [dataPaths, setDataPaths] = useState<DataPathsType>({});
     const [status, setStatus] = useState<StatusType>('configSetUp');
-    const subRoute:SubRouteType = 'selectWallet';
+    const [subRoute, setSubRoute] = useState<SubRouteType>('selectWallet');
     const { state } = useContext(ConfigDataContext);
     const { wallets } = state;
     const [selectedWallets, setSelectedWallets] = useState<Wallet[]>([]);
@@ -61,16 +61,38 @@ export default function AddWalletExpert({
         setSelectedWalletIds(selectedWalletIds.includes(versionId) ? selectedWalletIds.filter(item => item !== versionId) : [...selectedWalletIds, versionId])
     }
 
+    function handleSelectAllWallets(wallets: string[]) {
+        setSelectedWalletIds(wallets);
+    }
+
+    function handleSubNavigation(subRoute: SubRouteType) {
+        setSubRoute(subRoute);
+    }
+
     const filteredWallets = wallets.filter(w => selectedWalletIds.includes(w.versionId))
 
     function renderContent() {
         switch (subRoute) {
             case 'selectWallet':
-                return <SelectWallets handleSelectWallet={handleSelectWallets}  />
+                return (
+                    <SelectWallets
+                        selectWallet={handleSelectWallets}
+                        selectAll={handleSelectAllWallets}
+                        selectedWallets={selectedWalletIds} 
+                        handleSubNavigation={handleSubNavigation}
+                        handleNavigation={handleNavigation}
+                    />
+                )
             case 'selectVersion':
-                return <SelectVersions filteredWallets={filteredWallets} />
+                return <SelectVersions filteredWallets={filteredWallets} handleSubNavigation={handleSubNavigation}  />
             case 'selectDirectories':
-                return <SelectDirectories handleOpenDialog={handleOpenDialog} filteredWallets={filteredWallets}/>
+                return (
+                    <SelectDirectories
+                        handleOpenDialog={handleOpenDialog}
+                        filteredWallets={filteredWallets}
+                        dataPaths={dataPaths}
+                    />
+                )
             default:
                 return null;
         }

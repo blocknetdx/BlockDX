@@ -101,3 +101,15 @@
     margin-left: 10px;
     height: 42px;
 }
+
+.configuration-menu-option-btn {
+    background: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.configuration-menu-option-btn:hover {
+    opacity: 0.8;
+}

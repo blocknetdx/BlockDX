@@ -15,6 +15,7 @@ import { Set } from 'immutable';
 import Wallet from './modules/wallet';
 import path from 'path';
 import { ConfigDataContext } from '@/context';
+import RpcSettings from '@/configuration/rpc-settings';
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -160,6 +161,8 @@ export const Configuration: React.FC = () => {
                 return <AddWalletExpert setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ADD_WALLET_EXPERT_FINISH:
                 return <AddWalletExpertFinish setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.UPDATE_RPC_SETTINGS:
+                return <RpcSettings />
             default:
                 return <></>;
         }
