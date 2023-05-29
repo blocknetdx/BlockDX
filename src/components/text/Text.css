@@ -254,3 +254,13 @@
 .text-left {
     text-align: left !important;
 }
+
+.external-link {
+    text-decoration: underline;
+    text-decoration-color: #0ce3ff;
+    color: #0ce3ff;
+}
+
+.external-link:hover {
+    cursor: pointer;
+}

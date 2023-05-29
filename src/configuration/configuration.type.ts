@@ -13,6 +13,8 @@ export enum CONFIG_ROUTE {
     FRESH_SET_UP = 'freshSetup',
     UPDATE_RPC_SETTINGS = 'updateRpcSettings',
     CONFIGURATION_COMPLETE = 'configurationComplete',
+    SELECT_SETUP_TYPE = 'selectSetupType',
+    CONFIGURATION_MENU = 'configurationMenu'
 }
 
 export interface ConfigurationMenuProps {
@@ -26,4 +28,10 @@ export type ConfigurationMenuOptionsType = {
     content: string
     option: string
     route: CONFIG_ROUTE
+    type?: 'quickSetup' | 'expertSetup'
+}
+
+export type CredentialsType = {
+    username: string
+    password: string
 }

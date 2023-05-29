@@ -35,12 +35,6 @@ export default function RpcSettings({
                 <Text>In order to conduct peer-to-peer trades, Block DX requires the  Blocknet wallet and the wallets of any assets you want to trade with. Select the wallets that are installed to begin setup.</Text>
             </div>
             <div className='m-20 flex-grow-1'>
-                {/* {
-                    Object.keys(rpcSettings).map(setting => (
-                        <InputWithText className='rpc-setting-text-container' leftContentContainerClass='rpc-setting-text-left-container' leftContent='Blocknet RPC Port' inputClass='rpc-setting-text-input' />
-                        
-                        ))
-                    } */}
                 {
                     Object.keys(options).map(option => (
                         <InputWithText className='rpc-setting-text-container' leftContentContainerClass='rpc-setting-text-left-container' leftContent={String(options[option])} inputClass='rpc-setting-text-input' value={rpcSettings[option]} />
@@ -52,7 +46,7 @@ export default function RpcSettings({
                 <Button
                     className='configuration-cancel-btn'
                     onClick={() => {
-                        handleNavigation(CONFIG_ROUTE.ADD_WALLET)
+                        handleNavigation(CONFIG_ROUTE.SET_UP)
                     }}
                 >
                     BACK

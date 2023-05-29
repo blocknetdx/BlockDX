@@ -4,7 +4,7 @@ import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
 import ConfigurationMenu from './configuration-menu';
 import SelectWallets from '@/configuration/select-wallets';
-import AddWallet from '@/configuration/add-wallet';
+import SelectSetUpType from '@/configuration/select-setup-type';
 import AddWalletQuick from '@/configuration/add-wallet-quick';
 import AddWalletQuickFinish from '@/configuration/add-wallet-quick-finish';
 import ConfigurationComplete from '@/configuration/configuration-complete';
@@ -16,6 +16,7 @@ import Wallet from './modules/wallet';
 import path from 'path';
 import { ConfigDataContext } from '@/context';
 import RpcSettings from '@/configuration/rpc-settings';
+import _ from 'lodash';
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -32,16 +33,35 @@ const configurationTitles = {
 }
 
 export const Configuration: React.FC = () => {
-    const [title, setTitle] = useState(CONFIG_ROUTE.SET_UP);
+    const [title, setTitle] = useState('');
     // const [title, setTitle] = useState(configurationTitles['setUp']);
+     
     const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.SET_UP);
-    const { state, updateState } = useContext(ConfigDataContext);
+    const { state, updateState, initState } = useContext(ConfigDataContext);
 
     useEffect(() => {
         if (!!window) {
+            setInitialState();
             getManifest();
         }
     }, []);
+    
+    async function setInitialState() {
+        const credentials = await window.api.getCredentials();
+        const isFirstRun = await window.api.isFirstRun();
+        console.log('credentials: ', credentials, isFirstRun);
+
+        initState({
+            sidebarSelected: false,
+            rpcPort: '41414',
+            rpcIP: '127.0.0.1',
+            username: credentials.username || '',
+            password: credentials.password || '',
+            isFirstRun,
+            configurationType: 'FRESH_SETUP'
+        })
+        setRoute(isFirstRun ? CONFIG_ROUTE.SELECT_SETUP_TYPE : CONFIG_ROUTE.CONFIGURATION_MENU);
+    }
 
     async function getManifest() {
         let walletsOrigin: ManifestType[] = await window.api.getManifest();
@@ -66,13 +86,13 @@ export const Configuration: React.FC = () => {
         console.log('selectedWallets: ', selectedWallets);
         
 
-        let selectedWalletIds = Set([
+        let selectedWalletIds = [
             wallets[0].versionId,
             ...selectedWallets
-        ]);
+        ];
 
         let xbridgeConfPath = await window?.api.getXbridgeConfPath();
-        let xbridgeConf;
+        let xbridgeConf: string;
 
         try {
             if (!xbridgeConfPath) {
@@ -105,7 +125,7 @@ export const Configuration: React.FC = () => {
                 for (const versionId of [...selectedWalletIds]) {
                     const w = walletFromVersionId.get(versionId);
                     if (!w || !exchangeWallets.includes(w.abbr)) {
-                        selectedWalletIds = selectedWalletIds.remove(versionId);
+                        selectedWalletIds = _.pull(selectedWalletIds, versionId);
                     } else {
                         abbrs.push(w.abbr);
                     }
@@ -114,7 +134,9 @@ export const Configuration: React.FC = () => {
                     .filter(abbr => !abbrs.includes(abbr));
                 for (const abbr of toAdd) {
                     const w = wallets.find(ww => ww.abbr === abbr);
-                    selectedWalletIds = selectedWalletIds.add(w.versionId);
+                    if (!selectedWalletIds.includes(w.versionId)) {
+                        selectedWalletIds.push(w.versionId);
+                    }
                 }
             } catch (err) {
                 // handleError(err);
@@ -122,10 +144,10 @@ export const Configuration: React.FC = () => {
         }
 
         console.log('selectedWalletIds: ', selectedWalletIds);
-        const selectedAbbrs = Set([...wallets
+        const selectedAbbrs = [...wallets
             .filter(w => selectedWallets.includes(w.versionId))
             .map(w => w.abbr)
-        ]);
+        ];
 
         console.log('selectedAbbrs: ', selectedAbbrs);
         updateState({
@@ -143,14 +165,20 @@ export const Configuration: React.FC = () => {
 
     const renderContent = () => {
         switch (route) {
+            case CONFIG_ROUTE.CONFIGURATION_MENU:
+                return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.SELECT_SETUP_TYPE:
+                return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SET_UP:
                 return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.XLITE_SET_UP:
                 return <SelectWallets setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ADD_WALLET:
-                return <AddWallet setTitle={setTitle} handleNavigation={handleNavigation} />
+                return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.FRESH_SET_UP:
+                return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.UPDATE_WALLET:
-                return <AddWallet setTitle={setTitle} handleNavigation={handleNavigation} configMode="Update" />
+                return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} configMode="Update" />
             case CONFIG_ROUTE.ADD_WALLET_QUICK:
                 return <AddWalletQuick setTitle={setTitle} handleNavigation={handleNavigation} state={state} />
             case CONFIG_ROUTE.ADD_WALLET_QUICK_FINISH:
@@ -162,7 +190,7 @@ export const Configuration: React.FC = () => {
             case CONFIG_ROUTE.ADD_WALLET_EXPERT_FINISH:
                 return <AddWalletExpertFinish setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.UPDATE_RPC_SETTINGS:
-                return <RpcSettings />
+                return <RpcSettings handleNavigation={handleNavigation} />
             default:
                 return <></>;
         }
@@ -177,7 +205,7 @@ export const Configuration: React.FC = () => {
                 containerClass='justify-content-center p-v-20'
             />
 
-            <Text className='config-setup-title'>{configurationTitles[route]?.toUpperCase()}</Text>
+            <Text className='config-setup-title'>{title.toUpperCase()}</Text>
             {renderContent()}
         </div>
     );

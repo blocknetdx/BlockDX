@@ -5,6 +5,7 @@
 import { ipcRenderer, contextBridge } from "electron";
 import { ManifestType } from "@/main.type";
 import Wallet from "@/configuration/modules/wallet";
+import { CredentialsType } from "@/configuration/configuration.type";
 
 export type ContextBridgeApi = {
   // Declare a `readFile` function that will return a promise. This promise
@@ -18,6 +19,12 @@ export type ContextBridgeApi = {
   getDefaultDirectory: () => string
   getFilteredWallets: (wallets: any) => any
   saveSelected: () => any
+  getCredentials: () => Promise<CredentialsType>
+  isFirstRun: () => Promise<boolean>
+  openExternal: (url: string) => void
+  configurationWindowCancel: () => void
+  checkDirectory: (dir: string) => Promise<boolean> 
+  showWarning: (message: string) => void
 }
 
 type DefaultHomePaths = {
@@ -36,5 +43,11 @@ contextBridge.exposeInMainWorld('api', {
   getXbridgeConf: (path: string) => ipcRenderer.invoke('getXbridgeConf', path),
   getDefaultDirectory: (defaultPaths: DefaultHomePaths) => ipcRenderer.invoke('getDefaultDirectory', defaultPaths),
   getFilteredWallets: (wallets: any) => ipcRenderer.invoke('getFilteredWallets', wallets),
-  saveSelected: (selectedWallets: string[]) => ipcRenderer.invoke('saveSelected', selectedWallets)
+  saveSelected: (selectedWallets: string[]) => ipcRenderer.invoke('saveSelected', selectedWallets),
+  getCredentials: () => ipcRenderer.invoke('getCredentials'),
+  isFirstRun: () => ipcRenderer.invoke('isFirstRun'),
+  openExternal: (url:string) => ipcRenderer.invoke('openExternal', url),
+  configurationWindowCancel: () => ipcRenderer.invoke('configurationWindowCancel'),
+  checkDirectory: (dir: string) => ipcRenderer.invoke('checkDirectory', dir),
+  showWarning: (message: string) => ipcRenderer.invoke('showWarning', message)
 });
