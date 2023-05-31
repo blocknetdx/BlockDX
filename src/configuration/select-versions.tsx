@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text, Button, Select } from '@/components';
 import Wallet from '@/configuration/modules/wallet';
 import { SubRouteType } from '@/configuration/add-wallet-expert';
+import { ConfigDataContext } from '@/context';
 
 interface SelectVersionsProps {
     filteredWallets?: Wallet[]
@@ -12,6 +13,9 @@ export default function SelectVersions({
     filteredWallets = [],
     handleSubNavigation
 }:SelectVersionsProps):React.ReactElement {
+    const {state} = useContext(ConfigDataContext);
+    const { configurationType } = state;
+    
     return (
         <div className='d-flex flex-column flex-grow-1'>
             <div className='p-h-20'>

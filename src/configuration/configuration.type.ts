@@ -14,7 +14,8 @@ export enum CONFIG_ROUTE {
     UPDATE_RPC_SETTINGS = 'updateRpcSettings',
     CONFIGURATION_COMPLETE = 'configurationComplete',
     SELECT_SETUP_TYPE = 'selectSetupType',
-    CONFIGURATION_MENU = 'configurationMenu'
+    CONFIGURATION_MENU = 'configurationMenu',
+    SELECT_WALLET_VERSIONS = 'selectWalletVersions'
 }
 
 export interface ConfigurationMenuProps {

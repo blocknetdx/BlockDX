@@ -17,6 +17,7 @@ import path from 'path';
 import { ConfigDataContext } from '@/context';
 import RpcSettings from '@/configuration/rpc-settings';
 import _ from 'lodash';
+import SelectWalletVersions from '@/configuration/select-wallet-versions';
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -169,9 +170,11 @@ export const Configuration: React.FC = () => {
                 return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SELECT_SETUP_TYPE:
                 return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.SELECT_WALLET_VERSIONS:
+                return <SelectWalletVersions setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SET_UP:
                 return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.XLITE_SET_UP:
+            case CONFIG_ROUTE.XLITE_SET_UP: 
                 return <SelectWallets setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ADD_WALLET:
                 return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />

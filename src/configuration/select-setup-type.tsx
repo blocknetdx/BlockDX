@@ -58,7 +58,7 @@ export default function SelectSetUpType({
 
             console.log('checkDirectory: ', checkDirectory);
             if (checkDirectory) {
-                handleNavigation(CONFIG_ROUTE.ADD_WALLET_QUICK)
+                handleNavigation(CONFIG_ROUTE.SELECT_WALLET_VERSIONS)
             } else {
                 window.api.showWarning('An installation of the Blocknet wallet was not found, but is required to use Block DX. Please install the Blocknet wallet before continuing.','configurationWindowSetupType');
             }

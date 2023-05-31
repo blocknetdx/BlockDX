@@ -65,6 +65,7 @@ export default function AddWalletQuick({
         updateSingleState('selectedWallets', selectedWalletIds);
         handleNavigation(CONFIG_ROUTE.ADD_WALLET_QUICK_FINISH)
     }
+    
     return (
         <div className='d-flex flex-column flex-grow-1'>
             <div className='p-h-20'>

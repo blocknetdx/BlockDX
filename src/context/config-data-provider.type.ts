@@ -21,7 +21,7 @@ export type StateType = {
     litewalletConfigDirectory?: string;
     isFirstRun?: boolean;
     configurationType?: 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET';
-    selectedWallets?: any;
+    selectedWallets?: string[];
     selectedAbbrs?: any;
     lookForWallets?: boolean
     wallets?: Wallet[];
