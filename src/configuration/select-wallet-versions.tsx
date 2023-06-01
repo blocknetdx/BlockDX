@@ -15,9 +15,13 @@ export default function SelectWalletVersions({
     handleNavigation
 }: ConfigurationMenuProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
-    const { configurationType, wallets, selectedAbbrs, selectedWallets } = state;
+    const { configurationType, wallets, selectedAbbrs, selectedWallets, addAbbrToVersion, updateAbbrToVersion, skipList } = state;
     const [filteredWallets, setFilteredWallets] = useState<Wallet[]>([]);
     const [selectedWalletAbbrs, setSelectedWalletAbbrs] = useState<string[]>([]);
+    
+    const addingWallets = configurationType === 'ADD_WALLET';
+    const updatingWallets = configurationType === 'UPDATE_WALLET';
+
     useEffect(() => {
         setTitle(configurationType === 'FRESH_SETUP' ? 'fresh setup - quick configuration setup' : configurationType === 'ADD_WALLET' ? 'add wallet - quick configuration setup' : 'update wallet - quick configuration setup')
         if (!!window) {
@@ -25,11 +29,67 @@ export default function SelectWalletVersions({
         }
     }, []);
 
+    useEffect(() => {
+        if (configurationType === 'FRESH_SETUP') {
+            updateSingleState('skipList', selectedWalletAbbrs);
+            console.log('selectedwalletAbbrs: ', selectedWalletAbbrs);
+            
+            const temp = new Map();
+            console.log('test map list: ', filteredWallets.filter(w => selectedWalletAbbrs.includes(w.abbr)).map(w => temp.set(w.abbr, w.version)));
+            
+        } else if (configurationType !== 'RPC_SETTINGS') {
+            const temp = new Map();
+            const stateKey = configurationType === 'ADD_WALLET' ? 'addAbbrToVersion' : 'updateAbbrToVersion'
+            updateSingleState(stateKey, wallets.filter(w => selectedWalletAbbrs.includes(w.abbr)).map(w => temp.set(w.abbr, w.version)))
+        } 
+    }, [selectedWalletAbbrs])
+
     async function getFilteredWallets() {
         const filteredWallets: Wallet[] = await window?.api?.getFilteredWallets(wallets);
         setFilteredWallets(filteredWallets);
         setSelectedWalletAbbrs(configurationType === 'FRESH_SETUP' ? [] : filteredWallets.map(wallet => wallet.abbr))
         updateSingleState('selectedWallets', filteredWallets.map(wallet => wallet.versionId));
+        
+        if (addingWallets) {
+            setFilteredWallets(filteredWallets.filter(w => !selectedAbbrs.includes(w.abbr)).map(w => {
+                const version = addAbbrToVersion.get(w.abbr);
+                if (version) {
+                    w.version = version;
+                }
+                return w;
+            }));
+
+            if (addAbbrToVersion.size === 0) {
+                updateSingleState('addAbbrToVersion', new Map(filteredWallets.map(w => [w.abbr, w.version])));
+            }
+        } else if (updatingWallets) {
+            setFilteredWallets(filteredWallets.filter(w => selectedAbbrs.includes(w.abbr)).map(w => {
+                const version = updateAbbrToVersion.get(w.abbr);
+                if (version) {
+                    w.version = version;
+                }
+                return w;
+            }));
+        } else {
+            updateSingleState('selectedWallets', filteredWallets.map(w => {
+                const { abbr, version } = w;
+                const wallet = wallets.find(wallet => w.abbr === abbr && w.versions.includes(version));
+
+                return wallet.versionId;
+            }))
+        }
+
+        let tempWallets = [...wallets];
+
+        for (const wallet of filteredWallets) {
+            const { abbr, version } = wallet;
+            const idx = wallets.findIndex(w => w.abbr === abbr && w.versions.includes(version));
+            tempWallets[idx].version = version;
+        }
+
+        updateSingleState('wallets', tempWallets);
+
+        //TODO: check if needed to create global filteredWallets
     }
 
     const isAllWalletSelected = configurationType !== 'FRESH_SETUP' ? filteredWallets.length === selectedWalletAbbrs.length : filteredWallets.length - 1 === selectedWalletAbbrs.length;
@@ -42,7 +102,7 @@ export default function SelectWalletVersions({
         }
     }
 
-    function handleSelectOneWallet(abbr: string, versionId: string) {
+    function handleSelectOneWallet({abbr, versionId, version}: Wallet) {
         if (configurationType === 'FRESH_SETUP') {
             if (selectedWalletAbbrs.includes(abbr)) {
                 updateSingleState('selectedWallets', [...selectedWallets.filter(item => item !== versionId), versionId]);
@@ -52,6 +112,7 @@ export default function SelectWalletVersions({
         } else {
             if (selectedWalletAbbrs.includes(abbr)) {
                 removeAddOneSelectedWallet(abbr);
+                
             } else {
                 updateSingleState('selectedWallets', [...selectedWallets.filter(item => item !== versionId), versionId]);
             }
@@ -127,7 +188,7 @@ export default function SelectWalletVersions({
                                         value='selectAll'
                                         checked={selectedWalletAbbrs.includes(wallet.abbr)}
                                         onChange={() => {
-                                            handleSelectOneWallet(wallet.abbr, wallet.versionId)
+                                            handleSelectOneWallet(wallet)
                                         }}
                                         label={configurationType === 'FRESH_SETUP' ? 'Skip' : configurationType === 'ADD_WALLET' ? 'Add' : 'Update'}
                                     /> : null
@@ -158,6 +219,7 @@ export default function SelectWalletVersions({
                 <Button
                     className='configuration-continue-btn'
                     onClick={() => {
+                        handleNavigation(CONFIG_ROUTE.FINISH);
                     }}
                 >CONTINUE</Button>
             </div>

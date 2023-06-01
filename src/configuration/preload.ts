@@ -13,6 +13,7 @@ export type ContextBridgeApi = {
   openDialog: () => Promise<string>
   getManifest: () => ManifestType[]
   getTokenPath: () => Promise<string>
+  setTokenPaths: (wallets: any) => void
   getXbridgeConfPath: () => Promise<string>
   getXbridgeConf: () => Promise<any>
   getSelectedWallets: () => any
@@ -25,6 +26,8 @@ export type ContextBridgeApi = {
   configurationWindowCancel: () => void
   checkDirectory: (dir: string) => Promise<boolean> 
   showWarning: (message: string) => void
+  getUser: () => Promise<string>
+  getPassword: () => Promise<string>
 }
 
 type DefaultHomePaths = {
@@ -49,5 +52,8 @@ contextBridge.exposeInMainWorld('api', {
   openExternal: (url:string) => ipcRenderer.invoke('openExternal', url),
   configurationWindowCancel: () => ipcRenderer.invoke('configurationWindowCancel'),
   checkDirectory: (dir: string) => ipcRenderer.invoke('checkDirectory', dir),
-  showWarning: (message: string) => ipcRenderer.invoke('showWarning', message)
+  showWarning: (message: string) => ipcRenderer.invoke('showWarning', message),
+  getUser: () => ipcRenderer.invoke('getUser'),
+  getPassword: () => ipcRenderer.invoke('getPassword'),
+  setTokenPaths: (wallets: any) => ipcRenderer.invoke('setTokenPaths', wallets)
 });

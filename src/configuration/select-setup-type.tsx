@@ -44,6 +44,8 @@ export default function SelectSetUpType({
     async function handleContinue() {
         if (!window) return;
 
+        updateSingleState('setupType', selectedOption.type === 'quickSetup' ? 'QUICK_SETUP' : 'EXPERT_SETUP')
+
         if (selectedOption.type === 'quickSetup') {
             // console.log('select setup type wallets: ', wallets);
             

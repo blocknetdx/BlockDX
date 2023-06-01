@@ -61,7 +61,7 @@ class Wallet {
     this.setDefaultDirectory();
   }
 
-  set(arg1: any, arg2: any) {
+  set(arg1: any, arg2?: any) {
     const wallet:any = Object.assign({}, this);
     if(typeof arg1 === 'string') {
       wallet[arg1] = arg2;

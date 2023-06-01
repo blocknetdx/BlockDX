@@ -273,6 +273,27 @@ ipcMain.handle('showWarning', (e, message) => {
   dialog.showMessageBox(null, options);
 });
 
+ipcMain.handle('getUser', e => {
+  return storage.getItem('user') || '';
+});
+ipcMain.handle('getPassword', e => {
+  return storage.getItem('password') || '';
+});
+
+ipcMain.handle('setTokenPaths', (e, wallets) => {
+  let tokenPaths;
+
+  if (!!wallets) {
+    const origTokenPaths = storage.getItem('tokenPaths') || {};
+    tokenPaths = wallets.reduce((obj: any, { directory, abbr }: any) => {
+      return Object.assign({}, obj, {[abbr]: directory});
+    }, origTokenPaths);
+  } else {
+    tokenPaths = {};
+  }
+
+  storage.setItem('tokenPaths', tokenPaths, true);
+});
 
 (async function () {
   try {
