@@ -25,7 +25,7 @@ export function Finish({
         const password = await window.api?.getPassword();
         if (configurationType === 'RPC_SETTINGS') {
         } else if (setupType === 'QUICK_SETUP') {
-            const filtered:Wallet[] = wallets.filter(w => addingWallets ? addAbbrToVersion.has(w.abbr) : updatingWallets ? updateAbbrToVersion.has(w.abbr) : !skipList.includes(w.abbr)).filter(w => addingWallets ? w.versions.includes(addAbbrToVersion.get(w.abbr)) : updatingWallets ? w.versions.includes(updateAbbrToVersion.get(w.abbr)) : selectedWallets.includes(w.versionId)).map(w => {
+            const filtered: Wallet[] = wallets.filter(w => addingWallets ? addAbbrToVersion.has(w.abbr) : updatingWallets ? updateAbbrToVersion.has(w.abbr) : !skipList.includes(w.abbr)).filter(w => addingWallets ? w.versions.includes(addAbbrToVersion.get(w.abbr)) : updatingWallets ? w.versions.includes(updateAbbrToVersion.get(w.abbr)) : selectedWallets.includes(w.versionId)).map(w => {
                 if (updatingWallets && w.abbr === 'BLOCK') {
                     return w.set({
                         username: userName,
@@ -73,9 +73,50 @@ export function Finish({
             }
 
             if (addingWallets) {
-                
+                const block = wallets.find(w => w.abbr === 'BLOCK');
+                addConfs(filtered, block.directory);
             }
         }
+    }
+
+    function addConfs(wallets: Wallet[], blockDir: string) {
+        const confs = new Map();
+        for (const w of wallets) {
+            const conf = w.saveWalletConf();
+            confs.set(w.abbr, conf);
+        }
+        addToXBridgeConf(wallets, blockDir);
+    }
+
+    function splitConf(str: string) {
+        return str
+            .split('\n')
+            .map(s => s.trim())
+            .filter(l => l ? true : false)
+            .map(l => l.split('=').map(s => s.trim()))
+            .reduce((obj, [key, val = '']) => {
+                if (key && val) return Object.assign({}, obj, { [key]: val });
+                else return obj;
+            }, {});
+    }
+
+    async function addToXBridgeConf(wallets: Wallet[], blockDir: string) {
+        const data = new Map();
+        for (const wallet of wallets) {
+            const { abbr, xBridgeConf, username, password } = wallet;
+            const confStr = await window.api?.getBridgeConf(xBridgeConf);
+            if (!confStr) {
+                throw new Error(`${xBridgeConf} not found.`);
+            }
+            const conf = splitConf(confStr);
+            data.set(abbr, Object.assign({}, conf, {
+                Username: username,
+                Password: password,
+                Address: ''
+            }));
+        }
+
+        await window.api?.addToXBridgeConf();
     }
 
     const backRoute = configurationType === 'RPC_SETTINGS' ? CONFIG_ROUTE.UPDATE_RPC_SETTINGS : CONFIG_ROUTE.SELECT_WALLET_VERSIONS;
