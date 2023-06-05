@@ -44,7 +44,7 @@ export default function SelectSetUpType({
     async function handleContinue() {
         if (!window) return;
 
-        updateSingleState('setupType', selectedOption.type === 'quickSetup' ? 'QUICK_SETUP' : 'EXPERT_SETUP')
+        updateSingleState('setupType', selectedOption.type === 'quickSetup' ? 'QUICK_SETUP' : 'EXPERT_SETUP');
 
         if (selectedOption.type === 'quickSetup') {
             // console.log('select setup type wallets: ', wallets);
@@ -60,7 +60,7 @@ export default function SelectSetUpType({
 
             console.log('checkDirectory: ', checkDirectory);
             if (checkDirectory) {
-                handleNavigation(CONFIG_ROUTE.SELECT_WALLET_VERSIONS)
+                handleNavigation(CONFIG_ROUTE.SELECT_WALLET_VERSIONS);
             } else {
                 window.api.showWarning('An installation of the Blocknet wallet was not found, but is required to use Block DX. Please install the Blocknet wallet before continuing.','configurationWindowSetupType');
             }

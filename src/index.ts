@@ -63,7 +63,7 @@ type ConfigWindowOptionsType = {
   isFirstRun: boolean;
 }
 
-let configurationWindow:BrowserWindow;
+let configurationWindow: BrowserWindow;
 
 const openConfigurationWindow = (options?: ConfigWindowOptionsType): void => {
   const { isFirstRun = false } = options;
@@ -161,7 +161,7 @@ ipcMain.handle('getCredentials', e => {
   const username = storage.getItem('user') || '';
   const password = storage.getItem('password') || '';
 
-  return {username, password}
+  return { username, password }
 });
 
 ipcMain.handle('isFirstRun', e => {
@@ -178,7 +178,7 @@ const domainWhitelist = [
   'blocknet.us16.list-manage.com',
 ];
 
-const validateUrl = (url:string) => {
+const validateUrl = (url: string) => {
   const domainPatts = domainWhitelist
     .map(d => new RegExp(`https://(.+\\.)*?${d}(?=/|$)`, 'i'));
   return domainPatts.some(p => p.test(url));
@@ -215,10 +215,10 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
         return false;
       }
     })
-    .reduce((arr:any, w) => {
-      const idx = arr.findIndex((ww:any )=> ww.abbr === w.abbr);
+    .reduce((arr: any, w) => {
+      const idx = arr.findIndex((ww: any) => ww.abbr === w.abbr);
       console.log('idx: ', idx, arr);
-      
+
       if (idx > -1) { // coin is already in array
         arr[idx].versions = [...arr[idx].versions, ...w.versions];
         return arr;
@@ -226,14 +226,14 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
         return [...arr, w];
       }
     }, [])
-    .map((w:any) => {
+    .map((w: any) => {
       w.versions.sort(compareByVersion);
       w.version = w.versions[0];
       return w;
     });
 
   console.log('filteredWallets main index: ', filteredWallets);
-  
+
   return filteredWallets;
 });
 
@@ -286,7 +286,7 @@ ipcMain.handle('setTokenPaths', (e, wallets) => {
   if (!!wallets) {
     const origTokenPaths = storage.getItem('tokenPaths') || {};
     tokenPaths = wallets.reduce((obj: any, { directory, abbr }: any) => {
-      return Object.assign({}, obj, {[abbr]: directory});
+      return Object.assign({}, obj, { [abbr]: directory });
     }, origTokenPaths);
   } else {
     tokenPaths = {};
@@ -295,7 +295,7 @@ ipcMain.handle('setTokenPaths', (e, wallets) => {
   storage.setItem('tokenPaths', tokenPaths, true);
 });
 
-ipcMain.handle('addToXBridgeConf', (e, {blockDir, data}) => {
+ipcMain.handle('addToXBridgeConf', (e, { blockDir, data }) => {
   const confPath = path.join(blockDir, 'xbridge.conf');
   const bridgeConf = fs.readFileSync(confPath, 'utf8');
   let split = bridgeConf
@@ -306,7 +306,7 @@ ipcMain.handle('addToXBridgeConf', (e, {blockDir, data}) => {
   const existingWalletList = split[walletsIdx].match(exchangeWalletsPatt)[1].trim().split(',').map((s: any) => s.trim()).filter((s: any) => s);
   const newWalletList = [...data.keys(), ...existingWalletList].filter(item => item !== '');
   split[walletsIdx] = `ExchangeWallets=${[...newWalletList.values()].join(',')}`;
-  for(const [ abbr, walletData ] of [...data.entries()]) {
+  for (const [abbr, walletData] of [...data.entries()]) {
     split = [
       ...split,
       `\n[${abbr}]`,
@@ -317,15 +317,54 @@ ipcMain.handle('addToXBridgeConf', (e, {blockDir, data}) => {
   fs.writeFileSync(confPath, joined, 'utf8');
 });
 
-ipcMain.handle('saveWalletConf', (e, {directory, conf, walletConf, credentials}) => {
+ipcMain.handle('updateXBridgeConf', (e, { blockDir, data }) => {
+  const confPath = path.join(blockDir, 'xbridge.conf');
+  const bridgeConf = fs.readFileSync(confPath, 'utf8');
+  let split = bridgeConf
+    .replace(/\r/g, '')
+    .split(/\n/);
+  for (const [abbr, walletData] of [...data.entries()]) {
+    const startIndex = split.findIndex((s:any )=> s.trim() === `[${abbr}]`);
+    let endIndex;
+    for (let i = startIndex + 1; i < split.length; i++) {
+      const s = split[i].trim();
+      if (!s) {
+        endIndex = i - 1;
+        break;
+      } else if (/^\[.+]$/.test(s)) {
+        endIndex = i - 1;
+        break;
+      } else if (i === split.length - 1) {
+        endIndex = i;
+      }
+    }
+
+    split = [
+      ...split.slice(0, startIndex + 1),
+      joinConf(walletData),
+      ...split.slice(endIndex + 1)
+    ];
+  }
+
+  const joined = split.join('\n');
+  fs.writeFileSync(confPath, joined, 'utf8');
+});
+
+ipcMain.handle('generateXBridgeConf', (e, { blockDir, data }) => {
+  const confPath = path.join(blockDir, 'xbridge.conf');
+  storage.setItem('xbridgeConfPath', confPath || '');
+  fs.writeFileSync(confPath, data, 'utf8');
+});
+
+ipcMain.handle('saveWalletConf', (e, { directory, conf, walletConf, credentials }) => {
   const filePath = path.join(directory, conf);
   fs.ensureFileSync(filePath);
-  const defaultFile = filePath + '-defualt';
+  const defaultFile = filePath + '-default';
   if (!fileExists(defaultFile)) {
     fs.copySync(filePath, defaultFile)
   }
   const baseConfStr = getBaseConf(walletConf);
-  if(!baseConfStr) throw new Error(`${walletConf} not found.`);
+  if (!baseConfStr) throw new Error(`${walletConf} not found.`);
   const baseConf = splitConf(baseConfStr);
   const newContents = Object.assign({}, baseConf, credentials);
   mergeWrite(filePath, newContents);
@@ -337,27 +376,35 @@ ipcMain.handle('getBridgeConf', (e, bridgeConf) => {
   try {
     const xbridgeConfs = storage.getItem('xbridgeConfs') || {};
     let contents = xbridgeConfs[bridgeConf];
-    if(!contents) {
+    if (!contents) {
       const filePath = path.join(configurationFilesDirectory, 'xbridge-confs', bridgeConf);
       contents = fs.readFileSync(filePath, 'utf8');
     }
     return contents;
-  } catch(error) {
+  } catch (error) {
     dialog.showErrorBox('Oops! There was an error.', error?.message + '\n' + `There was a problem opening ${bridgeConf}`);
     return '';
   }
 });
 
+ipcMain.handle('saveDXData', (e, data) => {
+  storage.setItems(data, true);
+});
+
+// ipcMain.handle('saveSelected', (e, selectedWallets) => {
+//   storage.setItem('selectedWallets', selectedWallets, true);
+// });
+
 function splitConf(str: string) {
   return str
-  .split('\n')
-  .map(s => s.trim())
-  .filter(l => l ? true : false)
-  .map(l => l.split('=').map(s => s.trim()))
-  .reduce((obj, [key, val = '']) => {
-    if(key && val) return Object.assign({}, obj, {[key]: val});
-    else return obj;
-  }, {});
+    .split('\n')
+    .map(s => s.trim())
+    .filter(l => l ? true : false)
+    .map(l => l.split('=').map(s => s.trim()))
+    .reduce((obj, [key, val = '']) => {
+      if (key && val) return Object.assign({}, obj, { [key]: val });
+      else return obj;
+    }, {});
 }
 
 type CommonObjType = {
@@ -377,32 +424,32 @@ function mergeWrite(filePath: string, obj: CommonObjType) {
   try {
     fs.statSync(filePath);
     fileExists = true;
-  } catch(err) {
+  } catch (err) {
     fileExists = false;
   }
-  if(!fileExists) {
+  if (!fileExists) {
     fs.writeFileSync(filePath, joinConf(obj), 'utf8');
     return;
   }
   const newKeys = Object.keys(obj);
   let usedKeys = new Set();
-  const contents:any = fs.readFileSync(filePath, 'utf8').trim();
+  const contents: any = fs.readFileSync(filePath, 'utf8').trim();
   const linePatt = /^(.+)=(.+)$/;
   const splitContents = contents
     .split('\n')
     .map((l: any) => l.trim())
     .map((l: any) => {
-      if(!l) { // if it is an empty line
+      if (!l) { // if it is an empty line
         return l;
-      } else if(/^#/.test(l)) { // if it is a comment
+      } else if (/^#/.test(l)) { // if it is a comment
         return l;
-      } else if(linePatt.test(l)) { // if it is a [key]=[value] line
+      } else if (linePatt.test(l)) { // if it is a [key]=[value] line
         const matches = l.match(linePatt);
         const key = matches[1].trim();
         const value = matches[2].trim();
-        if(newKeys.includes(key) && usedKeys.has(key)) {
+        if (newKeys.includes(key) && usedKeys.has(key)) {
           return '';
-        } else if(newKeys.includes(key) && !usedKeys.has(key)) {
+        } else if (newKeys.includes(key) && !usedKeys.has(key)) {
           usedKeys = usedKeys.add(key);
           return `${key}=${obj[key]}`;
         } else {
@@ -412,8 +459,8 @@ function mergeWrite(filePath: string, obj: CommonObjType) {
         return '';
       }
     });
-  for(const key of newKeys) {
-    if(usedKeys.has(key)) continue;
+  for (const key of newKeys) {
+    if (usedKeys.has(key)) continue;
     splitContents.push(`${key}=${obj[key]}`);
   }
   const newContents = splitContents
@@ -438,7 +485,7 @@ function getBaseConf(walletConf: string) {
   }
 }
 
-function fileExists(path: string):boolean {
+function fileExists(path: string): boolean {
   try {
     fs.statSync(path);
     return true;
@@ -495,7 +542,7 @@ function fileExists(path: string):boolean {
     }
     if (!storage.getItem('addresses')) {
       storage.setItem('addresses', {});
-    }    
+    }
 
     if (!port) {
       port = '41414';
