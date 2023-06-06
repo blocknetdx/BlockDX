@@ -3,7 +3,7 @@ import { SvgIcon } from '../svg-icon';
 import './SideBar.css'
 import { SideBarContent, SideBarContentHeaderTitleType, sideBarContentHeaderTitles } from './SideBarContent';
 
-export default function SideBar() {
+export function SideBar() {
     const sideBarTopIcons = [
         'swap-horizontal',
         'wallet',
