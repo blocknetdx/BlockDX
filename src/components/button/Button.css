@@ -67,3 +67,25 @@
     background: none;
     border: none;
 }
+
+/* configuration button */
+.configuration-cancel-btn {
+    flex-grow: 1;
+    margin-left: 10px;
+    margin-right: 5px;
+    color: #1267F8;
+    background-color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 15px;
+}
+.configuration-continue-btn {
+    flex-grow: 1;
+    margin-left: 5px;
+    margin-right: 10px;
+    color: white;
+    background-color: #1267F8;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 15px;
+}

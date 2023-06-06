@@ -1,0 +1,67 @@
+h1, h2, h3, h4 {
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 10px 15px;
+    background-color: #172e48;
+    letter-spacing: 1px;
+}
+
+input[type=radio] {
+    appearance: none;
+    background: none;
+    border-radius:50%;
+    border-color: #1267F8;
+}
+
+input[type=radio]:checked {
+    background-color: #1267F8;
+    background-image: none !important;
+}
+
+.main-body {
+    background-color: #0e2742;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.logo-full {
+    width: 100%;
+    max-width: 300px;
+}
+
+/* padding */
+
+.p-v-5 {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.p-v-20 {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.p-h-20 {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.p-h-40 {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+/* margin */
+.m-v-5 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.m-v-20 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+

@@ -3,7 +3,7 @@ html, body {
 }
 
 .main-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+  font-family: 'IBM PLEX SANS', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
     padding: 0 0 2px;
     background-color: #121212;

@@ -1,4 +1,5 @@
 import Logo from '@images/logo.svg';
+import LogoFull from '@images/logo_full.svg';
 // import SwapHorizontal from '@images/side-bar/swap-horizontal.svg'
 import SwapHorizontal from '@images/side-bar/swap-horizontal.svg';
 import Wallet from '@images/side-bar/wallet.svg';
@@ -34,7 +35,8 @@ import SmallWalletIcon from '../../images/order-form/icon-wallet.svg'
 
 export const SvgIconSet = ({
     common: {
-        'logo': Logo
+        'logo': Logo,
+        'logo-full': LogoFull,
     },
     sideBar: {
         'swap-horizontal': SwapHorizontal,

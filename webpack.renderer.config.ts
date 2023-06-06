@@ -20,6 +20,7 @@ export const rendererConfig: Configuration = {
       '@components': path.resolve(__dirname, './src/components'),
       '@images': path.resolve(__dirname, './src/images'),
       '@pages': path.resolve(__dirname, './src/pages'),
+      '@': path.resolve(__dirname, './src'),
     },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
   },
