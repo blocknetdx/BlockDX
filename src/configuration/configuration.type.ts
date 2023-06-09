@@ -5,10 +5,12 @@ export enum CONFIG_ROUTE {
     XLITE_SET_UP = 'xLiteSetup',
     ADD_WALLET = 'addWallet',
     ADD_WALLET_QUICK = 'addWalletQuick',
+    ADD_WALLET_QUICK_FINISH = 'addWalletQuickFinish',
     ADD_WALLET_EXPERT = 'addWalletExpert',
     UPDATE_WALLET = 'updateWallet',
     FRESH_SET_UP = 'freshSetup',
     UPDATE_RPC_SETTINGS = 'updateRpcSettings',
+    CONFIGURATION_COMPLETE = 'configurationComplete',
 }
 
 export interface ConfigurationMenuProps {

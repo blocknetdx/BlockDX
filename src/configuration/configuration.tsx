@@ -6,6 +6,9 @@ import ConfigurationMenu from './configuration-menu';
 import SelectWallets from '@/configuration/select-wallets';
 import AddWallet from '@/configuration/add-wallet';
 import AddWalletQuick from '@/configuration/add-wallet-quick';
+import AddWalletQuickFinish from '@/configuration/add-wallet-quick-finish';
+import ConfigurationComplete from '@/configuration/configuration-complete';
+import AddWalletExpert from '@/configuration/add-wallet-expert';
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -14,7 +17,10 @@ const configurationTitles = {
     xLiteSetup: 'litewallet setup - select wallet',
     freshSetup: 'fresh setup',
     updateRpcSettings: 'update rpc settings',
-    addWalletQuick: 'add wallet - quick configuration setup'
+    addWalletQuick: 'add wallet - quick configuration setup',
+    addWalletQuickFinish: 'add wallet - quick configuration setup',
+    addWalletExpert: 'add wallet - expert configuration setup',
+    configurationComplete: 'configuration complete!',
 }
 
 export const Configuration: React.FC = () => {
@@ -36,6 +42,12 @@ export const Configuration: React.FC = () => {
                 return <AddWallet setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ADD_WALLET_QUICK:
                 return <AddWalletQuick setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.ADD_WALLET_QUICK_FINISH:
+                return <AddWalletQuickFinish setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.CONFIGURATION_COMPLETE:
+                return <ConfigurationComplete setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.ADD_WALLET_EXPERT:
+                return <AddWalletExpert setTitle={setTitle} handleNavigation={handleNavigation} />
             default:
                 return <></>;
         }
