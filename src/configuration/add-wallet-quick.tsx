@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE, ConfigurationMenuOptionsType
 } from './configuration.type';
-import { Text, Button, SvgIcon } from '@components/index'
+import { Text, Button, SvgIcon, Select } from '@components/index'
 
 export default function AddWalletQuick({
     setTitle,
@@ -27,7 +27,31 @@ export default function AddWalletQuick({
                     <Text className="configuration-setup-label" >Add</Text>
                 </div>
             </div>
-            <div className='m-h-20 flex-grow-1 wallets-list-container'>
+            <div className='m-h-20 flex-grow-1 wallets-list-container p-20'>
+                <div className='wallet-versions-container p-20'>
+                    <div className='d-flex justify-content-between align-items-center m-v-10'>
+                        <Text>Xaya</Text>
+                        <div className='d-flex align-items-center'>
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                name="walletCheckbox"
+                                value='selectAll'
+                                onChange={() => {
+                                }}
+                            />
+                            <Text className="configuration-setup-label" >Add Wallet</Text>
+                        </div>
+                    </div>
+                    <div className='wallet-version-select-container'>
+                        <Text className='flex-grow-1 m-l-10'>Wallet Version</Text>
+                        <Select
+                            className='wallet-version'
+                            optionClass='order-tab-option-text'
+                            lists={['v1.4.1', 'v1.4.0']}
+                        />
+                    </div>
+                </div>
             </div>
             <SvgIcon
                 containerClass='m-h-20 m-v-10'
