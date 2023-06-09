@@ -108,3 +108,10 @@ input[type="checkbox"]:checked {
     margin-top: 10px;
 }
 
+.m-l-10 {
+    margin-left: 10px;
+}
+
+.m-r-10 {
+    margin-right: 10px;
+}
