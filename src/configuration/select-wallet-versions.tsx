@@ -168,9 +168,10 @@ export default function SelectWalletVersions({
                             value='selectAll'
                             className="form-check-input"
                             checked={isAllWalletSelected}
-                            onChange={() => {
-                                handleSelectAll();
-                            }}
+                            // onChange={() => {
+                            //     handleSelectAll();
+                            // }}
+                            onPress={() => handleSelectAll()}
                         />
                     </div> : null
             }
@@ -187,7 +188,10 @@ export default function SelectWalletVersions({
                                         name="walletCheckbox"
                                         value='selectAll'
                                         checked={selectedWalletAbbrs.includes(wallet.abbr)}
-                                        onChange={() => {
+                                        // onChange={() => {
+                                        //     handleSelectOneWallet(wallet)
+                                        // }}
+                                        onPress={() => {
                                             handleSelectOneWallet(wallet)
                                         }}
                                         label={configurationType === 'FRESH_SETUP' ? 'Skip' : configurationType === 'ADD_WALLET' ? 'Add' : 'Update'}

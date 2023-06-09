@@ -60,7 +60,8 @@ export const Configuration: React.FC = () => {
             username: credentials.username || '',
             password: credentials.password || '',
             isFirstRun,
-            configurationType: 'FRESH_SETUP'
+            configurationType: 'FRESH_SETUP',
+            skipSetup: false,
         })
         setRoute(isFirstRun ? CONFIG_ROUTE.SELECT_SETUP_TYPE : CONFIG_ROUTE.CONFIGURATION_MENU);
     }
@@ -177,6 +178,8 @@ export const Configuration: React.FC = () => {
                 return <Finish setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SET_UP:
                 return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.SELECT_WALLETS: 
+                return <SelectWallets setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.XLITE_SET_UP: 
                 return <SelectWallets setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ADD_WALLET:

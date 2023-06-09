@@ -23,6 +23,7 @@ export const rendererConfig: Configuration = {
       '@context': path.resolve(__dirname, './src/context'),
       '@src-back': path.resolve(__dirname, './src/src-back'),
       '@': path.resolve(__dirname, './src'),
+      "@component": path.resolve(__dirname, './src/components')
     },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
     fallback: {

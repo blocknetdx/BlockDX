@@ -3,6 +3,10 @@
     color: white;
 }
 
+.common-button:hover {
+    opacity: 0.8;
+}
+
 .primary-btn {
     background-color: #1570EF;
     font-size: 14px;
@@ -66,6 +70,10 @@
     font-weight: 500;
     background: none;
     border: none;
+}
+
+.no-background {
+    background: none;
 }
 
 /* configuration button */

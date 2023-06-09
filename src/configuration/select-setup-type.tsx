@@ -67,7 +67,8 @@ export default function SelectSetUpType({
         } else {
             const newWallets: Wallet[] = wallets.map(wallet => wallet.set('directory', wallet.customDirectory));
             updateSingleState('wallets', newWallets);
-            handleNavigation(CONFIG_ROUTE.ADD_WALLET_EXPERT)
+            // handleNavigation(CONFIG_ROUTE.ADD_WALLET_EXPERT);
+            handleNavigation(CONFIG_ROUTE.SELECT_WALLETS);
         }
     }
 

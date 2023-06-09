@@ -1,23 +1,34 @@
 import React from 'react';
-import { Text } from '@/components/text/Text';
+import {
+    Text,
+    Button,
+} from '@component';
 
 interface CheckBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
     error?: string
     label?: string
+    onPress?: () => void
+    containerClass?: string
+    labelClass?: string
 }
 
 export function CheckBox({
     error,
     label,
+    className,
+    containerClass = '',
+    labelClass = '',
+    onPress,
     ...rest
 }: CheckBoxProps): React.ReactElement {
     return (
-        <div className='d-flex align-items-center'>
+        <Button className={`d-flex align-items-center no-background ${containerClass}`} onClick={onPress} >
             <input
                 type="checkbox"
+                className={`${className} m-t-4`}
                 {...rest}
             />
-            <Text className="configuration-setup-label" >{label}</Text>
-        </div>
+            <Text className={`configuration-setup-label ${labelClass}`} >{label}</Text>
+        </Button>
     );
 }
