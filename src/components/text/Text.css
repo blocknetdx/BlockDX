@@ -218,3 +218,8 @@
 .configuration-setup-label {
     font-weight: 600;
 }
+
+.error-text {
+    font-size: 15px;
+    color: #c13634;
+}

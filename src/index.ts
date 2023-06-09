@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -6,6 +6,8 @@ declare const CONFIGURATION_WINDOW_WEBPACK_ENTRY: string;
 declare const CONFIGURATION_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 const { platform } = process;
+
+const path = require('path');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -33,6 +35,7 @@ const openConfigurationWindow = (): void => {
       contextIsolation: false,
     },
   });
+  // configurationWindow.loadURL(`file:/${path.join(__dirname, 'src', 'configuration-old', 'configuration.html')}`);
   configurationWindow.loadURL(CONFIGURATION_WINDOW_WEBPACK_ENTRY);
   configurationWindow.webContents.openDevTools();
 };
@@ -60,5 +63,19 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     openAppWindow();
   }
+});
+
+type dialogOptionsType = {
+  title: string
+  properties: ("openDirectory" | "openFile" | "multiSelections" | "showHiddenFiles" | "createDirectory" | "promptToCreate" | "noResolveAliases" | "treatPackageAsDirectory" | "dontAddToRecent")[]
+}
+
+ipcMain.handle('open-dialog', async (event, arg) => {
+  const options: dialogOptionsType = {
+    title: 'Open File',
+    properties: ['openDirectory']
+  };
+  const result = await dialog.showOpenDialog(options);
+  return result.filePaths[0];
 });
 
