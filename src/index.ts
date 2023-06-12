@@ -1,4 +1,5 @@
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow } from 'electron';
+import { dialog, ipcMain } from 'electron';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -7,7 +8,7 @@ declare const CONFIGURATION_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 const { platform } = process;
 
-const path = require('path');
+// const path = require('path');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -32,12 +33,13 @@ const openConfigurationWindow = (): void => {
     width: 1050,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: true,
+      preload: CONFIGURATION_WINDOW_PRELOAD_WEBPACK_ENTRY
     },
   });
   // configurationWindow.loadURL(`file:/${path.join(__dirname, 'src', 'configuration-old', 'configuration.html')}`);
   configurationWindow.loadURL(CONFIGURATION_WINDOW_WEBPACK_ENTRY);
-  configurationWindow.webContents.openDevTools();
+  // configurationWindow.webContents.openDevTools();
 };
 
 
@@ -45,8 +47,25 @@ const onReady = new Promise(resolve => app.on('ready', resolve));
 
 // app.on('ready', openAppWindow);
 
+
+
+type dialogOptionsType = {
+  title: string
+  properties: ("openDirectory" | "openFile" | "multiSelections" | "showHiddenFiles" | "createDirectory" | "promptToCreate" | "noResolveAliases" | "treatPackageAsDirectory" | "dontAddToRecent")[]
+}
+
+ipcMain.handle('open-dialog', async (event, args) => {
+  const options: dialogOptionsType = {
+    title: 'Open File',
+    properties: ['openDirectory']
+  };
+  const result = await dialog.showOpenDialog(options);
+  return result.filePaths[0];
+});
+
 (async function() {
   await onReady;
+
 
   openConfigurationWindow();
 
@@ -65,17 +84,4 @@ app.on('activate', () => {
   }
 });
 
-type dialogOptionsType = {
-  title: string
-  properties: ("openDirectory" | "openFile" | "multiSelections" | "showHiddenFiles" | "createDirectory" | "promptToCreate" | "noResolveAliases" | "treatPackageAsDirectory" | "dontAddToRecent")[]
-}
-
-ipcMain.handle('open-dialog', async (event, arg) => {
-  const options: dialogOptionsType = {
-    title: 'Open File',
-    properties: ['openDirectory']
-  };
-  const result = await dialog.showOpenDialog(options);
-  return result.filePaths[0];
-});
 
