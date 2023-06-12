@@ -31,19 +31,32 @@ export default function SelectWallets({
 
     const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
     const [selectedAbbrs, setSelectedAbbrs] = useState<string[]>([]);
+    const [filteredWallets, setFilteredWallets] = useState<Wallet[]>([]);
 
     // console.log('selectedAbbrs: ', selectedAbbrs);
 
     useEffect(() => {
+        setTitle(configurationType === 'FRESH_SETUP' ? 'fresh setup - expert configuration setup' : configurationType === 'ADD_WALLET' ? 'add wallet - expert configuration setup' : 'update wallet - expert configuration setup')
         initialFunction();
     }, []);
     
     async function initialFunction() {
-        const filteredWallets: Wallet[] = await window?.api?.getFilteredWallets(wallets);
-        console.log('filteredWallets: ', filteredWallets);
-        setSelectedAbbrs(updatingWallets ? [] : filteredWallets.reduce((arr: string[], w) => {
+        const installedWallets: Wallet[] = await window?.api?.getFilteredWallets(wallets);
+        console.log('installedWallets: ', installedWallets);
+
+        // setFilteredWallets([...wallets].filter(w => addingWallets ? ))
+        setSelectedAbbrs(updatingWallets ? [] : installedWallets.reduce((arr: string[], w) => {
             return  w.abbr === 'LTC' ? arr : [...arr, w.abbr]
         }, []))
+    }
+
+    function handleSelectWallet(abbr: string) {
+        if (abbr === 'BLOCK') return;
+        setSelectedAbbrs(selectedAbbrs.includes(abbr) ? selectedAbbrs.filter(item => item !== abbr) : [...selectedAbbrs, abbr]);
+    }
+
+    function handleSelectAll() {
+        // setSelectedWalletAbbrs(isAllWalletSelected ? [] : filteredWallets.map(wallet => wallet.abbr));
     }
     
 
@@ -54,7 +67,7 @@ export default function SelectWallets({
 
     console.log('selected items: ', items);
 
-    const showSkip = !addingWallets && !updatingWallets;
+    const showSkip = configurationType === 'FRESH_SETUP';
 
     return (
         <div className='d-flex flex-row flex-grow-1'>
@@ -85,8 +98,11 @@ export default function SelectWallets({
                                 containerClass='form-check m-v-20 d-flex align-items-center'
                                 name="walletCheckbox"
                                 value={wallet.versionId}
-                                // checked={selectedWallets.includes(wallet.versionId) || false}
-                                onPress={() => selectWallet(wallet.versionId)}
+                                checked={selectedAbbrs.includes(wallet.abbr) || false}
+                                onPress={() => {
+                                    if (wallet.abbr === 'BLOCK') return;
+                                    handleSelectWallet(wallet.abbr);
+                                }}
                                 label={`${wallet.name} (${wallet.abbr})`}
                                 labelClass='configuration-setup-label'
                             />

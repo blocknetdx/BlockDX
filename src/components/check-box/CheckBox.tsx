@@ -26,6 +26,7 @@ export function CheckBox({
             <input
                 type="checkbox"
                 className={`${className} m-t-4`}
+                readOnly
                 {...rest}
             />
             <Text className={`configuration-setup-label ${labelClass}`} >{label}</Text>

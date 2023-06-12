@@ -60,7 +60,7 @@ export const Configuration: React.FC = () => {
             username: credentials.username || '',
             password: credentials.password || '',
             isFirstRun,
-            configurationType: 'FRESH_SETUP',
+            configurationType: isFirstRun ? 'FRESH_SETUP' : undefined,
             skipSetup: false,
         })
         setRoute(isFirstRun ? CONFIG_ROUTE.SELECT_SETUP_TYPE : CONFIG_ROUTE.CONFIGURATION_MENU);
@@ -87,19 +87,18 @@ export const Configuration: React.FC = () => {
         const selectedWallets = await window?.api.getSelectedWallets();
 
         console.log('selectedWallets: ', selectedWallets);
-        
 
-        let selectedWalletIds = [
-            wallets[0].versionId,
-            ...selectedWallets
-        ];
+        let selectedWalletIds = _.uniq([wallets[0].versionId, ...selectedWallets]);
 
         let xbridgeConfPath = await window?.api.getXbridgeConfPath();
         let xbridgeConf: string;
 
+        console.log('xbridgeConfPath', xbridgeConfPath);
+        
         try {
             if (!xbridgeConfPath) {
-                xbridgeConfPath = path.join(await wallets.find(w => w.abbr === 'BLOCK').directory, 'xbridge.conf')
+                xbridgeConfPath = path.join(wallets.find(w => w.abbr === 'BLOCK').directory, 'xbridge.conf')
+                console.log('xbridgeConfPath', xbridgeConfPath);
             }
             // console.log('xbridgeConfPath: ', xbridgeConfPath);
             xbridgeConf = await window?.api.getXbridgeConf(xbridgeConfPath);
@@ -108,7 +107,7 @@ export const Configuration: React.FC = () => {
 
         } catch (error) {
             console.log('xbridgeconfpath error: ', error);
-
+            xbridgeConf = '';
         }
 
         if (xbridgeConf) {

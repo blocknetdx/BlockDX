@@ -20,7 +20,7 @@ export type StateType = {
     password?: string;
     litewalletConfigDirectory?: string;
     isFirstRun?: boolean;
-    configurationType?: 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET' | 'RPC_SETTINGS';
+    configurationType?: 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET' | 'RPC_SETTINGS' | undefined;
     selectedWallets?: string[];
     selectedAbbrs?: string[];
     lookForWallets?: boolean
