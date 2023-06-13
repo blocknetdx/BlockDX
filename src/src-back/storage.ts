@@ -38,7 +38,7 @@ class SimpleStorage {
         return cloneDeep(item);
     }
 
-    setItem(key: string, val: string, saveSync:boolean) {
+    setItem(key: string, val: any, saveSync?: boolean) {
         if (!val) {
             this._data[key] = val;
         } else {

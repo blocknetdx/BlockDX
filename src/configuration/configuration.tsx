@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SvgIcon } from '@components/index';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
@@ -10,6 +10,11 @@ import AddWalletQuickFinish from '@/configuration/add-wallet-quick-finish';
 import ConfigurationComplete from '@/configuration/configuration-complete';
 import AddWalletExpert from '@/configuration/add-wallet-expert';
 import AddWalletExpertFinish from '@/configuration/add-wallet-expert-finish';
+import { ManifestType } from '@/main.type';
+import { Set } from 'immutable';
+import Wallet from './modules/wallet';
+import path from 'path';
+
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -29,6 +34,66 @@ export const Configuration: React.FC = () => {
     const [title, setTitle] = useState(CONFIG_ROUTE.SET_UP);
     // const [title, setTitle] = useState(configurationTitles['setUp']);
     const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.ADD_WALLET_EXPERT);
+
+    useEffect(() => {
+        if (!!window) {
+            getManifest();
+            // console.log('manifest list: ', window.api.getManifest());
+        }
+    }, []);
+
+    async function getCustomDirectory(token: string) {
+        if (!!window) {
+            const customDir = await window.api.getTokenPath(token)
+            return customDir ? customDir : await window.api.getDefaultDirectory
+        }
+
+        return '';
+    }
+
+    async function getManifest() {
+        let walletsOrigin: ManifestType[] = await window.api.getManifest();
+
+        let wallets = walletsOrigin.map(w => new Wallet(w));
+
+        console.log('wallets: ', wallets);
+
+        const blockIdx = wallets.findIndex(w => w.abbr === 'BLOCK');
+        const others = [
+            ...wallets.slice(0, blockIdx),
+            ...wallets.slice(blockIdx + 1)
+
+        ].sort((a, b) => a.name.localeCompare(b.name));
+        wallets = [
+            wallets[blockIdx],
+            ...others
+        ];
+
+        const selectedWallets = await window?.api.getSelectedWallets();
+
+        let selectedWalletIds = Set([
+            wallets[0].versionId,
+            ...selectedWallets
+        ]);
+
+        let xbridgeConfPath = await window?.api.getXbridgeConfPath();
+        let xbridgeConf;
+
+        try {            
+            if (!xbridgeConfPath) {
+                xbridgeConfPath = path.join(await wallets.find(w => w.abbr === 'BLOCK').directory, 'xbridge.conf')
+            }
+            console.log('xbridgeConfPath: ', xbridgeConfPath);
+            xbridgeConf = await window?.api.getXbridgeConf(xbridgeConfPath);
+
+            console.log('xbridgeConf: ', xbridgeConf);
+            
+        } catch (error) {
+            console.log('xbridgeconfpath error: ', error);
+            
+        }
+
+    }
 
     function handleNavigation(route: CONFIG_ROUTE) {
         setRoute(route);
