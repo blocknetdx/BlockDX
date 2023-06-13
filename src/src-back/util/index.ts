@@ -1,9 +1,3 @@
-const fs = require('fs');
-
-const path = require('path');
-
-module.exports.removeNonWordCharacters = (str = '') => str.replace(/\W/g, '');
-
 const versionPatt = /(\d+)\.(\d+)\.(\d+)/;
 
 export const compareByVersion = (aVersion: string, bVersion: string) => {

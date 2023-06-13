@@ -29,6 +29,7 @@ export type StateType = {
     addAbbrToVersion?: Map<string, string>;
     updateAbbrToVersion?: Map<string, string>;
     skipList?: string[];
+    abbrToVersion?: Map<string, string>;
 }
 
 export type ConfigDataContextType = {

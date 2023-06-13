@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Text, Button, Select } from '@/components';
 import Wallet from '@/configuration/modules/wallet';
 import { SubRouteType } from '@/configuration/add-wallet-expert';
 import { ConfigDataContext } from '@/context';
+import { compareByVersion } from '@/src-back/util';
 
 interface SelectVersionsProps {
     filteredWallets?: Wallet[]
@@ -15,9 +16,50 @@ export default function SelectVersions({
     selectedAbbrs = [],
     handleSubNavigation
 }:SelectVersionsProps):React.ReactElement {
-    const { state } = useContext(ConfigDataContext);
-    const { configurationType, wallets } = state;
+    const { state, updateSingleState } = useContext(ConfigDataContext);
+    const { configurationType, wallets, abbrToVersion } = state;
+    const [displayWalletList, setDisplayWalletList] = useState<Wallet[]>([]);
 
+    useEffect(() => {
+        setDisplayWalletList(
+            [...wallets]
+        .filter(w => selectedAbbrs.includes(w.abbr))
+        .reduce((arr, w) => {
+            const idx = arr.findIndex(ww => ww.abbr === w.abbr);
+            if(idx > -1) { // coin is already in array
+              arr[idx].versions = [...arr[idx].versions, ...w.versions];
+              return arr;
+            } else {
+              return [...arr, w];
+            }
+        }, [])
+        .map(w => {
+            w?.versions.sort(compareByVersion);
+            if (abbrToVersion?.has(w.abbr)) {
+                w.version = abbrToVersion.get(w.abbr);
+            } else {
+                w.version = w.versions[0];
+            }
+            return w;
+        }));
+    }, [])
+    
+    useEffect(() => {
+        if (displayWalletList.length > 0 && abbrToVersion.size === 0) {
+            displayWalletList.forEach(w => {
+                abbrToVersion.set(w.abbr, w.version);
+            })
+            updateSingleState('abbrToVersion', abbrToVersion);
+        }
+    }, [displayWalletList])
+
+    function handleSelectVersion() {
+        console.log('abbrToVersion: ', abbrToVersion);
+
+    }
+
+    console.log('displayWalletList: ', displayWalletList);
+    
     return (
         <div className='d-flex flex-column flex-grow-1'>
             <div className='p-h-20'>
@@ -28,8 +70,8 @@ export default function SelectVersions({
             </div>
             <div className='m-h-20 m-v-20 flex-grow-1 wallets-list-container p-h-20'>
                 {
-                    filteredWallets.map((wallet) => (
-                        <div key={`add-wallet-${wallet.name}`} className='wallet-versions-container p-20 m-v-20'>
+                    displayWalletList.map((wallet) => (
+                        <div key={`add-wallet-${wallet.name}-${wallet.version   }`} className='wallet-versions-container p-20 m-v-20'>
                             <div className='d-flex justify-content-between align-items-center m-v-10'>
                                 <Text>{wallet.name}</Text>
                             </div>
@@ -39,6 +81,9 @@ export default function SelectVersions({
                                     className='wallet-version'
                                     optionClassName='order-tab-option-text'
                                     lists={wallet.versions}
+                                    handleChange={(value) => {
+                                        updateSingleState('abbrToVersion', abbrToVersion.set(wallet.abbr, value))
+                                    }}
                                 />
                             </div>
                         </div>
@@ -57,7 +102,9 @@ export default function SelectVersions({
                 <Button
                     className='configuration-continue-btn'
                     onClick={() => {
-                        handleSubNavigation('selectDirectories')
+                        console.log('abbrToVersion: ', abbrToVersion);
+                        
+                        // handleSubNavigation('selectDirectories');
                     }}
                 >CONTINUE</Button>
             </div>
