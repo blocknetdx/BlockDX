@@ -4,7 +4,10 @@ const omit = require('lodash/omit');
 const { logger } = require('./logger');
 
 class SimpleStorage {
-    constructor(dataFilePath) {
+    private _dataFilePath: string
+    private _data: any
+
+    constructor(dataFilePath: string) {
         this._dataFilePath = dataFilePath;
         fs.ensureFileSync(dataFilePath);
         let data;
@@ -29,13 +32,13 @@ class SimpleStorage {
         fs.writeJsonSync(this._dataFilePath, this._data);
     }
 
-    getItem(key) {
+    getItem(key: string) {
         const item = this._data[key];
         if (!item) return item;
         return cloneDeep(item);
     }
 
-    setItem(key, val, saveSync) {
+    setItem(key: string, val: string, saveSync:boolean) {
         if (!val) {
             this._data[key] = val;
         } else {
@@ -51,7 +54,7 @@ class SimpleStorage {
         return val;
     }
 
-    setItems(obj, saveSync) {
+    setItems(obj: any, saveSync: boolean) {
         for (const key of Object.keys(obj)) {
             const val = obj[key];
             if (!val) {
@@ -70,7 +73,7 @@ class SimpleStorage {
         return obj;
     }
 
-    removeItem(key, saveSync = false) {
+    removeItem(key: string, saveSync = false) {
         const newData = omit(this._data, [key]);
         this._data = newData;
         if (saveSync) {
@@ -81,7 +84,7 @@ class SimpleStorage {
         return;
     }
 
-    removeItems(keys, saveSync = false) {
+    removeItems(keys: string[], saveSync = false) {
         const newData = omit(this._data, keys);
         this._data = newData;
         if (saveSync) {
@@ -100,5 +103,5 @@ class SimpleStorage {
     }
 }
 
-module.exports = SimpleStorage;
+export default SimpleStorage;
 

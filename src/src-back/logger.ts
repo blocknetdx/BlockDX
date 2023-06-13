@@ -5,6 +5,8 @@ const { createLogger, format, transports } = require('winston');
 const isString = require('lodash/isString');
 
 class Logger {
+    private _logger: any;
+
     constructor() {
         this._logger = null;
     }
@@ -13,7 +15,7 @@ class Logger {
      * @param dataDir {String}
      */
 
-    initialize(dataDir) {
+    initialize(dataDir: string) {
         this._logger = createLogger({
             format: format.combine(
                 format.timestamp(),
@@ -44,7 +46,7 @@ class Logger {
      * @param str {String}
      */
 
-    info(str) {
+    info(str: string) {
         if (this._logger && isString(str)) {
             this._logger.info('INFO: ' + str);
         } else {
@@ -56,7 +58,7 @@ class Logger {
      * @param str {String}
      */
 
-    error(str) {
+    error(str: string) {
         if (this._logger && isString(str)) {
             this._logger.error('ERROR: ' + str);
         } else {
@@ -65,5 +67,5 @@ class Logger {
     }
 }
 
-module.exports.logger = new Logger;
+export const logger = new Logger;
 

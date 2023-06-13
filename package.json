@@ -1,6 +1,6 @@
 {
-  "name": "my-new-app",
-  "productName": "my-new-app",
+  "name": "BLOCK--DX",
+  "productName": "BLOCK--DX",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
