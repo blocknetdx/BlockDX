@@ -12,6 +12,7 @@ import {
 // import { BLOCKNET_CONF_NAME3, BLOCKNET_CONF_NAME4, blocknetDir3, blocknetDir4 } from './src-back/constants';
 import { ManifestType, dialogOptionsType } from './main.type';
 import { compareByVersion } from '@/src-back/util';
+import Wallet from '@/configuration/modules/wallet';
 const path = require('path');
 const fs = require('fs-extra-promise');
 
@@ -346,6 +347,22 @@ ipcMain.handle('getBridgeConf', (e, bridgeConf) => {
     dialog.showErrorBox('Oops! There was an error.', error?.message + '\n' + `There was a problem opening ${bridgeConf}`);
     return '';
   }
+});
+
+ipcMain.handle('checkWalletDirectories', (e, wallets: Wallet[]) => {
+  wallets.forEach(wallet => {
+    console.log('checkWalletDirectories wallets: ', wallets);
+    
+    try {
+      fs.statSync(wallet.directory);
+      wallet.error = false;
+    } catch (error) {
+      wallet.directory = '';
+      wallet.error = true;
+    }
+  })
+
+  return wallets;
 });
 
 function splitConf(str: string) {

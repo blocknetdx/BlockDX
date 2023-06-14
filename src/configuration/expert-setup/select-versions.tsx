@@ -4,10 +4,11 @@ import Wallet from '@/configuration/modules/wallet';
 import { SubRouteType } from '@/configuration/add-wallet-expert';
 import { ConfigDataContext } from '@/context';
 import { compareByVersion } from '@/src-back/util';
+import { EXPERT_ROUTE } from '@/configuration/expert-setup/expert-setup';
 
 interface SelectVersionsProps {
     filteredWallets?: Wallet[]
-    handleSubNavigation?: (route: SubRouteType) => void
+    handleSubNavigation?: (route: EXPERT_ROUTE) => void
     selectedAbbrs?: string[]
 }
 
@@ -65,9 +66,6 @@ export default function SelectVersions({
             <div className='p-h-20'>
                 <Text>Please select the wallet version installed for each of the following assets. DO NOT use any wallet versions not listed here. They have either not been tested yet or are not compatible.</Text>
             </div>
-            <div>
-
-            </div>
             <div className='m-h-20 m-v-20 flex-grow-1 wallets-list-container p-h-20'>
                 {
                     displayWalletList.map((wallet) => (
@@ -94,7 +92,7 @@ export default function SelectVersions({
                 <Button
                     className='configuration-cancel-btn'
                     onClick={() => {
-                        handleSubNavigation('selectWallet')
+                        handleSubNavigation(EXPERT_ROUTE.SELECT_WALLETS)
                     }}
                 >
                     BACK
@@ -102,9 +100,9 @@ export default function SelectVersions({
                 <Button
                     className='configuration-continue-btn'
                     onClick={() => {
-                        console.log('abbrToVersion: ', abbrToVersion);
+                        // console.log('abbrToVersion: ', abbrToVersion);
                         
-                        // handleSubNavigation('selectDirectories');
+                        handleSubNavigation(EXPERT_ROUTE.SELECT_DIRECTORIES);
                     }}
                 >CONTINUE</Button>
             </div>

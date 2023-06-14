@@ -95,6 +95,14 @@ input[type="checkbox"]:checked {
 
 /* padding */
 
+.p-t-0 {
+    padding-top: 0px;
+}
+
+.p-t-10 {
+    padding-top: 10px;
+}
+
 .p-v-5 {
     padding-top: 5px;
     padding-bottom: 5px;
@@ -191,4 +199,8 @@ input[type="checkbox"]:checked {
 
 .max-h-210 {
     max-height: 210px;
+}
+
+.basis-p-150 {
+    flex-basis: 150%;
 }
