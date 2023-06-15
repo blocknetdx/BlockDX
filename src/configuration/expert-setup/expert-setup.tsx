@@ -10,6 +10,7 @@ import Wallet from '@/configuration/modules/wallet';
 import SelectVersions from './select-versions';
 import SelectDirectories from './select-directories';
 import ExpertSelectSetUpType from '@/configuration/expert-setup/expert-select-setup-type';
+import EnterWalletCredentials from '@/configuration/expert-setup/enter-wallet-credentials';
 
 interface SelectWalletsProps {
     selectWallet?: (versionId: string) => void
@@ -23,6 +24,7 @@ export enum EXPERT_ROUTE {
     SELECT_VERSION = 'selectVersion',
     SELECT_DIRECTORIES = 'selectDirectories',
     SELECT_SETUP_TYPE = 'selectSetupType',
+    ENTER_CREDENTIALS = 'enterWalletCredentials'
 }
 
 export default function ExpertSetup({
@@ -171,7 +173,6 @@ export default function ExpertSetup({
                     <SelectDirectories
                         handleOpenDialog={handleOpenDialog}
                         filteredWallets={selectedWallets}
-                        dataPaths={dataPaths}
                         handleSubNavigation={handleSubNavigation}
                     />
                 )
@@ -179,6 +180,15 @@ export default function ExpertSetup({
                 return (
                     <ExpertSelectSetUpType 
                         handleSubNavigation={handleSubNavigation}
+                        handleNavigation={handleNavigation}
+                    />
+                );
+            case EXPERT_ROUTE.ENTER_CREDENTIALS:
+                return (
+                    <EnterWalletCredentials 
+                        handleSubNavigation={handleSubNavigation}
+                        selectedAbbrs={selectedAbbrs}
+                        handleNavigation={handleNavigation}
                     />
                 );
             default:
@@ -186,12 +196,12 @@ export default function ExpertSetup({
         }
     }
 
+    const sidePanelStatus = subRoute !== EXPERT_ROUTE.SELECT_SETUP_TYPE ? 0 : 1;
+
     return (
         <div className='d-flex flex-row flex-grow-1'>
-            <SidePanel status={0} />
-            {/* <div className='p-t-0'> */}
-                { renderContent() }
-            {/* </div> */}
+            <SidePanel status={sidePanelStatus} />
+            { renderContent() }
         </div>
     );
 }

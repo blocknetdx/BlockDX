@@ -9,10 +9,12 @@ import { EXPERT_ROUTE } from '@/configuration/expert-setup/expert-setup';
 
 interface IExpertSelectSetUpTypeProps {
     handleSubNavigation?: (route: EXPERT_ROUTE) => void
+    handleNavigation?: (route: CONFIG_ROUTE) => void
 }
 
 export default function ExpertSelectSetUpType({
-    handleSubNavigation
+    handleSubNavigation,
+    handleNavigation
 }: IExpertSelectSetUpTypeProps) {
     const options: ConfigurationMenuOptionsType[] = [
         {
@@ -33,6 +35,11 @@ export default function ExpertSelectSetUpType({
     const { state, updateSingleState } = useContext(ConfigDataContext);
 
     async function handleContinue() {
+        if (selectedOption.type === 'expertSetup') {
+            handleSubNavigation(EXPERT_ROUTE.ENTER_CREDENTIALS)
+        } else {
+            handleNavigation(CONFIG_ROUTE.FINISH)
+        }
     }
 
     return (

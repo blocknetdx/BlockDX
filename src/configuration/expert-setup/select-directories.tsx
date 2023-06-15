@@ -5,7 +5,6 @@ import { DataPathsType } from '@/configuration/add-wallet-expert';
 import { EXPERT_ROUTE } from '@/configuration/expert-setup/expert-setup';
 
 interface SelectDirectoriesProps {
-    dataPaths: DataPathsType
     filteredWallets: Wallet[]
     handleOpenDialog?: (abbr: string) => void
     abbrs?: string[]
