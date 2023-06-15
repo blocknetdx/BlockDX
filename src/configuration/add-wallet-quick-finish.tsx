@@ -1,9 +1,8 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE, ConfigurationMenuOptionsType
 } from './configuration.type';
 import { Text, Button, SvgIcon, Select } from '@components/index'
-import { ConfigDataContext } from '@/context';
 
 export default function AddWalletQuickFinish({
     setTitle,
@@ -20,27 +19,7 @@ export default function AddWalletQuickFinish({
             content: 'This option allows you to specify the data directory locations and RPC credentials',
             route: CONFIG_ROUTE.ADD_WALLET_EXPERT
         }
-    ];
-
-    const { configMode, state } = useContext(ConfigDataContext)
-
-    async function handleFinish() {
-        if (!window) return;
-        const addingWallets = configMode === 'Add';
-        const updatingWallets = configMode === 'Update';
-
-        const { selectedWallets = [], wallets } = state;
-
-        const block = wallets.find(w => w.abbr === 'BLOCK');
-
-
-        if (addingWallets) {
-            
-        } else if (updatingWallets) {
-            
-        }
-        const saveSelectedRes = await window.api.saveSelected(selectedWallets);
-    }
+    ]
     return (
         <div className='d-flex flex-column flex-grow-1'>
             <div className='d-flex flex-row flex-grow-1'>
@@ -88,8 +67,7 @@ export default function AddWalletQuickFinish({
                         </Button>
                         <Button className='configuration-continue-btn' 
                             onClick={() => {
-                                handleFinish();
-                                // handleNavigation(CONFIG_ROUTE.CONFIGURATION_COMPLETE)
+                                handleNavigation(CONFIG_ROUTE.CONFIGURATION_COMPLETE)
                             }}
                         >FINISH</Button>
                     </div>

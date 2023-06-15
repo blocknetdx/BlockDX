@@ -20,6 +20,7 @@
     width: 400px;
     background-color: #181C27;
     padding: 0;
+    z-index: 10;
 }
 
 .side-bar-icon-container {
@@ -76,10 +77,6 @@
 .connect-wallet-guide-container {
     justify-content: center !important;
     margin-top: 10px;
-}
-
-.p-h-10 {
-    padding: 0px 10px;
 }
 
 .p-v-10 {

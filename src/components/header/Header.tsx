@@ -7,7 +7,7 @@ interface headerNavItemProps {
     content: string
 }
 
-export default function Header() {
+export function Header() {
     const headerNavItems = [
         {
             label: 'Selected Market',

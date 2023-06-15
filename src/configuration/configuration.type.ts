@@ -18,8 +18,8 @@ export enum CONFIG_ROUTE {
 }
 
 export interface ConfigurationMenuProps {
-    setTitle?: React.Dispatch<React.SetStateAction<string>>
-    handleNavigation?: (route: CONFIG_ROUTE) => void
+    setTitle: React.Dispatch<React.SetStateAction<string>>
+    handleNavigation: (route: CONFIG_ROUTE) => void
     state?: StateType
     configMode?: 'Add' | 'Update'
 }

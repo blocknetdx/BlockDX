@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE
 } from './configuration.type';
@@ -47,20 +47,20 @@ export default function SelectWallets({
             </div>
             <div className='m-h-20 flex-grow-1 wallets-list-container'>
                 {
-                    wallets.map((wallet, index) => (
+                    allWalletsList.map((wallet, index) => (
                         <div className="form-check m-v-20 d-flex align-items-center">
                             <input
                                 type="checkbox"
                                 className="form-check-input"
                                 name="walletCheckbox"
-                                value={wallet.versionId}
-                                checked={selectedWallets.includes(wallet.versionId) || false}
+                                value={wallet}
+                                checked={selectedWallets.includes(wallet) || false}
                                 onChange={() => {
                                     selectWallet(wallet.versionId)
                                 }}
                             />
                             <Text className="configuration-setup-label" >
-                                {`${wallet.name} (${wallet.abbr})`}
+                                {wallet}
                             </Text>
                         </div>
                     ))
