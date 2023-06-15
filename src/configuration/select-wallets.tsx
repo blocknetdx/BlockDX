@@ -1,13 +1,21 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE
 } from './configuration.type';
 import { Text, Button } from '@components/index'
+import { ConfigDataContext } from '@/context';
+
+interface SelectWalletsProps {
+    handleSelectWallet?: (versionId: string) => void
+}
+
+type Props = SelectWalletsProps & ConfigurationMenuProps;
 
 export default function SelectWallets({
     setTitle,
-    handleNavigation
-}: ConfigurationMenuProps) {
+    handleNavigation,
+    handleSelectWallet
+}: Props) {
     const allWalletsList = [
         'Blocknet (Block)',
         'Bitcoin (BTC)',
@@ -18,6 +26,8 @@ export default function SelectWallets({
         'Syscoin (SYS)'
     ]
     const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
+    const { state } = useContext(ConfigDataContext);
+    const { wallets } = state;
     return (
         <div className='d-flex flex-column flex-grow-1'>
             <div className='p-h-20'>
@@ -38,20 +48,20 @@ export default function SelectWallets({
             </div>
             <div className='m-h-20 flex-grow-1 wallets-list-container'>
                 {
-                    allWalletsList.map((wallet, index) => (
+                    wallets.map((wallet, index) => (
                         <div className="form-check m-v-20 d-flex align-items-center">
                             <input
                                 type="checkbox"
                                 className="form-check-input"
                                 name="walletCheckbox"
-                                value={wallet}
-                                checked={selectedWallets.includes(wallet) || false}
+                                value={wallet.versionId}
+                                checked={selectedWallets.includes(wallet.versionId) || false}
                                 onChange={() => {
-                                    setSelectedWallets(selectedWallets.includes(wallet) ? selectedWallets.filter(item => item !== wallet) : [...selectedWallets, wallet])
+                                    handleSelectWallet(wallet.versionId)
                                 }}
                             />
                             <Text className="configuration-setup-label" >
-                                {wallet}
+                                {`${wallet.name} (${wallet.abbr})`}
                             </Text>
                         </div>
                     ))
@@ -67,7 +77,7 @@ export default function SelectWallets({
                 >
                     CANCEL
                 </Button>
-                <Button className='configuration-continue-btn'>FINISH</Button>
+                <Button className='configuration-continue-btn'>CONTINUE</Button>
             </div>
         </div>
     );

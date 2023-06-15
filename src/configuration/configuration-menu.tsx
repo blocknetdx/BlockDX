@@ -46,7 +46,7 @@ const ConfigurationMenu = ({
             <div className='p-h-20 flex-grow-1 m-t-10'>
                 {
                     options.map(({ option, content, route }, index) => (
-                        <div className="form-check m-v-5" key={`configuration-menu-${index}`}>
+                        <div className="form-check m-v-10" key={`configuration-menu-${index}`}>
                             <div>
                                 <input
                                     className="form-check-input"

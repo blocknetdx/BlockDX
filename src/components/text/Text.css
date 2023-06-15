@@ -223,3 +223,30 @@
     font-size: 15px;
     color: #c13634;
 }
+
+.blue-circle-fill {
+    width: 16px;
+    height: 16px;
+    border-radius: 15px;
+    margin-right: 7px;
+    background-color: #0d6efd;
+}
+
+.blue-circle-empty {
+    width: 16px;
+    height: 16px;
+    border-radius: 15px;
+    margin-right: 7px;
+    border: 1px solid #0d6efd;
+}
+
+.config-setup-title {
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    background-color: #172e48;
+    letter-spacing: 1px;
+    font-weight: bold;
+    font-size: 19px;
+}

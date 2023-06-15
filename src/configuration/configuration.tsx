@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SvgIcon } from '@components/index';
+import { SvgIcon, Text } from '@components/index';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
 import ConfigurationMenu from './configuration-menu';
@@ -31,7 +31,7 @@ const configurationTitles = {
 }
 
 export const Configuration: React.FC = () => {
-    const [title, setTitle] = useState(CONFIG_ROUTE.FRESH_SET_UP);
+    const [title, setTitle] = useState(CONFIG_ROUTE.SET_UP);
     // const [title, setTitle] = useState(configurationTitles['setUp']);
     const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.SET_UP);
     const { state, updateState } = useContext(ConfigDataContext);
@@ -61,6 +61,9 @@ export const Configuration: React.FC = () => {
         ];
 
         const selectedWallets = await window?.api.getSelectedWallets();
+
+        console.log('selectedWallets: ', selectedWallets);
+        
 
         let selectedWalletIds = Set([
             wallets[0].versionId,
@@ -117,8 +120,9 @@ export const Configuration: React.FC = () => {
             }
         }
 
+        console.log('selectedWalletIds: ', selectedWalletIds);
         const selectedAbbrs = Set([...wallets
-            .filter(w => selectedWalletIds.has(w.versionId))
+            .filter(w => selectedWallets.includes(w.versionId))
             .map(w => w.abbr)
         ]);
 
@@ -170,8 +174,7 @@ export const Configuration: React.FC = () => {
                 containerClass='justify-content-center p-v-20'
             />
 
-            {/* <h3>{title.toUpperCase()}</h3> */}
-            <h3>{configurationTitles[route]?.toUpperCase()}</h3>
+            <Text className='config-setup-title'>{configurationTitles[route]?.toUpperCase()}</Text>
             {renderContent()}
         </div>
     );
