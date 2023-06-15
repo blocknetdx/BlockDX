@@ -45,7 +45,7 @@ export const OrderTabs = () => {
                         activeTab === 'ORDER BOOK' ?
                         <Select
                             className='order-tab-select'
-                            optionClass='order-tab-option-text'
+                            optionClassName='order-tab-option-text'
                             lists={['8 decimals', '10 decimals']}
                         />
                         : null

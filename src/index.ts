@@ -1,16 +1,17 @@
 import { app, BrowserWindow, Config } from 'electron';
 import { dialog, ipcMain } from 'electron';
-import { 
-  BLOCKNET_CONF_NAME3, 
-  BLOCKNET_CONF_NAME4, 
-  blocknetDir3, 
+import {
+  BLOCKNET_CONF_NAME3,
+  BLOCKNET_CONF_NAME4,
+  blocknetDir3,
   blocknetDir4,
   logger,
   pricingSources,
   SimpleStorage,
 } from '@src-back';
 // import { BLOCKNET_CONF_NAME3, BLOCKNET_CONF_NAME4, blocknetDir3, blocknetDir4 } from './src-back/constants';
-import {ManifestType, dialogOptionsType} from './main.type';
+import { ManifestType, dialogOptionsType } from './main.type';
+import { compareByVersion } from '@/src-back/util';
 const path = require('path');
 const fs = require('fs-extra-promise');
 
@@ -72,7 +73,7 @@ const openConfigurationWindow = (options?: ConfigWindowOptionsType): void => {
     },
   });
   configurationWindow.loadURL(CONFIGURATION_WINDOW_WEBPACK_ENTRY);
-  configurationWindow.webContents.openDevTools();
+  // configurationWindow.webContents.openDevTools();
 
   ipcMain.on('isFirstRun', e => {
     e.returnValue = isFirstRun;
@@ -83,12 +84,12 @@ const handleError = (err: any) => {
   logger.error(err.message + '\n' + err.stack);
 };
 
-ipcMain.handle('getManifest', async function(e) {
+ipcMain.handle('getManifest', async function (e) {
   try {
-    console.log('getManifest main: ');
-    
+    // console.log('getManifest main: ');
+
     return getManifest();
-  } catch(err) {
+  } catch (err) {
     handleError(err);
   }
 });
@@ -96,12 +97,11 @@ ipcMain.handle('getManifest', async function(e) {
 const configurationFilesDirectory = path.join(app.getAppPath(), 'blockchain-configuration-files');
 
 const getManifest = () => {
-  
-  let manifest:ManifestType[] = storage.getItem('manifest');
-  if(!manifest) {
+
+  let manifest: ManifestType[] = storage.getItem('manifest');
+  if (!manifest) {
     const filePath = path.join(configurationFilesDirectory, 'manifest-latest.json');
     manifest = fs.readJsonSync(filePath);
-    console.log('inside getManifest function ddd: ', manifest);
   }
 
   const blockIdx = manifest.findIndex(t => t.ticker === 'BLOCK');
@@ -112,8 +112,8 @@ const getManifest = () => {
     dir_name_mac: blockDirectories.darwin,
     dir_name_win: blockDirectories.win32
   });
-  console.log('manifest: ', manifest);
-  
+  // console.log('manifest: ', manifest);
+
   return manifest;
 };
 
@@ -169,10 +169,47 @@ ipcMain.handle('getXbridgeConf', (e, xbridgeConfPath) => {
   return fs.readFileSync(xbridgeConfPath, 'utf8');
 });
 
-(async function() {
+ipcMain.handle('getFilteredWallets', (e, wallets) => {
+  console.log('getFilteredWallets: ');
+
+  let filteredWallets = [...wallets]
+    .filter(w => {
+      const dir = w.directory;
+      try {
+        fs.statSync(dir);
+        return true;
+      } catch (err) {
+        return false;
+      }
+    })
+    .reduce((arr, w) => {
+      const idx = arr.findIndex(ww => ww.abbr === w.abbr);
+      console.log('idx: ', idx, arr);
+      
+      if (idx > -1) { // coin is already in array
+        arr[idx].versions = [...arr[idx].versions, ...w.versions];
+        return arr;
+      } else {
+        return [...arr, w];
+      }
+    }, [])
+    .map(w => {
+      w.versions.sort(compareByVersion);
+      w.version = w.versions[0];
+      return w;
+    });
+
+  console.log('filteredWallets main index: ', filteredWallets);
+  
+  return filteredWallets;
+});
+
+
+
+(async function () {
   try {
 
-    
+
     user = storage.getItem('user');
     password = storage.getItem('password');
     port = storage.getItem('port');
@@ -186,36 +223,36 @@ ipcMain.handle('getXbridgeConf', (e, xbridgeConfPath) => {
     }
 
     pricingSource = storage.getItem('pricingSource');
-    if(!pricingSource) {
+    if (!pricingSource) {
       pricingSource = pricingSources.CRYPTO_COMPARE;
       storage.setItem('pricingSource', pricingSource);
     }
     apiKeys = storage.getItem('apiKeys');
-    if(!apiKeys) {
+    if (!apiKeys) {
       apiKeys = {};
       storage.setItem('apiKeys', apiKeys);
     }
     pricingUnit = storage.getItem('pricingUnit');
-    if(!pricingUnit) {
+    if (!pricingUnit) {
       pricingUnit = 'BTC';
       storage.setItem('pricingUnit', pricingUnit);
     }
     pricingFrequency = storage.getItem('pricingFrequency');
-    if(!pricingFrequency) {
+    if (!pricingFrequency) {
       pricingFrequency = 15000;
       storage.setItem('pricingFrequency', pricingFrequency);
     }
     enablePricing = storage.getItem('pricingEnabled');
-    if(!enablePricing && enablePricing !== false) {
+    if (!enablePricing && enablePricing !== false) {
       enablePricing = true;
       storage.setItem('pricingEnabled', enablePricing);
     }
     showWallet = storage.getItem('showWallet');
-    if(!showWallet && showWallet !== false) {
+    if (!showWallet && showWallet !== false) {
       showWallet = false;
       storage.setItem('showWallet', showWallet);
     }
-    if(!storage.getItem('addresses')) {
+    if (!storage.getItem('addresses')) {
       storage.setItem('addresses', {});
     }
 
@@ -224,14 +261,14 @@ ipcMain.handle('getXbridgeConf', (e, xbridgeConfPath) => {
       storage.setItem('port', port);
     }
 
-    if(!ip) {
+    if (!ip) {
       ip = '127.0.0.1';
       storage.setItem('blocknetIP', ip);
     }
 
-    if(!user || !password) {
+    if (!user || !password) {
       await onReady;
-      openConfigurationWindow({isFirstRun: true});
+      openConfigurationWindow({ isFirstRun: true });
       return;
     }
 

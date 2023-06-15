@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { SvgIcon } from '@components/index';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
@@ -14,7 +14,7 @@ import { ManifestType } from '@/main.type';
 import { Set } from 'immutable';
 import Wallet from './modules/wallet';
 import path from 'path';
-
+import { ConfigDataContext } from '@/context';
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -31,30 +31,21 @@ const configurationTitles = {
 }
 
 export const Configuration: React.FC = () => {
-    const [title, setTitle] = useState(CONFIG_ROUTE.SET_UP);
+    const [title, setTitle] = useState(CONFIG_ROUTE.FRESH_SET_UP);
     // const [title, setTitle] = useState(configurationTitles['setUp']);
-    const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.ADD_WALLET_EXPERT);
+    const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.SET_UP);
+    const { state, updateState } = useContext(ConfigDataContext);
 
     useEffect(() => {
         if (!!window) {
             getManifest();
-            // console.log('manifest list: ', window.api.getManifest());
         }
     }, []);
-
-    async function getCustomDirectory(token: string) {
-        if (!!window) {
-            const customDir = await window.api.getTokenPath(token)
-            return customDir ? customDir : await window.api.getDefaultDirectory
-        }
-
-        return '';
-    }
 
     async function getManifest() {
         let walletsOrigin: ManifestType[] = await window.api.getManifest();
 
-        let wallets = walletsOrigin.map(w => new Wallet(w));
+        let wallets:Wallet[] = walletsOrigin.map(w => new Wallet(w));
 
         console.log('wallets: ', wallets);
 
@@ -79,20 +70,66 @@ export const Configuration: React.FC = () => {
         let xbridgeConfPath = await window?.api.getXbridgeConfPath();
         let xbridgeConf;
 
-        try {            
+        try {
             if (!xbridgeConfPath) {
                 xbridgeConfPath = path.join(await wallets.find(w => w.abbr === 'BLOCK').directory, 'xbridge.conf')
             }
-            console.log('xbridgeConfPath: ', xbridgeConfPath);
+            // console.log('xbridgeConfPath: ', xbridgeConfPath);
             xbridgeConf = await window?.api.getXbridgeConf(xbridgeConfPath);
 
             console.log('xbridgeConf: ', xbridgeConf);
-            
+
         } catch (error) {
             console.log('xbridgeconfpath error: ', error);
-            
+
         }
 
+        if (xbridgeConf) {
+            try {
+                const splitConf = xbridgeConf
+                    .split('\n')
+                    .map(s => s.trim())
+                    .filter(s => s ? true : false);
+                const exchangeWallets = splitConf
+                    .find(s => /^ExchangeWallets\s*=/.test(s))
+                    .split('=')[1]
+                    .split(',')
+                    .map(s => s.trim())
+                    .filter(s => s ? true : false);
+                const walletFromVersionId = wallets.reduce((map, w) => map.set(w.versionId, w), new Map());
+                const abbrs: any[] = [];
+                for (const versionId of [...selectedWalletIds]) {
+                    const w = walletFromVersionId.get(versionId);
+                    if (!w || !exchangeWallets.includes(w.abbr)) {
+                        selectedWalletIds = selectedWalletIds.remove(versionId);
+                    } else {
+                        abbrs.push(w.abbr);
+                    }
+                }
+                const toAdd = exchangeWallets
+                    .filter(abbr => !abbrs.includes(abbr));
+                for (const abbr of toAdd) {
+                    const w = wallets.find(ww => ww.abbr === abbr);
+                    selectedWalletIds = selectedWalletIds.add(w.versionId);
+                }
+            } catch (err) {
+                // handleError(err);
+            }
+        }
+
+        const selectedAbbrs = Set([...wallets
+            .filter(w => selectedWalletIds.has(w.versionId))
+            .map(w => w.abbr)
+        ]);
+
+        console.log('selectedAbbrs: ', selectedAbbrs);
+        updateState({
+            'selectedWallets': selectedWalletIds,
+            'selectedAbbrs': selectedAbbrs,
+            'lookForWallets': true,
+            'wallets': wallets
+        })
+        
     }
 
     function handleNavigation(route: CONFIG_ROUTE) {
@@ -107,8 +144,10 @@ export const Configuration: React.FC = () => {
                 return <SelectWallets setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ADD_WALLET:
                 return <AddWallet setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.UPDATE_WALLET:
+                return <AddWallet setTitle={setTitle} handleNavigation={handleNavigation} configMode="Update" />
             case CONFIG_ROUTE.ADD_WALLET_QUICK:
-                return <AddWalletQuick setTitle={setTitle} handleNavigation={handleNavigation} />
+                return <AddWalletQuick setTitle={setTitle} handleNavigation={handleNavigation} state={state} />
             case CONFIG_ROUTE.ADD_WALLET_QUICK_FINISH:
                 return <AddWalletQuickFinish setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.CONFIGURATION_COMPLETE:
