@@ -54,9 +54,9 @@ export default function AddWalletQuick({
             let selectedWallets = state.selectedWallets;
             for (const w of wallets) {
                 if (w.abbr === wallet.abbr) {
-                    selectedWallets.delete(w.versionId);
+                    // selectedWallets.delete(w.versionId);
                 }
-                selectedWallets = selectedWallets.add(wallet.versionId);
+                // selectedWallets = selectedWallets.add(wallet.versionId);
             }
         }
     }

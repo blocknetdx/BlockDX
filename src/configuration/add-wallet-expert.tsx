@@ -7,7 +7,7 @@ import SelectWallets from '@/configuration/select-wallets';
 import SelectVersions from '@/configuration/select-versions';
 import { ConfigDataContext } from '@/context';
 import Wallet from '@/configuration/modules/wallet';
-import SelectDirectories from '@/configuration/expert-setting/select-directories';
+// import SelectDirectories from '@/configuration/expert-setting/select-directories';
 
 type StatusType = 'configSetUp' | 'rpcSettings';
 export type DataPathsType = {
@@ -87,11 +87,12 @@ export default function AddWalletExpert({
                 return <SelectVersions filteredWallets={filteredWallets} handleSubNavigation={handleSubNavigation}  />
             case 'selectDirectories':
                 return (
-                    <SelectDirectories
-                        handleOpenDialog={handleOpenDialog}
-                        filteredWallets={filteredWallets}
-                        dataPaths={dataPaths}
-                    />
+                    null
+                    // <SelectDirectories
+                    //     handleOpenDialog={handleOpenDialog}
+                    //     filteredWallets={filteredWallets}
+                    //     dataPaths={dataPaths}
+                    // />
                 )
             default:
                 return null;
