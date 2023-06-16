@@ -13,3 +13,19 @@ export const Text = (props : TextProps) => {
         <span {...props} ref={innerRef} className={`common ${props.className}`}>{children ? children : content}</span>
     );
 }
+
+interface TextLinkProps extends TextProps {
+    externalLink: string
+}
+
+export const TextLink = ({
+    externalLink, ...rest
+}: TextLinkProps):React.ReactElement => {
+    function openExternal() {
+        if (!!window) {
+            window.api.openExternal(externalLink);
+        }
+    }
+
+    return <Text {...rest} className='external-link' onClick={openExternal} />
+}

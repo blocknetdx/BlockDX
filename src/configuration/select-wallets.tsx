@@ -3,21 +3,28 @@ import {
     ConfigurationMenuProps, CONFIG_ROUTE
 } from './configuration.type';
 import { Text, Button } from '@components/index'
+import { ConfigDataContext } from '@/context';
+import { SubRouteType } from '@/configuration/add-wallet-expert';
+
+interface SelectWalletsProps {
+    selectWallet?: (versionId: string) => void
+    selectedWallets?: string[]
+    selectAll?: (wallets: string[]) => void
+    handleSubNavigation?: (route: SubRouteType) => void
+}
+
+type Props = SelectWalletsProps & ConfigurationMenuProps;
 
 export default function SelectWallets({
     setTitle,
-    handleNavigation
-}: ConfigurationMenuProps) {
-    const allWalletsList = [
-        'Blocknet (Block)',
-        'Bitcoin (BTC)',
-        'Dash (DASH)',
-        'Dogecoin (DOGE)',
-        'Litecoin (LTC)',
-        'PIVX (PIVX)',
-        'Syscoin (SYS)'
-    ]
-    const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
+    handleNavigation,
+    selectWallet,
+    selectedWallets,
+    selectAll,
+    handleSubNavigation,
+}: Props) {
+    const { state } = useContext(ConfigDataContext);
+    const { wallets } = state;
     return (
         <div className='d-flex flex-column flex-grow-1'>
             <div className='p-h-20'>
@@ -29,9 +36,11 @@ export default function SelectWallets({
                     type="checkbox"
                     name="walletCheckbox"
                     value='selectAll'
-                    checked={selectedWallets.length === allWalletsList.length}
+                    checked={selectedWallets.length !== 0 && selectedWallets.length === wallets.length}
                     onChange={() => {
-                        setSelectedWallets(allWalletsList.length !== selectedWallets.length ? allWalletsList : [])
+                        selectAll(selectedWallets.length !== wallets.length ? wallets.reduce((selectedWallets, wallet) => {
+                            return [...selectedWallets, wallet.versionId];
+                        }, []) : [])
                     }}
                 />
                 <Text className="configuration-setup-label" >Select All</Text>
@@ -47,7 +56,7 @@ export default function SelectWallets({
                                 value={wallet}
                                 checked={selectedWallets.includes(wallet) || false}
                                 onChange={() => {
-                                    setSelectedWallets(selectedWallets.includes(wallet) ? selectedWallets.filter(item => item !== wallet) : [...selectedWallets, wallet])
+                                    selectWallet(wallet.versionId)
                                 }}
                             />
                             <Text className="configuration-setup-label" >
@@ -61,13 +70,16 @@ export default function SelectWallets({
                 <Button
                     className='configuration-cancel-btn'
                     onClick={() => {
-                        setTitle(CONFIG_ROUTE.SET_UP);
-                        handleNavigation(CONFIG_ROUTE.SET_UP)
+                        handleNavigation(CONFIG_ROUTE.ADD_WALLET)
                     }}
                 >
-                    CANCEL
+                    BACK
                 </Button>
-                <Button className='configuration-continue-btn'>FINISH</Button>
+                <Button 
+                    className='configuration-continue-btn'
+                    disabled={selectedWallets.length === 0}
+                    onClick={() => handleSubNavigation('selectVersion')}
+                >FINISH</Button>
             </div>
         </div>
     );

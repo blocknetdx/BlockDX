@@ -74,7 +74,7 @@ export default function AddWalletQuick({
             <div className='m-h-20 flex-grow-1 wallets-list-container p-20'>
                 {
                     wallets.length === 0 ? 
-                    <Text>Unable to automatically detect installed wallets that haven\'t been configured already. If you haven\'t already installed the wallet you would like to connect, please do that first. If you are using a custom data directory you will need to go BACK and select Expert Setup. If you would like to configure a wallet you already have configured you will need to go BACK and select Update Wallet.','configurationWindowWalletVersions</Text>
+                    <Text>Unable to automatically detect installed wallets that haven't been configured already. If you haven't already installed the wallet you would like to connect, please do that first. If you are using a custom data directory you will need to go BACK and select Expert Setup. If you would like to configure a wallet you already have configured you will need to go BACK and select Update Wallet.</Text>
                     :
                     wallets.map(({name, versions, versionId}) => (
                         <div key={`add-wallet-${name}`} className='wallet-versions-container p-20'>

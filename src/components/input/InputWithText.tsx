@@ -9,6 +9,7 @@ import {
 interface InputWithTextProps extends React.HTMLProps<HTMLDivElement> {
     leftContent?: string
     leftContentClass?: string
+    leftContentContainerClass?: string
     rightContent?: string
     rightContentClass?: string
     inputClass?: string
@@ -26,6 +27,7 @@ export const InputWithText = (props: InputWithTextProps) => {
         rightContent, 
         inputClass, 
         leftContentClass, 
+        leftContentContainerClass = '',
         rightContentClass,
         leftIcon,
         leftIconCategory,
@@ -38,7 +40,7 @@ export const InputWithText = (props: InputWithTextProps) => {
         <div className={`common-input-text-container ${props.className}`}>
             {
                 leftContent ? 
-                <div className='d-flex flex-row flex-grow-1 align-items-center'>
+                <div className={`d-flex flex-row flex-grow-1 align-items-center ${leftContentContainerClass}`}>
                     <Text className={leftContentClass}>{leftContent}</Text>
                     {
                         leftIcon ?

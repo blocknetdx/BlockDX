@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Config } from 'electron';
-import { dialog, ipcMain } from 'electron';
+import { dialog, ipcMain, shell } from 'electron';
 import {
   BLOCKNET_CONF_NAME3,
   BLOCKNET_CONF_NAME4,
@@ -24,7 +24,7 @@ const { platform, env } = process;
 
 const { name, version } = fs.readJSONSync(path.join(app.getAppPath(), 'package.json'));
 
-let metaPath, user, password, port, pricingSource, apiKeys, pricingUnit, pricingFrequency, enablePricing, showWallet;
+let metaPath, user, password, port, pricingSource, apiKeys, pricingUnit, pricingFrequency, enablePricing, showWallet, isFirstRun = false;
 
 let dataPath = '';
 const homePath = app.getPath('home');
@@ -45,25 +45,29 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+let appWindow: BrowserWindow;
+
 const openAppWindow = (): void => {
-  const mainWindow = new BrowserWindow({
+  appWindow = new BrowserWindow({
     height: 1000,
     width: 1400,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  mainWindow.webContents.openDevTools();
+  appWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  appWindow.webContents.openDevTools();
 };
 
 type ConfigWindowOptionsType = {
   isFirstRun: boolean;
 }
 
+let configurationWindow:BrowserWindow;
+
 const openConfigurationWindow = (options?: ConfigWindowOptionsType): void => {
   const { isFirstRun = false } = options;
-  const configurationWindow = new BrowserWindow({
+  configurationWindow = new BrowserWindow({
     height: platform === 'win32' ? 708 : platform === 'darwin' ? 695 : 670,
     width: 1050,
     webPreferences: {
@@ -73,11 +77,7 @@ const openConfigurationWindow = (options?: ConfigWindowOptionsType): void => {
     },
   });
   configurationWindow.loadURL(CONFIGURATION_WINDOW_WEBPACK_ENTRY);
-  // configurationWindow.webContents.openDevTools();
-
-  ipcMain.on('isFirstRun', e => {
-    e.returnValue = isFirstRun;
-  });
+  configurationWindow.webContents.openDevTools();
 };
 
 const handleError = (err: any) => {
@@ -157,6 +157,39 @@ ipcMain.handle('getSelected', e => {
   return selectedWallets;
 });
 
+ipcMain.handle('getCredentials', e => {
+  const username = storage.getItem('user') || '';
+  const password = storage.getItem('password') || '';
+
+  return {username, password}
+});
+
+ipcMain.handle('isFirstRun', e => {
+  return isFirstRun;
+});
+
+const domainWhitelist = [
+  'blocknet.co',
+  'xlitewallet.com',
+  'github.com',
+  'reddit.com',
+  'twitter.com',
+  'discord.gg',
+  'blocknet.us16.list-manage.com',
+];
+
+const validateUrl = (url:string) => {
+  const domainPatts = domainWhitelist
+    .map(d => new RegExp(`https://(.+\\.)*?${d}(?=/|$)`, 'i'));
+  return domainPatts.some(p => p.test(url));
+};
+
+ipcMain.handle('openExternal', (e, url) => {
+  if (validateUrl(url)) {
+    shell.openExternal(url);
+  }
+});
+
 const getCustomXbridgeConfPath = () => {
   return storage.getItem('xbridgeConfPath') || '';
 };
@@ -182,8 +215,8 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
         return false;
       }
     })
-    .reduce((arr, w) => {
-      const idx = arr.findIndex(ww => ww.abbr === w.abbr);
+    .reduce((arr:any, w) => {
+      const idx = arr.findIndex((ww:any )=> ww.abbr === w.abbr);
       console.log('idx: ', idx, arr);
       
       if (idx > -1) { // coin is already in array
@@ -193,7 +226,7 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
         return [...arr, w];
       }
     }, [])
-    .map(w => {
+    .map((w:any) => {
       w.versions.sort(compareByVersion);
       w.version = w.versions[0];
       return w;
@@ -204,6 +237,41 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
   return filteredWallets;
 });
 
+ipcMain.handle('saveSelected', (e, selectedWallets = []) => {
+  try {
+    storage.setItem('selectedWallets', selectedWallets, true);
+    return true;
+  } catch (error) {
+    return false;
+  }
+});
+
+ipcMain.handle('configurationWindowCancel', e => {
+  if (appWindow) {
+    configurationWindow.close();
+  } else {
+    app.quit();
+  }
+});
+
+ipcMain.handle('checkDirectory', (e, dir) => {
+  try {
+    fs.statSync(dir);
+    return true;
+  } catch (err) {
+    return false;
+  }
+});
+
+ipcMain.handle('showWarning', (e, message) => {
+  const options = {
+    defaultId: 2,
+    title: 'Warning',
+    message: message || 'Something went wrong!',
+  };
+
+  dialog.showMessageBox(null, options);
+});
 
 
 (async function () {
@@ -254,7 +322,7 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
     }
     if (!storage.getItem('addresses')) {
       storage.setItem('addresses', {});
-    }
+    }    
 
     if (!port) {
       port = '41414';
@@ -268,11 +336,12 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
 
     if (!user || !password) {
       await onReady;
+      isFirstRun = true;
       openConfigurationWindow({ isFirstRun: true });
       return;
     }
 
-    openConfigurationWindow();
+    // openConfigurationWindow();
 
     // openAppWindow();
   } catch (error) {

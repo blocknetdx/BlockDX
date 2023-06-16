@@ -34,6 +34,8 @@ class Wallet {
     port: string;
     version: string;
     directory: string;
+    customDirectory?: string;
+    defaultDirectory?: string;
 
   constructor(w?: ManifestType) {
     const { versions = [] } = w;
@@ -55,7 +57,8 @@ class Wallet {
     this.port = '';
     this.version = versions.length > 0 ? versions[versions.length - 1] : '';
     // this.directory = this.getCustomDirectory();
-    this.testFunction();
+    this.setCustomDirectory();
+    this.setDefaultDirectory();
   }
 
   set(arg1: any, arg2: any) {
@@ -70,7 +73,9 @@ class Wallet {
     } else {
       throw new Error('You must pass in either a string or an object as the first argument to the set() method.');
     }
-    return Object.assign(new Wallet(), wallet);
+    console.log('wallet set: ', wallet);
+    
+    return Object.assign(new Wallet(wallet), wallet);
   }
 
   generateCredentials() {
@@ -80,10 +85,14 @@ class Wallet {
     return { username, password };
   }
 
-  async testFunction() {
+  async setCustomDirectory() {
     this.directory = await this.getCustomDirectory();
+    this.customDirectory = this.directory;
   }
 
+  async setDefaultDirectory() {
+    this.defaultDirectory = await this.getDefaultDirectory();
+  }
 
   async getCustomDirectory() {
     const customDir = await window.api.getTokenPath(this.abbr);

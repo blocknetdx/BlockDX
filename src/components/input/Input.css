@@ -58,3 +58,25 @@
     flex-direction: row;
     border: none;
 }
+
+.rpc-setting-text-container {
+    border: none;
+    padding: 0px;
+    background: #213d54;
+    border-radius: 0;
+    margin: 15px 0px;
+}
+
+.rpc-setting-text-left-container {
+    flex-basis: 40%;
+    flex-grow: 0 !important;
+    margin-left: 10px;
+}
+
+.rpc-setting-text-input {
+    background-color: #123149;
+    border: none;
+    padding: 16px 15px 16px 15px;
+    flex-grow: 1;
+}
+
