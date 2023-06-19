@@ -9,6 +9,8 @@ export type SidebarItemType = {
     text: string
 }
 
+export type configType = 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET' | 'RPC_SETTINGS' | undefined;
+
 export type StateType = {
     sidebarSelected?: boolean;
     sidebarItems?: SidebarItemType[];
@@ -20,7 +22,7 @@ export type StateType = {
     password?: string;
     litewalletConfigDirectory?: string;
     isFirstRun?: boolean;
-    configurationType?: 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET' | 'RPC_SETTINGS' | undefined;
+    configurationType?: configType;
     selectedWallets?: string[];
     selectedAbbrs?: string[];
     lookForWallets?: boolean
@@ -30,6 +32,8 @@ export type StateType = {
     updateAbbrToVersion?: Map<string, string>;
     skipList?: string[];
     abbrToVersion?: Map<string, string>;
+    configuringWallets?: Wallet[];
+    configuringAbbrs?: string[];
 }
 
 export type ConfigDataContextType = {

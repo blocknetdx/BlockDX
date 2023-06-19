@@ -37,6 +37,7 @@ export type ContextBridgeApi = {
   getBridgeConf: (bridgeConf: string) => Promise<any>
   addToXBridgeConf: (data: AddToXBridgeConfType) => void
   checkWalletDirectories: (wallets: Wallet[]) => Promise<Wallet[]>
+  saveDXData: (dxUser: string | number, dxPassword: string | number, dxPort: string | number, dxIP: string | number) => void
 }
 
 type DefaultHomePaths = {
@@ -68,5 +69,6 @@ contextBridge.exposeInMainWorld('api', {
   saveWalletConf: (data: SaveConfParamsType) => ipcRenderer.invoke('saveWalletConf', data),
   getBridgeConf: (bridgeConf: string) => ipcRenderer.invoke('getBridgeConf', bridgeConf),
   addToXBridgeConf: (data: AddToXBridgeConfType) => ipcRenderer.invoke('addToXBridgeConf', data),
-  checkWalletDirectories: (wallets: Wallet[]) => ipcRenderer.invoke('checkWalletDirectories', wallets)
+  checkWalletDirectories: (wallets: Wallet[]) => ipcRenderer.invoke('checkWalletDirectories', wallets),
+  saveDXData: (dxUser: string | number, dxPassword: string | number, dxPort: string | number, dxIP: string | number) => ipcRenderer.invoke('saveDXData', dxUser, dxPassword, dxPort, dxIP)
 });

@@ -5,20 +5,24 @@ import { SubRouteType } from '@/configuration/add-wallet-expert';
 import { ConfigDataContext } from '@/context';
 import { compareByVersion } from '@/src-back/util';
 import { EXPERT_ROUTE } from '@/configuration/expert-setup/expert-setup';
+import { CONFIG_ROUTE } from '@/configuration/configuration.type';
+import { SidePanel } from '@/configuration/side-panel';
 
 interface SelectVersionsProps {
     filteredWallets?: Wallet[]
     handleSubNavigation?: (route: EXPERT_ROUTE) => void
+    handleNavigation?: (route: CONFIG_ROUTE) => void
     selectedAbbrs?: string[]
 }
 
 export default function SelectVersions({
     filteredWallets = [],
     selectedAbbrs = [],
-    handleSubNavigation
+    handleSubNavigation,
+    handleNavigation
 }:SelectVersionsProps):React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
-    const { configurationType, wallets, abbrToVersion } = state;
+    const { configurationType, wallets, abbrToVersion, configuringAbbrs } = state;
     const [displayWalletList, setDisplayWalletList] = useState<Wallet[]>([]);
 
     useEffect(() => {
@@ -62,49 +66,52 @@ export default function SelectVersions({
     console.log('displayWalletList: ', displayWalletList);
     
     return (
-        <div className='d-flex flex-column flex-grow-1'>
-            <div className='p-h-20'>
-                <Text>Please select the wallet version installed for each of the following assets. DO NOT use any wallet versions not listed here. They have either not been tested yet or are not compatible.</Text>
-            </div>
-            <div className='m-h-20 m-v-20 flex-grow-1 wallets-list-container p-h-20'>
-                {
-                    displayWalletList.map((wallet) => (
-                        <div key={`add-wallet-${wallet.name}-${wallet.version   }`} className='wallet-versions-container p-20 m-v-20'>
-                            <div className='d-flex justify-content-between align-items-center m-v-10'>
-                                <Text>{wallet.name}</Text>
+        <div className='d-flex flex-row flex-grow-1'>
+            <SidePanel status={0} />
+            <div className='d-flex flex-column flex-grow-1'>
+                <div className='p-h-20'>
+                    <Text>Please select the wallet version installed for each of the following assets. DO NOT use any wallet versions not listed here. They have either not been tested yet or are not compatible.</Text>
+                </div>
+                <div className='m-h-20 m-v-20 flex-grow-1 wallets-list-container p-h-20'>
+                    {
+                        displayWalletList.map((wallet) => (
+                            <div key={`add-wallet-${wallet.name}-${wallet.version   }`} className='wallet-versions-container p-20 m-v-20'>
+                                <div className='d-flex justify-content-between align-items-center m-v-10'>
+                                    <Text>{wallet.name}</Text>
+                                </div>
+                                <div className='wallet-version-select-container'>
+                                    <Text className='flex-grow-1 m-l-10'>Wallet Version</Text>
+                                    <Select
+                                        className='wallet-version'
+                                        optionClassName='order-tab-option-text'
+                                        lists={wallet.versions}
+                                        handleChange={(value) => {
+                                            updateSingleState('abbrToVersion', abbrToVersion.set(wallet.abbr, value))
+                                        }}
+                                    />
+                                </div>
                             </div>
-                            <div className='wallet-version-select-container'>
-                                <Text className='flex-grow-1 m-l-10'>Wallet Version</Text>
-                                <Select
-                                    className='wallet-version'
-                                    optionClassName='order-tab-option-text'
-                                    lists={wallet.versions}
-                                    handleChange={(value) => {
-                                        updateSingleState('abbrToVersion', abbrToVersion.set(wallet.abbr, value))
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    ))
-                }
-            </div>
-            <div className='d-flex flex-row justify-content-between m-v-20'>
-                <Button
-                    className='configuration-cancel-btn'
-                    onClick={() => {
-                        handleSubNavigation(EXPERT_ROUTE.SELECT_WALLETS)
-                    }}
-                >
-                    BACK
-                </Button>
-                <Button
-                    className='configuration-continue-btn'
-                    onClick={() => {
-                        // console.log('abbrToVersion: ', abbrToVersion);
-                        
-                        handleSubNavigation(EXPERT_ROUTE.SELECT_DIRECTORIES);
-                    }}
-                >CONTINUE</Button>
+                        ))
+                    }
+                </div>
+                <div className='d-flex flex-row justify-content-between m-v-20'>
+                    <Button
+                        className='configuration-cancel-btn'
+                        onClick={() => {
+                            handleSubNavigation(EXPERT_ROUTE.SELECT_WALLETS)
+                        }}
+                    >
+                        BACK
+                    </Button>
+                    <Button
+                        className='configuration-continue-btn'
+                        onClick={() => {
+                            // console.log('abbrToVersion: ', abbrToVersion);
+                            
+                            handleSubNavigation(EXPERT_ROUTE.SELECT_DIRECTORIES);
+                        }}
+                    >CONTINUE</Button>
+                </div>
             </div>
         </div>
     );

@@ -20,6 +20,8 @@
       "@context": ["./context"],
       "@src-back": ["./src-back"],
       "@component": ["./components"],
+      "@config-expert-setup": ["./configuration/expert-setup"],
+      "@hooks": ["./hooks"]
     },
     "jsx": "react-jsx"
   },
