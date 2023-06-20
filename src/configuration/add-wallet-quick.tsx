@@ -41,8 +41,22 @@ export default function AddWalletQuick({
 
     function selectOneWallet(versionId: string) {
         setSelectedWalletIds(selectedWalletIds.includes(versionId) ? selectedWalletIds.filter(item => item !== versionId) : [...selectedWalletIds, versionId])
+
+        if (!configMode) {
+            let selectedWallets = state.selectedWallets;
+            for (const w of wallets) {
+                if (w.abbr === wallet.abbr) {
+                    // selectedWallets.delete(w.versionId);
+                }
+                // selectedWallets = selectedWallets.add(wallet.versionId);
+            }
+        }
     }
 
+    function handleContinue():void {
+        updateSingleState('selectedWallets', selectedWalletIds);
+        handleNavigation(CONFIG_ROUTE.ADD_WALLET_QUICK_FINISH)
+    }
 
     return (
         <div className='d-flex flex-column flex-grow-1'>

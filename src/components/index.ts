@@ -10,6 +10,7 @@ export * from './toggle-switch/ToggleSwitch'
 export * from './range-slider/RangeSlider'
 export * from './order-tabs/OrderTabs'
 export * from './separator/Separator'
+export * from './check-box/CheckBox';
 export * from './tab/Tab'
 export * from './chart/Chart'
 export * from './side-bar/SideBar'

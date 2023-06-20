@@ -73,8 +73,6 @@ class Wallet {
     } else {
       throw new Error('You must pass in either a string or an object as the first argument to the set() method.');
     }
-    console.log('wallet set: ', wallet);
-    
     return Object.assign(new Wallet(wallet), wallet);
   }
 
