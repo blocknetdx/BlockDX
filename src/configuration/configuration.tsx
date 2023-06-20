@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SvgIcon, Text } from '@components/index';
+import { SvgIcon } from '@components/index';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
 import ConfigurationMenu from './configuration-menu';
