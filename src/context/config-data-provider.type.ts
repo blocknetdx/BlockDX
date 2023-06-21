@@ -9,7 +9,7 @@ export type SidebarItemType = {
     text: string
 }
 
-export type configType = 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET' | 'RPC_SETTINGS' | undefined;
+export type configType = 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET' | 'RPC_SETTINGS' | 'LITEWALLET_RPC_SETUP' | undefined;
 
 export type StateType = {
     sidebarSelected?: boolean;

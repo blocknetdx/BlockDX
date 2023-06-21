@@ -17,7 +17,8 @@ const ConfigurationMenu = ({
         {
             option: 'XLite Setup',
             content: 'Use this to configure {{XLite-{https://xlitewallet.com}}} with BlockDX',
-            route: CONFIG_ROUTE.XLITE_SET_UP
+            route: CONFIG_ROUTE.XLITE_SET_UP,
+            configType: 'LITEWALLET_RPC_SETUP'
         },
         {
             option: 'Add New Local Wallet(s)',
@@ -78,11 +79,11 @@ const ConfigurationMenu = ({
             
             <div className='p-h-20 flex-grow-1 m-t-10'>
                 {
-                    options.map(({ option, content, route }, index) => (
+                    options.map(({ option, content, configType }, index) => (
                         <div key={`configuration-menu-${index}`}>
                             <Button className='configuration-menu-option-btn' onClick={() => { setSelectedOption(options[index]) }}>
                                 <div className='d-flex align-items-center'>
-                                    <Text className={` ${selectedOption.route === route ? 'blue-circle-fill' : 'blue-circle-empty'}`} />
+                                    <Text className={` ${selectedOption.configType === configType ? 'blue-circle-fill' : 'blue-circle-empty'}`} />
                                     <Text className="configuration-setup-label m-l-10 text-left">{option}</Text>
                                 </div>
                                 <Text className='m-l-33 text-left'>{filterContent(content)}</Text>

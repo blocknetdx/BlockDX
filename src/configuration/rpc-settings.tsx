@@ -16,7 +16,7 @@ interface IRPCSettingsProps {
 export default function RpcSettings({
     handleNavigation
 }:IRPCSettingsProps): React.ReactElement {
-    const { state } = useContext(ConfigDataContext);
+    const { state, updateSingleState } = useContext(ConfigDataContext);
     const { configurationType, username = '', password = '', rpcPort = 41414, rpcIP = '127.0.0.1' } = state;
 
     const [rpcSettings, setRpcSettings] = useState<OptionsType>({
@@ -35,15 +35,15 @@ export default function RpcSettings({
 
     async function handleContinue() {
         const { username, password, rpcPort, rpcIP }:OptionsType = rpcSettings;
-        if (!username || !password) {
+        if (!username || !password || !rpcPort || rpcIP) {
             return;
         }
 
-        if (configurationType !== 'RPC_SETTINGS') {
-            await window.api?.saveDXData(username, password, rpcPort, rpcIP);
-        }
+        // if (configurationType !== 'RPC_SETTINGS') {
+        //     await window.api?.saveDXData(username, password, rpcPort, rpcIP);
+        // }
 
-        handleNavigation(CONFIG_ROUTE.FINISH)
+        handleNavigation(CONFIG_ROUTE.FINISH);
     }
 
     return (
@@ -70,7 +70,8 @@ export default function RpcSettings({
                                     setRpcSettings({
                                         ...rpcSettings,
                                         [option]: e.target.value
-                                    })
+                                    });
+                                    updateSingleState(option, e.target.value);
                                 }}
                             />
                         ))
