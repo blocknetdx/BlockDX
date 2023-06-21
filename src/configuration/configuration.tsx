@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SvgIcon } from '@components/index';
+import { SvgIcon, Text } from '@components/index';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
 import ConfigurationMenu from './configuration-menu';
@@ -18,6 +18,7 @@ import { ConfigDataContext } from '@/context';
 import RpcSettings from '@/configuration/rpc-settings';
 import _ from 'lodash';
 import SelectWalletVersions from '@/configuration/select-wallet-versions';
+import { Finish } from '@/configuration/finish';
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -172,6 +173,8 @@ export const Configuration: React.FC = () => {
                 return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SELECT_WALLET_VERSIONS:
                 return <SelectWalletVersions setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.FINISH:
+                return <Finish setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SET_UP:
                 return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.XLITE_SET_UP: 
@@ -193,7 +196,7 @@ export const Configuration: React.FC = () => {
             case CONFIG_ROUTE.ADD_WALLET_EXPERT_FINISH:
                 return <AddWalletExpertFinish setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.UPDATE_RPC_SETTINGS:
-                return <RpcSettings handleNavigation={handleNavigation} />
+                return <RpcSettings setTitle={setTitle} handleNavigation={handleNavigation} />
             default:
                 return <></>;
         }

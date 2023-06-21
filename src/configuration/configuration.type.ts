@@ -15,7 +15,8 @@ export enum CONFIG_ROUTE {
     CONFIGURATION_COMPLETE = 'configurationComplete',
     SELECT_SETUP_TYPE = 'selectSetupType',
     CONFIGURATION_MENU = 'configurationMenu',
-    SELECT_WALLET_VERSIONS = 'selectWalletVersions'
+    SELECT_WALLET_VERSIONS = 'selectWalletVersions',
+    FINISH = 'finish',
 }
 
 export interface ConfigurationMenuProps {

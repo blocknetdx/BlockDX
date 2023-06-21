@@ -20,11 +20,15 @@ export type StateType = {
     password?: string;
     litewalletConfigDirectory?: string;
     isFirstRun?: boolean;
-    configurationType?: 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET';
+    configurationType?: 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET' | 'RPC_SETTINGS';
     selectedWallets?: string[];
-    selectedAbbrs?: any;
-    lookForWallets?: boolean
-    wallets?: Wallet[]
+    selectedAbbrs?: string[];
+    lookForWallets?: boolean;
+    wallets?: Wallet[];
+    setupType?: 'QUICK_SETUP' | 'EXPERT_SETUP';
+    addAbbrToVersion?: Map<string, string>;
+    updateAbbrToVersion?: Map<string, string>;
+    skipList?: string[];
 }
 
 export type ConfigDataContextType = {
