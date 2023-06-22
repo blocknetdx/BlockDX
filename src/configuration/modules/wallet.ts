@@ -2,18 +2,15 @@ import { ManifestType } from "@/main.type";
 
 const uuid = require('uuid');
 
-// const fileExists = (p: string) => {
-//   try {
-//     fs.statSync(p);
-//     return true;
-//   } catch(err) {
-//     return false;
-//   }
-// };
-
-// type WalletType = {
-//     [key: string]: string | string[] | Promise<string>
-// }
+export type SaveConfParamsType = {
+  directory: string;
+  conf: string;
+  walletConf: string;
+  credentials: {
+    username: string;
+    password: string;
+  }
+}
 
 class Wallet {
     name: string;
@@ -107,23 +104,22 @@ class Wallet {
     return defaultDirectory;
   }
 
-//   saveWalletConf() {
-//     const { directory } = this;
-//     const conf = this.confName ? this.confName : this.walletConf.replace(/--.*$/, '') + '.conf';
-//     const filePath = path.join(directory, conf);
-//     fs.ensureFileSync(filePath);
-//     const defaultFile = filePath + '-default';
-//     if(!fileExists(defaultFile)) fs.copySync(filePath, defaultFile);
-//     const baseConfStr = ipcRenderer.sendSync('getBaseConf', this.walletConf);
-//     if(!baseConfStr) throw new Error(`${this.walletConf} not found.`);
-//     const baseConf = splitConf(baseConfStr);
-//     const newContents = Object.assign({}, baseConf, {
-//       rpcuser: this.username,
-//       rpcpassword: this.password
-//     });
-//     mergeWrite(filePath, newContents);
-//     return newContents;
-//   }
+  async saveWalletConf() {
+    const { directory } = this;
+    const conf = this.confName ? this.confName : this.walletConf.replace(/--.*$/, '') + '.conf';
+
+    const newContents = await window.api?.saveWalletConf({
+      directory: this.directory,
+      conf,
+      walletConf: this.walletConf,
+      credentials: {
+        username: this.username,
+        password: this.password
+      }
+    })
+
+    return newContents;
+  }
 }
 
 export default Wallet;

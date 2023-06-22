@@ -4,8 +4,13 @@
 
 import { ipcRenderer, contextBridge } from "electron";
 import { ManifestType } from "@/main.type";
-import Wallet from "@/configuration/modules/wallet";
+import Wallet, { SaveConfParamsType } from "@/configuration/modules/wallet";
 import { CredentialsType } from "@/configuration/configuration.type";
+
+type AddToXBridgeConfType = {
+  blockDir: string;
+  data: Map<string, any>
+}
 
 export type ContextBridgeApi = {
   // Declare a `readFile` function that will return a promise. This promise
@@ -28,6 +33,9 @@ export type ContextBridgeApi = {
   showWarning: (message: string) => void
   getUser: () => Promise<string>
   getPassword: () => Promise<string>
+  saveWalletConf: (data: SaveConfParamsType) => Promise<any>
+  getBridgeConf: (bridgeConf: string) => Promise<any>
+  addToXBridgeConf: (data: AddToXBridgeConfType) => void
 }
 
 type DefaultHomePaths = {
@@ -55,5 +63,8 @@ contextBridge.exposeInMainWorld('api', {
   showWarning: (message: string) => ipcRenderer.invoke('showWarning', message),
   getUser: () => ipcRenderer.invoke('getUser'),
   getPassword: () => ipcRenderer.invoke('getPassword'),
-  setTokenPaths: (wallets: any) => ipcRenderer.invoke('setTokenPaths', wallets)
+  setTokenPaths: (wallets: any) => ipcRenderer.invoke('setTokenPaths', wallets),
+  saveWalletConf: (data: SaveConfParamsType) => ipcRenderer.invoke('saveWalletConf', data),
+  getBridgeConf: (bridgeConf: string) => ipcRenderer.invoke('getBridgeConf', bridgeConf),
+  addToXBridgeConf: (data: AddToXBridgeConfType) => ipcRenderer.invoke('addToXBridgeConf', data),
 });
