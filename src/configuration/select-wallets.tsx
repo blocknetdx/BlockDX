@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE
 } from './configuration.type';
-import { Text, Button } from '@components/index'
+import { Text, Button, CheckBox } from '@component'
 import { ConfigDataContext } from '@/context';
 import { SubRouteType } from '@/configuration/add-wallet-expert';
+import { SidePanel } from '@/configuration/side-panel';
+import Wallet from '@/configuration/modules/wallet';
 
 interface SelectWalletsProps {
     selectWallet?: (versionId: string) => void
@@ -19,67 +21,105 @@ export default function SelectWallets({
     setTitle,
     handleNavigation,
     selectWallet,
-    selectedWallets,
     selectAll,
     handleSubNavigation,
 }: Props) {
-    const { state } = useContext(ConfigDataContext);
-    const { wallets } = state;
+    const { state, updateSingleState } = useContext(ConfigDataContext);
+    const { wallets, skipSetup, configurationType, selectedAbbrs: selectedWalletAbbrs } = state;
+    const addingWallets = configurationType === 'ADD_WALLET';
+    const updatingWallets = configurationType === 'UPDATE_WALLET';
+
+    const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
+    const [selectedAbbrs, setSelectedAbbrs] = useState<string[]>([]);
+
+    // console.log('selectedAbbrs: ', selectedAbbrs);
+
+    useEffect(() => {
+        initialFunction();
+    }, []);
+    
+    async function initialFunction() {
+        const filteredWallets: Wallet[] = await window?.api?.getFilteredWallets(wallets);
+        console.log('filteredWallets: ', filteredWallets);
+        setSelectedAbbrs(updatingWallets ? [] : filteredWallets.reduce((arr: string[], w) => {
+            return  w.abbr === 'LTC' ? arr : [...arr, w.abbr]
+        }, []))
+    }
+    
+
+    const items = wallets.filter(w => addingWallets ? !selectedAbbrs.includes(w.abbr) : updatingWallets ? selectedAbbrs.includes(w.abbr) : true)
+    .reduce((arr: Wallet[], w) => {
+        return arr.some(ww => ww.abbr === w.abbr) ? arr : [...arr, w];
+    }, []);
+
+    console.log('selected items: ', items);
+
+    const showSkip = !addingWallets && !updatingWallets;
+
     return (
-        <div className='d-flex flex-column flex-grow-1'>
-            <div className='p-h-20'>
-                <Text>In order to conduct peer-to-peer trades, Block DX requires the  Blocknet wallet and the wallets of any assets you want to trade with. Select the wallets that are installed to begin setup.</Text>
-            </div>
-            <div className='d-flex justify-content-end align-items-center p-h-20 m-v-10'>
-                <input
-                    className="form-check-input"
-                    type="checkbox"
-                    name="walletCheckbox"
-                    value='selectAll'
-                    checked={selectedWallets.length !== 0 && selectedWallets.length === wallets.length}
-                    onChange={() => {
-                        selectAll(selectedWallets.length !== wallets.length ? wallets.reduce((selectedWallets, wallet) => {
-                            return [...selectedWallets, wallet.versionId];
-                        }, []) : [])
-                    }}
-                />
-                <Text className="configuration-setup-label" >Select All</Text>
-            </div>
-            <div className='m-h-20 flex-grow-1 wallets-list-container'>
-                {
-                    allWalletsList.map((wallet, index) => (
-                        <div className="form-check m-v-20 d-flex align-items-center">
-                            <input
-                                type="checkbox"
+        <div className='d-flex flex-row flex-grow-1'>
+            <SidePanel status={0} />
+            <div className='d-flex flex-column flex-grow-1'>
+                <div className='p-h-20'>
+                    <Text>In order to conduct peer-to-peer trades, Block DX requires the  Blocknet wallet and the wallets of any assets you want to trade with. Select the wallets that are installed to begin setup.</Text>
+                </div>
+                <div className='d-flex justify-content-end align-items-center p-h-20 m-v-10'>
+                    <CheckBox
+                        className="form-check-input"
+                        name="walletCheckbox"
+                        // checked={selectedWallets.includes(wallet.versionId) || false}
+                        onPress={() => {
+                            selectAll(selectedWallets.length !== wallets.length ? wallets.reduce((selectedWallets, wallet) => {
+                                return [...selectedWallets, wallet.versionId];
+                            }, []) : [])
+                        }}
+                        label="Select All"
+                        labelClass='configuration-setup-label'
+                    />
+                </div>
+                <div className={`m-h-20 flex-grow-1 wallets-list-container ${showSkip ? 'max-h-210' : ''}`}>
+                    {
+                        wallets.map((wallet, index) => (
+                            <CheckBox
                                 className="form-check-input"
+                                containerClass='form-check m-v-20 d-flex align-items-center'
                                 name="walletCheckbox"
-                                value={wallet}
-                                checked={selectedWallets.includes(wallet) || false}
-                                onChange={() => {
-                                    selectWallet(wallet.versionId)
-                                }}
+                                value={wallet.versionId}
+                                // checked={selectedWallets.includes(wallet.versionId) || false}
+                                onPress={() => selectWallet(wallet.versionId)}
+                                label={`${wallet.name} (${wallet.abbr})`}
+                                labelClass='configuration-setup-label'
                             />
-                            <Text className="configuration-setup-label" >
-                                {wallet}
-                            </Text>
-                        </div>
-                    ))
+                        ))
+                    }
+                </div>
+                {
+                    !showSkip ? null :
+                    <CheckBox
+                        className="form-check-input"
+                        containerClass='form-check m-v-20 d-flex align-items-center'
+                        name="walletCheckbox"
+                        checked={skipSetup || false}
+                        onPress={() => {updateSingleState('skipSetup', !skipSetup)}}
+                        label="Skip and setup Block DX manually (not recommended)"
+                        labelClass='configuration-setup-label'
+                    />
                 }
-            </div>
-            <div className='d-flex flex-row justify-content-between m-v-20'>
-                <Button
-                    className='configuration-cancel-btn'
-                    onClick={() => {
-                        handleNavigation(CONFIG_ROUTE.ADD_WALLET)
-                    }}
-                >
-                    BACK
-                </Button>
-                <Button 
-                    className='configuration-continue-btn'
-                    disabled={selectedWallets.length === 0}
-                    onClick={() => handleSubNavigation('selectVersion')}
-                >FINISH</Button>
+                <div className='d-flex flex-row justify-content-between m-v-20'>
+                    <Button
+                        className='configuration-cancel-btn'
+                        onClick={() => {
+                            handleNavigation(CONFIG_ROUTE.ADD_WALLET)
+                        }}
+                    >
+                        BACK
+                    </Button>
+                    <Button 
+                        className='configuration-continue-btn'
+                        disabled={selectedWallets.length === 0}
+                        onClick={() => handleSubNavigation('selectVersion')}
+                    >FINISH</Button>
+                </div>
             </div>
         </div>
     );

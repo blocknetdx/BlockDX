@@ -140,6 +140,10 @@ input[type="checkbox"]:checked {
     margin-right: 20px;
 }
 
+.m-t-4 {
+    margin-top: 4px !important;
+}
+
 .m-t-10 {
     margin-top: 10px;
 }
@@ -183,4 +187,8 @@ input[type="checkbox"]:checked {
     justify-content: space-between;
     display: flex;
     flex-direction: row;
+}
+
+.max-h-210 {
+    max-height: 210px;
 }

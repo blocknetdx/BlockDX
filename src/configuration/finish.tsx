@@ -124,7 +124,7 @@ export function Finish({
     return (
         <div className='d-flex flex-column flex-grow-1'>
             <div className='d-flex flex-row flex-grow-1'>
-                <SidePanel />
+                <SidePanel status={1} />
                 <div className='m-h-20 d-flex flex-column'>
                     <div className='flex-grow-1'>
                         <div className='m-v-5'>
