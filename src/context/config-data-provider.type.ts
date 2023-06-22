@@ -23,7 +23,7 @@ export type StateType = {
     configurationType?: 'FRESH_SETUP' | 'ADD_WALLET' | 'UPDATE_WALLET' | 'RPC_SETTINGS';
     selectedWallets?: string[];
     selectedAbbrs?: string[];
-    lookForWallets?: boolean
+    lookForWallets?: boolean;
     wallets?: Wallet[];
     setupType?: 'QUICK_SETUP' | 'EXPERT_SETUP';
     addAbbrToVersion?: Map<string, string>;

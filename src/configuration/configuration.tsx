@@ -199,7 +199,7 @@ export const Configuration: React.FC = () => {
             case CONFIG_ROUTE.ADD_WALLET_EXPERT_FINISH:
                 return <AddWalletExpertFinish setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.UPDATE_RPC_SETTINGS:
-                return <RpcSettings handleNavigation={handleNavigation} />
+                return <RpcSettings setTitle={setTitle} handleNavigation={handleNavigation} />
             default:
                 return <></>;
         }
