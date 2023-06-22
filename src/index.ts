@@ -13,6 +13,7 @@ import {
 import { ManifestType, dialogOptionsType } from './main.type';
 import { compareByVersion } from '@/src-back/util';
 import Wallet from '@/configuration/modules/wallet';
+import _ from 'lodash';
 const path = require('path');
 const fs = require('fs-extra-promise');
 
@@ -221,7 +222,7 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
       console.log('idx: ', idx, arr);
       
       if (idx > -1) { // coin is already in array
-        arr[idx].versions = [...arr[idx].versions, ...w.versions];
+        arr[idx].versions = _.uniq([...arr[idx].versions, ...w.versions]);
         return arr;
       } else {
         return [...arr, w];
@@ -318,6 +319,65 @@ ipcMain.handle('addToXBridgeConf', (e, {blockDir, data}) => {
   fs.writeFileSync(confPath, joined, 'utf8');
 });
 
+ipcMain.handle('updateToXBridgeConf', (e, {blockDir, data}) => {
+  const confPath = path.join(blockDir, 'xbridge.conf');
+  const bridgeConf = fs.readFileSync(confPath, 'utf8');
+  let split = bridgeConf
+    .replace(/\r/g, '')
+    .split(/\n/);
+  for(const [ abbr, walletData ] of [...data.entries()]) {
+    const startIndex = split.findIndex((s: string) => s.trim() === `[${abbr}]`);
+    let endIndex;
+    for(let i = startIndex + 1; i < split.length; i++) {
+      const s = split[i].trim();
+      if(!s) {
+        endIndex = i - 1;
+        break;
+      } else if(/^\[.+]$/.test(s)) {
+        endIndex = i - 1;
+        break;
+      } else if(i === split.length - 1) {
+        endIndex = i;
+      }
+    }
+
+    split = [
+      ...split.slice(0, startIndex + 1),
+      joinConf(walletData),
+      ...split.slice(endIndex + 1)
+    ];
+  }
+  const joined = split.join('\n');
+  // fs.writeFileSync(confPath, joined, 'utf8');
+});
+ipcMain.handle('saveToXBridgeConf', (e, {blockDir, data}) => {
+  const joined = [
+    [
+      '[Main]',
+      `ExchangeWallets=${[...data.keys()].join(',')}`,
+      'FullLog=true',
+      'ShowAllOrders=true'
+    ].join('\n'),
+    '\n',
+    ...[...data.entries()]
+      .map(([ abbr, conf ]) => {
+        return [
+          `\n[${abbr}]`,
+          joinConf(conf)
+        ].join('\n');
+      })
+  ].join('');
+
+  console.log('saveToXbridgeConf: ', joined);
+  
+  const confPath = path.join(blockDir, 'xbridge.conf');
+  // storage.setItem('setXbridgeConfPath', confPath || '')
+  // fs.writeFileSync(confPath, joined, 'utf8');
+});
+
+
+
+
 ipcMain.handle('saveWalletConf', (e, {directory, conf, walletConf, credentials}) => {
   const filePath = path.join(directory, conf);
   fs.ensureFileSync(filePath);
@@ -329,7 +389,7 @@ ipcMain.handle('saveWalletConf', (e, {directory, conf, walletConf, credentials})
   if(!baseConfStr) throw new Error(`${walletConf} not found.`);
   const baseConf = splitConf(baseConfStr);
   const newContents = Object.assign({}, baseConf, credentials);
-  mergeWrite(filePath, newContents);
+  // mergeWrite(filePath, newContents);
 
   return newContents;
 });

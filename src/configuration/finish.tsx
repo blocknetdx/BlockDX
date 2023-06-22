@@ -10,7 +10,7 @@ export function Finish({
     handleNavigation
 }: ConfigurationMenuProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
-    const { setupType, configurationType, addAbbrToVersion, updateAbbrToVersion, skipList, wallets, selectedWallets, username, password, rpcIP, rpcPort, configuringWallets } = state;
+    const { setupType, configurationType, wallets, selectedWallets, username, password, rpcIP, rpcPort, configuringWallets, skipSetup, generateCredentials = false } = state;
 
     const addingWallets = configurationType === 'ADD_WALLET';
     const updatingWallets = configurationType === 'UPDATE_WALLET';
@@ -71,18 +71,82 @@ export function Finish({
             if (addingWallets) {
                 addConfs(filtered, block.directory);
             } else if (updatingWallets) {
+                updateConfs(filtered, block.directory);
+            } else {
+                saveConfs(filtered, block.directory);
+                const { username, password } = block;
+                // await window.api?.saveDXData(username, password, rpcPort, rpcIP);
+            }
+
+            // await window.api?.saveSelected(selectedWallets)
+        } else {
+            if (!skipSetup) {
+                const filtered: Wallet[] = configuringWallets.map(w => {
+                    // return {
+                    //     ...w,
+                    //     versionId: wallets.find(wallet => wallet.abbr === w.abbr && wallet.versions.includes(w.version)).versionId
+                    // } as Wallet
+
+                    return w.set({
+                        versionId: wallets.find(wallet => wallet.abbr === w.abbr && wallet.versions.includes(w.version)).versionId
+                    })
+                }).map((w: Wallet) => {
+                    if (!generateCredentials) return w;
+
+                    if (updatingWallets && w.abbr === 'BLOCK') {
+                        return w.set({
+                            username,
+                            password
+                        })
+                    } else {
+                        const { username, password } = w.generateCredentials();
+                        return w.set({
+                            username,
+                            password
+                        })
+                    }
+                });
+
+                console.log('filtered wallets: ', filtered);
                 
             }
         }
     }
 
-    function addConfs(wallets: Wallet[], blockDir: string) {
+    async function addConfs(wallets: Wallet[], blockDir: string) {
         const confs = new Map();
         for (const w of wallets) {
             const conf = w.saveWalletConf();
             confs.set(w.abbr, conf);
         }
-        addToXBridgeConf(wallets, blockDir);
+        const data = await getXBridgeConfData(wallets);
+    
+        console.log('data: ', data);
+
+        // await window.api?.addToXBridgeConf({blockDir, data});
+    }
+
+    async function updateConfs(wallets: Wallet[], blockDir: string) {
+        const confs = new Map();
+        for (const w of wallets) {
+            const conf = w.saveWalletConf();
+            confs.set(w.abbr, conf);
+        }
+        const data = await getXBridgeConfData(wallets);
+
+        console.log('data: ', data);
+        // await window.api?.updateToXBridgeConf({blockDir, data});
+    }
+    async function saveConfs(wallets: Wallet[], blockDir: string) {
+        const confs = new Map();
+        for (const w of wallets) {
+            const conf = w.saveWalletConf();
+            confs.set(w.abbr, conf);
+        }
+        const data = await getXBridgeConfData(wallets);
+
+        console.log('data: ', data);
+        await window.api?.saveToXBridgeConf({blockDir, data});
     }
 
     function splitConf(str: string) {
@@ -97,7 +161,7 @@ export function Finish({
             }, {});
     }
 
-    async function addToXBridgeConf(wallets: Wallet[], blockDir: string) {
+    async function getXBridgeConfData(wallets: Wallet[]) {
         const data = new Map();
         for (const wallet of wallets) {
             const { abbr, xBridgeConf, username, password } = wallet;
@@ -113,7 +177,9 @@ export function Finish({
             }));
         }
 
-        await window.api?.addToXBridgeConf();
+        console.log('addToXBridgeConf data: ', data);
+
+        return data;
     }
 
     const backRoute = configurationType === 'RPC_SETTINGS' ? CONFIG_ROUTE.UPDATE_RPC_SETTINGS : CONFIG_ROUTE.SELECT_WALLET_VERSIONS;

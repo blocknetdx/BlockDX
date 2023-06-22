@@ -105,7 +105,6 @@ class Wallet {
   }
 
   async saveWalletConf() {
-    const { directory } = this;
     const conf = this.confName ? this.confName : this.walletConf.replace(/--.*$/, '') + '.conf';
 
     const newContents = await window.api?.saveWalletConf({
@@ -117,6 +116,9 @@ class Wallet {
         password: this.password
       }
     })
+
+    console.log('saveWalletConf newContents: ', newContents);
+    
 
     return newContents;
   }

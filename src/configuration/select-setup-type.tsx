@@ -16,13 +16,13 @@ export default function SelectSetUpType({
         {
             option: 'Quick Setup (recommended)',
             content: 'This option automatically detects the wallets installed and simplifies the process to configure them for trading. If using a custom data directory location, you must use Expert Setup.',
-            route: CONFIG_ROUTE.ADD_WALLET_QUICK,
+            route: CONFIG_ROUTE.SELECT_WALLET_VERSIONS,
             type: 'quickSetup'
         },
         {
             option: 'Expert Setup (advanced users only)',
             content: 'This option allows you to specify the data directory locations and RPC credentials',
-            route: CONFIG_ROUTE.ADD_WALLET_EXPERT,
+            route: CONFIG_ROUTE.SELECT_WALLETS,
             type: 'expertSetup'
         }
     ]
@@ -95,8 +95,8 @@ export default function SelectSetUpType({
                         if (isFirstRun) {
                             handleCloseConfigWindow();
                         } else {
-                            setTitle(CONFIG_ROUTE.SET_UP);
-                            handleNavigation(CONFIG_ROUTE.SET_UP)
+                            // setTitle(CONFIG_ROUTE.SET_UP);
+                            handleNavigation(CONFIG_ROUTE.CONFIGURATION_MENU)
                         }
                     }}
                 >

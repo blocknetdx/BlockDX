@@ -17,7 +17,7 @@ export default function RpcSettings({
     handleNavigation
 }:IRPCSettingsProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
-    const { configurationType, username = '', password = '', rpcPort = 41414, rpcIP = '127.0.0.1' } = state;
+    const { configurationType, username = '', password = '', rpcPort = 41414, rpcIP = '127.0.0.1', configuringWallets } = state;
 
     const [rpcSettings, setRpcSettings] = useState<OptionsType>({
         username: username,
@@ -39,9 +39,18 @@ export default function RpcSettings({
             return;
         }
 
-        // if (configurationType !== 'RPC_SETTINGS') {
-        //     await window.api?.saveDXData(username, password, rpcPort, rpcIP);
-        // }
+        if (configurationType !== 'RPC_SETTINGS') {
+            updateSingleState('configuringWallets', configuringWallets.map(w => {
+                if (w.abbr !== 'BLOCK') return w;
+
+                return {
+                    ...w,
+                    username,
+                    password
+                }
+            }))
+            await window.api?.saveDXData(username, password, rpcPort, rpcIP);
+        }
 
         handleNavigation(CONFIG_ROUTE.FINISH);
     }
