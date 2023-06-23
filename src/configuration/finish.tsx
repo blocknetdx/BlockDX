@@ -78,37 +78,66 @@ export function Finish({
                 // await window.api?.saveDXData(username, password, rpcPort, rpcIP);
             }
 
-            // await window.api?.saveSelected(selectedWallets)
+            await window.api?.saveSelected(updatingSelectedWallets)
         } else {
-            if (!skipSetup) {
-                const filtered: Wallet[] = configuringWallets.map(w => {
-                    // return {
-                    //     ...w,
-                    //     versionId: wallets.find(wallet => wallet.abbr === w.abbr && wallet.versions.includes(w.version)).versionId
-                    // } as Wallet
+            const filtered: Wallet[] = configuringWallets.map((w: Wallet) => {
+                return wallets.find(wallet => wallet.abbr === w.abbr && wallet.versions.includes(w.version))
+            }).map((w: Wallet) => {
+                if (!generateCredentials) return w;
 
+                if (updatingWallets && w.abbr === 'BLOCK') {
                     return w.set({
-                        versionId: wallets.find(wallet => wallet.abbr === w.abbr && wallet.versions.includes(w.version)).versionId
+                        username,
+                        password
                     })
-                }).map((w: Wallet) => {
-                    if (!generateCredentials) return w;
+                } else {
+                    const { username, password } = w.generateCredentials();
+                    return w.set({
+                        username,
+                        password
+                    })
+                }
+            }).map((w: Wallet, index) => {
+                return w.set({
+                    directory: configuringWallets[index].directory || ''
+                })
+            });
 
-                    if (updatingWallets && w.abbr === 'BLOCK') {
-                        return w.set({
-                            username,
-                            password
-                        })
+            await window?.api?.setTokenPaths(filtered);
+
+            let updatingSelectedWallets = configurationType === 'FRESH_SETUP' ? [...filtered.map(w => w.versionId)] : [...selectedWallets]
+
+            const block = wallets.find(w => w.abbr === 'BLOCK');
+            if (!skipSetup) {
+
+                if (addingWallets || updatingWallets) {
+                    filtered.forEach(({abbr, versionId}) => {
+                        const filteredWallets = wallets.filter(w => w.abbr === abbr);
+                        for (const w of filteredWallets) {
+                            updatingSelectedWallets = [..._.pull(updatingSelectedWallets, w.versionId)];
+                        }
+                        updatingSelectedWallets = _.uniq([...updatingSelectedWallets, versionId])
+                    });
+                    
+                    if (addingWallets) {
+                        addConfs(filtered, block.directory);
                     } else {
-                        const { username, password } = w.generateCredentials();
-                        return w.set({
-                            username,
-                            password
-                        })
+                        updateConfs(filtered, block.directory);
+                        if (filtered.some(w => w.abbr === 'BLOCK')) {
+                            await window.api?.saveDXData(block.username || username, block.password || password, rpcPort, rpcIP);
+                        }
                     }
-                });
+                    await window.api?.saveSelected(updatingSelectedWallets)
+                } else {
+                    saveConfs(filtered, block.directory)
+                }
 
-                console.log('filtered wallets: ', filtered);
-                
+                console.log('expert filtered wallets: ', filtered);
+            }
+
+            if (!addingWallets && !updatingWallets) {
+                await window.api?.saveDXData(block.username, block.password, rpcPort, rpcIP);
+                await window.api?.saveSelected(updatingSelectedWallets)
             }
         }
     }
@@ -200,7 +229,12 @@ export function Finish({
                         <Button
                             className='configuration-cancel-btn'
                             onClick={() => {
-                                handleNavigation(backRoute);
+                                handleNavigation(
+                                    setupType === 'QUICK_SETUP' ? CONFIG_ROUTE.SELECT_WALLET_VERSIONS 
+                                    : !generateCredentials ? CONFIG_ROUTE.ENTER_BLOCKNET_CREDENTIALS 
+                                    : CONFIG_ROUTE.EXPERT_SELECT_SETUP_TYPE
+
+                                );
                             }}
                         >
                             BACK

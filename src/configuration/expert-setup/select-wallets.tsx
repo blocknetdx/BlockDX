@@ -21,6 +21,19 @@ export default function SelectWallets({
     const addingWallets = configurationType === 'ADD_WALLET';
     const updatingWallets = configurationType === 'UPDATE_WALLET';
 
+    useEffect(() => {
+        onInit();
+    }, [])
+
+    async function onInit() {
+        const installedWallets: Wallet[] = await window?.api?.getFilteredWallets(wallets);
+        console.log('installedWallets: ', installedWallets);
+
+        updateSingleState('configuringAbbrs', configurationType !== 'ADD_WALLET' ? installedWallets.filter(w => w.abbr !== 'LTC').map(w => w.abbr)
+            : installedWallets.filter(w => !selectedAbbrs.includes(w.abbr) && w.abbr !== 'LTC').map(w => w.abbr)
+        )
+    }
+
     const displayWalletList: Wallet[] = [...wallets.filter(w => addingWallets ? !selectedAbbrs.includes(w.abbr) : updatingWallets ? selectedAbbrs.includes(w.abbr) : true).reduce((arr: Wallet[], w) => {
         const idx = arr.findIndex((ww:any )=> ww.abbr === w.abbr);
         // console.log('idx: ', idx, arr);

@@ -219,7 +219,7 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
     })
     .reduce((arr:any, w) => {
       const idx = arr.findIndex((ww:any )=> ww.abbr === w.abbr);
-      console.log('idx: ', idx, arr);
+      // console.log('idx: ', idx, arr);
       
       if (idx > -1) { // coin is already in array
         arr[idx].versions = _.uniq([...arr[idx].versions, ...w.versions]);
@@ -234,7 +234,7 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
       return w;
     });
 
-  console.log('filteredWallets main index: ', filteredWallets);
+  console.log('filteredWallets main index is called: ');
   
   return filteredWallets;
 });

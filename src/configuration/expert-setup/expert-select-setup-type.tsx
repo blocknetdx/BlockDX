@@ -71,7 +71,7 @@ export default function ExpertSelectSetUpType({
                     <Button 
                         className='configuration-cancel-btn' 
                         onClick={() => {
-                            handleSubNavigation(EXPERT_ROUTE.SELECT_DIRECTORIES)
+                            handleNavigation(CONFIG_ROUTE.SELECT_WALLET_DIRECTORIES)
                         }}
                     >
                         { 'BACK' }

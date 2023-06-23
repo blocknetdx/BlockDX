@@ -59,38 +59,26 @@ export default function EnterWalletCredentials({
     function handleChangeUsername(abbr: string, username: string) {
         setDisplayWalletList(displayWalletList.map(w => {
             if (w.abbr !== abbr) return w;
-            return {
-                ...w,
-                username: username
-            } as Wallet
+            return w.set({ username })
         }))
 
         updateSingleState('configuringWallets', configuringWallets.map(w => {
             if (w.abbr !== abbr) return w;
 
-            return {
-                ...w,
-                username
-            } as Wallet
+            return w.set({ username })
         }))
     }
     
     function handleChangePassword(abbr: string, password: string) {
         setDisplayWalletList(displayWalletList.map(w => {
             if (w.abbr !== abbr) return w;
-            return {
-                ...w,
-                password: password
-            } as Wallet
+            return w.set({ password })
         }))
 
         updateSingleState('configuringWallets', configuringWallets.map(w => {
             if (w.abbr !== abbr) return w;
 
-            return {
-                ...w,
-                password
-            } as Wallet
+            return w.set({ password })
         }))
     }
 

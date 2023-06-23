@@ -21,16 +21,24 @@ export default function SelectVersions({
     }, []);
 
     function onVersionChange(abbr: string, version: string) {
-        const idx = configuringWallets.findIndex(w => w.abbr === abbr && w.versions.includes(version));
+        // const idx = configuringWallets.findIndex(w => w.abbr === abbr && w.versions.includes(version));
 
-        updateSingleState('configuringWallets', [
-            ...configuringWallets.slice(0, idx),
-            {
-                ...configuringWallets[idx],
-                version: version
-            } as Wallet,
-            ...configuringWallets.slice(idx + 1)
-        ])
+        // updateSingleState('configuringWallets', [
+        //     ...configuringWallets.slice(0, idx),
+        //     {
+        //         ...configuringWallets[idx],
+        //         version: version
+        //     } as Wallet,
+        //     ...configuringWallets.slice(idx + 1)
+        // ])
+
+        updateSingleState('configuringWallets', configuringWallets.map(w => {
+            if (w.abbr !== abbr) return w;
+
+            return w.set({
+                version
+            })
+        }))
     }
     console.log('configuringWallets: ', configuringWallets);
     return (

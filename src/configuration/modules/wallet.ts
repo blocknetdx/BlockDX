@@ -35,26 +35,28 @@ class Wallet {
     defaultDirectory?: string;
 
   constructor(w?: ManifestType) {
-    const { versions = [] } = w;
-    this.name = w.blockchain || '';
-    this.abbr = w.ticker || '';
-    this.versionId = w.ver_id || '';
-    this.versionName = w.ver_name || '';
-    this.dirNameLinux = w.dir_name_linux || '';
-    this.dirNameMac = w.dir_name_mac || '';
-    this.dirNameWin = w.dir_name_win || '';
-    this.repoURL = w.repo_url || '';
+    const { versions = [] } = w || {};
+    this.name = w?.blockchain || '';
+    this.abbr = w?.ticker || '';
+    this.versionId = w?.ver_id || '';
+    this.versionName = w?.ver_name || '';
+    this.dirNameLinux = w?.dir_name_linux || '';
+    this.dirNameMac = w?.dir_name_mac || '';
+    this.dirNameWin = w?.dir_name_win || '';
+    this.repoURL = w?.repo_url || '';
     this.versions = versions;
-    this.xBridgeConf = w.xbridge_conf || '';
-    this.walletConf = w.wallet_conf || '';
-    this.confName = w.conf_name || '';
+    this.xBridgeConf = w?.xbridge_conf || '';
+    this.walletConf = w?.wallet_conf || '';
+    this.confName = w?.conf_name || '';
     this.error = false;
     this.username = '';
     this.password = '';
     this.port = '';
     this.version = versions.length > 0 ? versions[versions.length - 1] : '';
     // this.directory = this.getCustomDirectory();
-    this.setCustomDirectory();
+    if (!!w) {
+      this.setCustomDirectory();
+    }
     this.setDefaultDirectory();
   }
 
@@ -70,7 +72,8 @@ class Wallet {
     } else {
       throw new Error('You must pass in either a string or an object as the first argument to the set() method.');
     }
-    return Object.assign(new Wallet(wallet), wallet);
+    
+    return Object.assign(new Wallet(), wallet);
   }
 
   generateCredentials() {

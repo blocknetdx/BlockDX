@@ -20,8 +20,15 @@ export default function SelectDirectories({
     }, []);
 
     async function initiateWalletPaths() {
-        const configWallets = await window.api?.checkWalletDirectories(configuringWallets);
-        updateSingleState('configuringWallets', configWallets);
+        const configWallets: Wallet[] = await window.api?.checkWalletDirectories(configuringWallets);
+        console.log('configWallets: ', configWallets);
+        
+        updateSingleState('configuringWallets', configuringWallets.map((w, index) => {
+            return w.set({
+                directory: configWallets[index].directory,
+                error: configWallets[index].error
+            })
+        }));
     }
 
     const handleOpenDialog = async (abbr: string) => {
@@ -31,11 +38,11 @@ export default function SelectDirectories({
 
             updateSingleState('configuringWallets', configuringWallets.map(w => {
                 if (w.abbr !== abbr) return w;
-                return {
-                    ...w,
+                
+                return w.set({
                     directory: directoryPath,
                     error: false
-                } as Wallet
+                })
             }))
         }
     };
@@ -43,17 +50,14 @@ export default function SelectDirectories({
     console.log('configuringWallets: ', configuringWallets);
 
     function handleInputDirectory(abbr: string, directory: string) {
-        const idx = configuringWallets.findIndex(w => w.abbr === abbr);
+        updateSingleState('configuringWallets', configuringWallets.map(w => {
+            if (w.abbr !== abbr) return w;
 
-        updateSingleState('configuringWallets', [
-            ...configuringWallets.slice(0, idx),
-            {
-                ...configuringWallets[idx],
-                directory: directory,
+            return w.set({
+                directory,
                 error: false
-            } as Wallet,
-            ...configuringWallets.slice(idx + 1)
-        ])
+            })
+        }));
     }
     
     const errorCount = configuringWallets.reduce((count, wallet) => (!wallet.error && !!wallet.directory) ? count : count + 1, 0);
@@ -63,7 +67,7 @@ export default function SelectDirectories({
     function handleContinue() {
         if (configuringWallets.findIndex(w => w.error === false && !!w.directory) === -1) return;
 
-        updateSingleState('configuringWallet', configuringWallets.filter(w => w.error === false && !!w.directory));
+        updateSingleState('configuringWallets', configuringWallets.filter(w => w.error === false && !!w.directory));
 
         handleNavigation(CONFIG_ROUTE.EXPERT_SELECT_SETUP_TYPE);
     }

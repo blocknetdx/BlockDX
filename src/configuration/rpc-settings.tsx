@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { InputWithText, Text, Button, TextLink } from '@/components';
 import { ConfigDataContext } from '@/context';
 import { ConfigurationMenuProps } from '@/configuration/configuration.type';
 import { CONFIG_ROUTE } from '@/configuration/configuration.type';
 import { SidePanel } from '@/configuration/side-panel';
+import Wallet from '@/configuration/modules/wallet';
 
 type OptionsType = {
     [key: string]: string | number;
@@ -18,13 +19,37 @@ export default function RpcSettings({
 }:IRPCSettingsProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
     const { configurationType, username = '', password = '', rpcPort = 41414, rpcIP = '127.0.0.1', configuringWallets } = state;
-
     const [rpcSettings, setRpcSettings] = useState<OptionsType>({
         username: username,
         password: password,
         rpcPort: rpcPort,
         rpcIP: rpcIP
     })
+
+    useEffect(() => {
+        onInit();
+    }, [])
+
+    async function onInit() {
+        if (configurationType === 'RPC_SETTINGS') {
+            const username = await window.api?.getUser();
+            const password = await window.api?.getPassword();
+            setRpcSettings({
+                ...rpcSettings,
+                username,
+                password
+            })
+        } else {
+            const block:Wallet = configuringWallets.find(w => w.abbr === 'BLOCK');
+            const { username, password } = block;
+            setRpcSettings({
+                ...rpcSettings,
+                username,
+                password
+            })
+        }
+    }
+
 
     const options:OptionsType = {
         rpcPort: 'Blocknet RPC Port',
@@ -43,12 +68,8 @@ export default function RpcSettings({
             updateSingleState('configuringWallets', configuringWallets.map(w => {
                 if (w.abbr !== 'BLOCK') return w;
 
-                return {
-                    ...w,
-                    username,
-                    password
-                }
-            }))
+                return w.set({ username, password})
+            }));
             await window.api?.saveDXData(username, password, rpcPort, rpcIP);
         }
 
