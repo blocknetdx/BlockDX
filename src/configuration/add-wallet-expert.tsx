@@ -4,7 +4,7 @@ import {
 } from './configuration.type';
 import { Text, Button, SvgIcon, Select } from '@components/index'
 import SelectWallets from '@/configuration/select-wallets';
-import SelectVersions from '@/configuration/select-versions';
+// import SelectVersions from '@/configuration/select-versions';
 import { ConfigDataContext } from '@/context';
 import Wallet from '@/configuration/modules/wallet';
 // import SelectDirectories from '@/configuration/expert-setting/select-directories';
@@ -70,14 +70,13 @@ export default function AddWalletExpert({
                     <SelectWallets
                         selectWallet={handleSelectWallets}
                         selectAll={handleSelectAllWallets}
-                        selectedWallets={selectedWalletIds} 
                         handleSubNavigation={handleSubNavigation}
                         handleNavigation={handleNavigation}
                         setTitle={setTitle}
                     />
                 )
-            case 'selectVersion':
-                return <SelectVersions filteredWallets={filteredWallets} handleSubNavigation={handleSubNavigation}  />
+            // case 'selectVersion':
+            //     return <SelectVersions filteredWallets={filteredWallets} handleSubNavigation={handleSubNavigation}  />
             case 'selectDirectories':
                 return (
                     null

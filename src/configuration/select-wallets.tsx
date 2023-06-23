@@ -10,7 +10,6 @@ import Wallet from '@/configuration/modules/wallet';
 
 interface SelectWalletsProps {
     selectWallet?: (versionId: string) => void
-    selectedWallets?: string[]
     selectAll?: (wallets: string[]) => void
     handleSubNavigation?: (route: SubRouteType) => void
 }
@@ -20,7 +19,6 @@ type Props = SelectWalletsProps & ConfigurationMenuProps;
 export default function SelectWallets({
     setTitle,
     handleNavigation,
-    selectWallet,
     selectAll,
     handleSubNavigation,
 }: Props) {
@@ -31,19 +29,38 @@ export default function SelectWallets({
 
     const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
     const [selectedAbbrs, setSelectedAbbrs] = useState<string[]>([]);
+    const [filteredWallets, setFilteredWallets] = useState<Wallet[]>([]);
+    const [displayWalletList, setDisplayWalletList] = useState<Wallet[]>([]);
 
-    // console.log('selectedAbbrs: ', selectedAbbrs);
+    const isAllSelected = selectedAbbrs.length > 0 && displayWalletList.length === selectedAbbrs.length;
 
     useEffect(() => {
+        setTitle(configurationType === 'FRESH_SETUP' ? 'fresh setup - expert configuration setup' : configurationType === 'ADD_WALLET' ? 'add wallet - expert configuration setup' : 'update wallet - expert configuration setup')
         initialFunction();
     }, []);
     
     async function initialFunction() {
-        const filteredWallets: Wallet[] = await window?.api?.getFilteredWallets(wallets);
-        console.log('filteredWallets: ', filteredWallets);
-        setSelectedAbbrs(updatingWallets ? [] : filteredWallets.reduce((arr: string[], w) => {
+        const installedWallets: Wallet[] = await window?.api?.getFilteredWallets(wallets);
+        const selectedWalletIds = await window?.api.getSelectedWallets();
+        console.log('installedWallets: ', installedWallets);
+
+        setDisplayWalletList(wallets.filter(w => addingWallets ? !selectedWalletAbbrs.includes(w.abbr) : updatingWallets ? selectedWalletAbbrs.includes(w.abbr) : true).reduce((arr, w) => {
+            return arr.some(ww => ww.abbr === w.abbr) ? arr : [...arr, w]
+        }, []))
+
+        // setFilteredWallets([...wallets].filter(w => addingWallets ? ))
+        setSelectedAbbrs(updatingWallets ? [] : installedWallets.reduce((arr: string[], w) => {
             return  w.abbr === 'LTC' ? arr : [...arr, w.abbr]
         }, []))
+    }
+
+    function handleSelectWallet(abbr: string) {
+        if (abbr === 'BLOCK') return;
+        setSelectedAbbrs(selectedAbbrs.includes(abbr) ? selectedAbbrs.filter(item => item !== abbr) : [...selectedAbbrs, abbr]);
+    }
+
+    function handleSelectAll() {
+        setSelectedAbbrs(!isAllSelected ? displayWalletList.map(w => w.abbr) : configurationType === 'FRESH_SETUP' ? ['BLOCK'] : []);
     }
     
 
@@ -54,7 +71,7 @@ export default function SelectWallets({
 
     console.log('selected items: ', items);
 
-    const showSkip = !addingWallets && !updatingWallets;
+    const showSkip = configurationType === 'FRESH_SETUP';
 
     return (
         <div className='d-flex flex-row flex-grow-1'>
@@ -67,26 +84,29 @@ export default function SelectWallets({
                     <CheckBox
                         className="form-check-input"
                         name="walletCheckbox"
-                        // checked={selectedWallets.includes(wallet.versionId) || false}
+                        checked={ isAllSelected }
                         onPress={() => {
-                            selectAll(selectedWallets.length !== wallets.length ? wallets.reduce((selectedWallets, wallet) => {
-                                return [...selectedWallets, wallet.versionId];
-                            }, []) : [])
+                            if (skipSetup) return;
+                            handleSelectAll();
                         }}
                         label="Select All"
                         labelClass='configuration-setup-label'
                     />
                 </div>
-                <div className={`m-h-20 flex-grow-1 wallets-list-container ${showSkip ? 'max-h-210' : ''}`}>
+                <div className={`m-h-20 flex-grow-1 wallets-list-container ${showSkip ? 'max-h-210' : ''} ${skipSetup ? 'opacity-25' : ''}`}>
                     {
-                        wallets.map((wallet, index) => (
+                        displayWalletList.map((wallet, index) => (
                             <CheckBox
+                                key={`exper-wallet-setup-${wallet.abbr}-${index}`}
                                 className="form-check-input"
                                 containerClass='form-check m-v-20 d-flex align-items-center'
                                 name="walletCheckbox"
                                 value={wallet.versionId}
-                                // checked={selectedWallets.includes(wallet.versionId) || false}
-                                onPress={() => selectWallet(wallet.versionId)}
+                                checked={selectedAbbrs.includes(wallet.abbr) || false}
+                                onPress={() => {
+                                    if (wallet.abbr === 'BLOCK' || skipSetup) return;
+                                    handleSelectWallet(wallet.abbr);
+                                }}
                                 label={`${wallet.name} (${wallet.abbr})`}
                                 labelClass='configuration-setup-label'
                             />

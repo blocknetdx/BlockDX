@@ -19,6 +19,7 @@ import RpcSettings from '@/configuration/rpc-settings';
 import _ from 'lodash';
 import SelectWalletVersions from '@/configuration/select-wallet-versions';
 import { Finish } from '@/configuration/finish';
+import ExpertSetup from '@/configuration/expert-setup/expert-setup';
 
 const configurationTitles = {
     setUp: 'configuration setup',
@@ -60,8 +61,9 @@ export const Configuration: React.FC = () => {
             username: credentials.username || '',
             password: credentials.password || '',
             isFirstRun,
-            configurationType: 'FRESH_SETUP',
+            configurationType: isFirstRun ? 'FRESH_SETUP' : undefined,
             skipSetup: false,
+            abbrToVersion: new Map(),
         })
         setRoute(isFirstRun ? CONFIG_ROUTE.SELECT_SETUP_TYPE : CONFIG_ROUTE.CONFIGURATION_MENU);
     }
@@ -71,68 +73,66 @@ export const Configuration: React.FC = () => {
 
         let wallets:Wallet[] = walletsOrigin.map(w => new Wallet(w));
 
-        console.log('wallets: ', wallets);
-
+        
         const blockIdx = wallets.findIndex(w => w.abbr === 'BLOCK');
         const others = [
             ...wallets.slice(0, blockIdx),
             ...wallets.slice(blockIdx + 1)
-
+            
         ].sort((a, b) => a.name.localeCompare(b.name));
         wallets = [
             wallets[blockIdx],
             ...others
         ];
-
+        
         const selectedWallets = await window?.api.getSelectedWallets();
-
+        
         console.log('selectedWallets: ', selectedWallets);
         
-
-        let selectedWalletIds = [
-            wallets[0].versionId,
-            ...selectedWallets
-        ];
-
+        let selectedWalletIds = _.uniq([wallets[0].versionId, ...selectedWallets]);
+        
         let xbridgeConfPath = await window?.api.getXbridgeConfPath();
         let xbridgeConf: string;
-
+        
+        console.log('xbridgeConfPath', xbridgeConfPath);
+        
         try {
             if (!xbridgeConfPath) {
-                xbridgeConfPath = path.join(await wallets.find(w => w.abbr === 'BLOCK').directory, 'xbridge.conf')
+                xbridgeConfPath = path.join(wallets.find(w => w.abbr === 'BLOCK').directory, 'xbridge.conf')
+                console.log('xbridgeConfPath', xbridgeConfPath);
             }
             // console.log('xbridgeConfPath: ', xbridgeConfPath);
             xbridgeConf = await window?.api.getXbridgeConf(xbridgeConfPath);
-
+            
             console.log('xbridgeConf: ', xbridgeConf);
-
+            
         } catch (error) {
             console.log('xbridgeconfpath error: ', error);
-
+            xbridgeConf = '';
         }
-
+        
         if (xbridgeConf) {
             try {
                 const splitConf = xbridgeConf
-                    .split('\n')
-                    .map(s => s.trim())
-                    .filter(s => s ? true : false);
+                .split('\n')
+                .map(s => s.trim())
+                .filter(s => s ? true : false);
                 const exchangeWallets = splitConf
-                    .find(s => /^ExchangeWallets\s*=/.test(s))
+                .find(s => /^ExchangeWallets\s*=/.test(s))
                     .split('=')[1]
                     .split(',')
                     .map(s => s.trim())
                     .filter(s => s ? true : false);
-                const walletFromVersionId = wallets.reduce((map, w) => map.set(w.versionId, w), new Map());
-                const abbrs: any[] = [];
-                for (const versionId of [...selectedWalletIds]) {
-                    const w = walletFromVersionId.get(versionId);
-                    if (!w || !exchangeWallets.includes(w.abbr)) {
-                        selectedWalletIds = _.pull(selectedWalletIds, versionId);
-                    } else {
-                        abbrs.push(w.abbr);
+                    const walletFromVersionId = wallets.reduce((map, w) => map.set(w.versionId, w), new Map());
+                    const abbrs: any[] = [];
+                    for (const versionId of [...selectedWalletIds]) {
+                        const w = walletFromVersionId.get(versionId);
+                        if (!w || !exchangeWallets.includes(w.abbr)) {
+                            selectedWalletIds = _.pull(selectedWalletIds, versionId);
+                        } else {
+                            abbrs.push(w.abbr);
+                        }
                     }
-                }
                 const toAdd = exchangeWallets
                     .filter(abbr => !abbrs.includes(abbr));
                 for (const abbr of toAdd) {
@@ -145,7 +145,7 @@ export const Configuration: React.FC = () => {
                 // handleError(err);
             }
         }
-
+        
         console.log('selectedWalletIds: ', selectedWalletIds);
         const selectedAbbrs = [...wallets
             .filter(w => selectedWallets.includes(w.versionId))
@@ -153,6 +153,7 @@ export const Configuration: React.FC = () => {
         ];
 
         console.log('selectedAbbrs: ', selectedAbbrs);
+        console.log('wallets: ', wallets);
         updateState({
             'selectedWallets': selectedWalletIds,
             'selectedAbbrs': selectedAbbrs,
@@ -179,7 +180,7 @@ export const Configuration: React.FC = () => {
             case CONFIG_ROUTE.SET_UP:
                 return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SELECT_WALLETS: 
-                return <SelectWallets setTitle={setTitle} handleNavigation={handleNavigation} />
+                return <ExpertSetup setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.XLITE_SET_UP: 
                 return <SelectWallets setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ADD_WALLET:
