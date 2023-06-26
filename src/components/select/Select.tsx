@@ -7,7 +7,7 @@ interface SelectProps extends React.HTMLProps<HTMLSelectElement> {
     handleChange?: (value: string) => void
 }
 
-export const Select = (props: SelectProps) => {
+export const Select = (props: SelectProps):React.ReactElement => {
     const { lists, className, optionClassName = '', handleChange, ...rest } = props;
     return (
         <select 

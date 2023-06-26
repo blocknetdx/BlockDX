@@ -7,7 +7,7 @@ import {
     SvgIconProps,
     categories,
     CategoryTypes
-} from '@components/index'
+} from '@component'
 
 interface RenderIconProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     btnType: string

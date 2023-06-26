@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import './RangeSlider.css'
 import clsx from 'clsx';
 
-import { Text } from '../text/Text';
+import { Text } from '@component';
 
 const DATA_ACTIVE = 'data-active'
 

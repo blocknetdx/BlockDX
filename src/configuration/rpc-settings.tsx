@@ -1,22 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { InputWithText, Text, Button, TextLink } from '@/components';
-import { ConfigDataContext } from '@/context';
-import { ConfigurationMenuProps } from '@/configuration/configuration.type';
-import { CONFIG_ROUTE } from '@/configuration/configuration.type';
+import { InputWithText, Text, Button, TextLink } from '@component';
+import { ConfigDataContext } from '@context';
+import { CONFIG_ROUTE, ConfigurationMenuProps } from '@/configuration/configuration.type';
 import { SidePanel } from '@/configuration/side-panel';
-import Wallet from '@/configuration/modules/wallet';
+import Wallet from '@wallet';
 
 type OptionsType = {
     [key: string]: string | number;
 }
 
-interface IRPCSettingsProps {
-    handleNavigation?: (route: CONFIG_ROUTE) => void
-}
-
 export default function RpcSettings({
     handleNavigation
-}:IRPCSettingsProps): React.ReactElement {
+}:ConfigurationMenuProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
     const { configurationType, username = '', password = '', rpcPort = 41414, rpcIP = '127.0.0.1', configuringWallets } = state;
     const [rpcSettings, setRpcSettings] = useState<OptionsType>({
@@ -84,7 +79,8 @@ export default function RpcSettings({
             }
             <div className='d-flex flex-column flex-grow-1'>
                 <div className='p-h-20'>
-                    <Text>In order to conduct peer-to-peer trades, Block DX requires the <TextLink externalLink='https://github.com/blocknetdx/blocknet/releases/latest'>Blocknet wallet</TextLink> and the wallets of any assets you want to trade with. Select the wallets that are installed to begin setup.</Text>
+                    {/* <Text>In order to conduct peer-to-peer trades, Block DX requires the <TextLink externalLink='https://github.com/blocknetdx/blocknet/releases/latest'>Blocknet wallet</TextLink> and the wallets of any assets you want to trade with. Select the wallets that are installed to begin setup.</Text> */}
+                    <TextLink content={`In order to conduct peer-to-peer trades, Block DX requires the {{Blocknet wallet-{https://github.com/blocknetdx/blocknet/releases/latest}}} and the wallets of any assets you want to trade with. Select the wallets that are installed to begin setup.`} />
                 </div>
                 <div className='m-20 flex-grow-1'>
                     {

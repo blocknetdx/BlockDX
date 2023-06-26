@@ -4,7 +4,7 @@
 
 import { ipcRenderer, contextBridge } from "electron";
 import { ManifestType } from "@/main.type";
-import Wallet, { SaveConfParamsType } from "@/configuration/modules/wallet";
+import Wallet, { SaveConfParamsType } from "@wallet";
 import { CredentialsType } from "@/configuration/configuration.type";
 
 type AddToXBridgeConfType = {

@@ -1,22 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Text, Button, Select, Input } from '@component';
-import Wallet from '@/configuration/modules/wallet';
-import { SubRouteType } from '@/configuration/add-wallet-expert';
+import Wallet from '@wallet';
 import { ConfigDataContext } from '@context';
 import { compareByVersion } from '@/src-back/util';
-import { EXPERT_ROUTE } from '@/configuration/expert-setup/expert-setup';
 import { CONFIG_ROUTE } from '@/configuration/configuration.type';
 import { SidePanel } from '@/configuration/side-panel';
 
 interface IEnterWalletCredentialsProps {
-    handleSubNavigation?: (route: EXPERT_ROUTE) => void
     selectedAbbrs?: string[]
     handleNavigation?: (route: CONFIG_ROUTE) => void
 }
 
 export default function EnterWalletCredentials({
     selectedAbbrs = [],
-    handleSubNavigation,
     handleNavigation
 }: IEnterWalletCredentialsProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);

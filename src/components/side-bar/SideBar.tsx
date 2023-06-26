@@ -3,13 +3,7 @@ import { SvgIcon } from '../svg-icon';
 import './SideBar.css'
 import { SideBarContent, SideBarContentHeaderTitleType, sideBarContentHeaderTitles } from './SideBarContent';
 
-export function SideBar() {
-    const sideBarTopIcons = [
-        'swap-horizontal',
-        'wallet',
-        'setting',
-        'help-circle-outline'
-    ]
+export function SideBar():React.ReactElement {
     const sideBarBottomIcons = [
         'twitter',
         'discord',

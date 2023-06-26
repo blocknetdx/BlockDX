@@ -12,7 +12,7 @@ import {
 // import { BLOCKNET_CONF_NAME3, BLOCKNET_CONF_NAME4, blocknetDir3, blocknetDir4 } from './src-back/constants';
 import { ManifestType, dialogOptionsType } from './main.type';
 import { compareByVersion } from '@/src-back/util';
-import Wallet from '@/configuration/modules/wallet';
+import Wallet from '@wallet';
 import _ from 'lodash';
 const path = require('path');
 const fs = require('fs-extra-promise');

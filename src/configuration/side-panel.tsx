@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
-import { Text } from '@/components';
-import { ConfigDataContext } from '@/context';
+import React from 'react';
+import { Text } from '@component';
 
 interface ISidePanel {
     status?: number
@@ -9,11 +8,6 @@ interface ISidePanel {
 export function SidePanel({
     status = 0
 }:ISidePanel): React.ReactElement {
-    const { state } = useContext(ConfigDataContext);
-    const { setupType, configurationType } = state;
-
-    const isCheckedRpcSettings = setupType === 'QUICK_SETUP' || (setupType === 'EXPERT_SETUP' && configurationType === 'RPC_SETTINGS');
-
     return (
         <div className='p-h-20 w-p-55 bg-182a3e'>
 

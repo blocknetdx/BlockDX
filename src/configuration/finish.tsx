@@ -1,10 +1,10 @@
-import React, { useContext, useEffect } from 'react';
-import { Text, Button } from '@/components';
+import React, { useContext } from 'react';
+import { Text, Button } from '@component';
 import { CONFIG_ROUTE, ConfigurationMenuProps } from '@/configuration/configuration.type';
-import { ConfigDataContext } from '@/context';
+import { ConfigDataContext } from '@context';
 import { SidePanel } from '@/configuration/side-panel';
 import _ from 'lodash';
-import Wallet from '@/configuration/modules/wallet';
+import Wallet from '@wallet';
 
 export function Finish({
     handleNavigation
@@ -75,7 +75,7 @@ export function Finish({
             } else {
                 saveConfs(filtered, block.directory);
                 const { username, password } = block;
-                // await window.api?.saveDXData(username, password, rpcPort, rpcIP);
+                await window.api?.saveDXData(username, password, rpcPort, rpcIP);
             }
 
             await window.api?.saveSelected(updatingSelectedWallets)

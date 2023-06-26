@@ -3,7 +3,7 @@ import {
     SvgIcon,
     Select,
     Tab
-} from '@components/index';
+} from '@component';
 
 import './OrderTabs.css'
 

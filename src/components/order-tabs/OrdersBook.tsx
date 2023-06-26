@@ -3,7 +3,7 @@ import React from 'react';
 import {
     Text,
     SvgIcon
-} from '@components/index'
+} from '@component'
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { MemoTable } from './Table'

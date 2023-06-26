@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import {
     Tab
-} from '@components/index'
+} from '@component'
 
 import { StockChart } from './StockChart'
 import { DepthChart } from './DepthChart'
@@ -11,7 +11,7 @@ import './Chart.css';
 
 const chartTabs = ['PRICE CHART', 'DEPTH CHART']
 
-export const Chart = () => {
+export const Chart = ():React.ReactElement => {
     const [activeTab, setActiveTab] = useState('PRICE CHART')
     function renderTabs() {
         if (activeTab === 'PRICE CHART') {
