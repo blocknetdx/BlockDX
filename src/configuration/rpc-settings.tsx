@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { InputWithText, Text, Button, TextLink } from '@component';
+import { InputWithText, Button, TextLink } from '@component';
 import { ConfigDataContext } from '@context';
 import { CONFIG_ROUTE, ConfigurationMenuProps } from '@/configuration/configuration.type';
 import { SidePanel } from '@/configuration/side-panel';

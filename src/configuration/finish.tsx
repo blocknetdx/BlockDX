@@ -67,18 +67,21 @@ export function Finish({
             console.log('updatingSelectedWallets: ', updatingSelectedWallets);
 
             const block = wallets.find(w => w.abbr === 'BLOCK');
-
+            
+            
+            
             if (addingWallets) {
                 addConfs(filtered, block.directory);
             } else if (updatingWallets) {
                 updateConfs(filtered, block.directory);
             } else {
-                saveConfs(filtered, block.directory);
-                const { username, password } = block;
+                const block = filtered.find(w => w.abbr === 'BLOCK');
+                const { username, password, directory } = block;
+                saveConfs(filtered, directory);
                 await window.api?.saveDXData(username, password, rpcPort, rpcIP);
             }
 
-            await window.api?.saveSelected(updatingSelectedWallets)
+            await window.api?.saveSelected(updatingSelectedWallets);
         } else {
             const filtered: Wallet[] = configuringWallets.map((w: Wallet) => {
                 return wallets.find(wallet => wallet.abbr === w.abbr && wallet.versions.includes(w.version))
@@ -136,10 +139,13 @@ export function Finish({
             }
 
             if (!addingWallets && !updatingWallets) {
+                const block = filtered.find(w => w.abbr === 'BLOCK');
                 await window.api?.saveDXData(block.username, block.password, rpcPort, rpcIP);
-                await window.api?.saveSelected(updatingSelectedWallets)
+                await window.api?.saveSelected(updatingSelectedWallets);
             }
         }
+
+        handleNavigation(CONFIG_ROUTE.CONFIGURATION_COMPLETE)
     }
 
     async function addConfs(wallets: Wallet[], blockDir: string) {
@@ -152,7 +158,7 @@ export function Finish({
     
         console.log('data: ', data);
 
-        // await window.api?.addToXBridgeConf({blockDir, data});
+        await window.api?.addToXBridgeConf({blockDir, data});
     }
 
     async function updateConfs(wallets: Wallet[], blockDir: string) {
@@ -164,7 +170,7 @@ export function Finish({
         const data = await getXBridgeConfData(wallets);
 
         console.log('data: ', data);
-        // await window.api?.updateToXBridgeConf({blockDir, data});
+        await window.api?.updateToXBridgeConf({blockDir, data});
     }
     async function saveConfs(wallets: Wallet[], blockDir: string) {
         const confs = new Map();
@@ -210,8 +216,6 @@ export function Finish({
 
         return data;
     }
-
-    const backRoute = configurationType === 'RPC_SETTINGS' ? CONFIG_ROUTE.UPDATE_RPC_SETTINGS : CONFIG_ROUTE.SELECT_WALLET_VERSIONS;
 
     return (
         <div className='d-flex flex-column flex-grow-1'>

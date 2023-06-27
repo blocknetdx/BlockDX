@@ -52,15 +52,13 @@ export default function SelectWalletVersions({
     }
 
     function onVersionChange(abbr: string, version: string) {
-        const idx = configuringWallets.findIndex(w => w.abbr === abbr && w.versions.includes(version));
-        updateSingleState('configuringWallets', [
-            ...configuringWallets.slice(0, idx),
-            {
-                ...configuringWallets[idx],
-                version: version
-            },
-            ...configuringWallets.slice(idx + 1)
-        ])
+        updateSingleState('configuringWallets', configuringWallets.map(w => {
+            if (w.abbr !== abbr) return w;
+
+            return w.set({
+                version
+            })
+        }))
     }
 
     const isShowWalletSelectError = configurationType !== 'FRESH_SETUP' && configuringWallets.length === 0;

@@ -8,7 +8,6 @@ import { compareByVersion } from '@/src-back/util';
 import _ from 'lodash'
 
 interface ISelectWalletsProps {
-    displayWalletList?: Wallet[]
     handleNavigation?: (route: CONFIG_ROUTE) => void
 }
 
@@ -16,7 +15,7 @@ export default function SelectWallets({
     handleNavigation,
 }: ISelectWalletsProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
-    const { wallets, skipSetup, configurationType, selectedAbbrs, configuringWallets = [], configuringAbbrs = ['BLOCK'] } = state;
+    const { wallets, skipSetup, configurationType, selectedAbbrs, configuringAbbrs = ['BLOCK'] } = state;
 
     const addingWallets = configurationType === 'ADD_WALLET';
     const updatingWallets = configurationType === 'UPDATE_WALLET';

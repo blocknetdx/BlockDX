@@ -371,8 +371,8 @@ ipcMain.handle('saveToXBridgeConf', (e, {blockDir, data}) => {
   console.log('saveToXbridgeConf: ', joined);
   
   const confPath = path.join(blockDir, 'xbridge.conf');
-  // storage.setItem('setXbridgeConfPath', confPath || '')
-  // fs.writeFileSync(confPath, joined, 'utf8');
+  storage.setItem('xbridgeConfPath', confPath || '')
+  fs.writeFileSync(confPath, joined, 'utf8');
 });
 
 
