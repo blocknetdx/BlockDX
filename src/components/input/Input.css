@@ -80,3 +80,10 @@
     flex-grow: 1;
 }
 
+.wallet-credential-input {
+    background: #123149;
+    border: none;
+    color: white;
+    padding-left: 20px;
+    height: 50px;
+}

@@ -19,7 +19,7 @@
       "@pages/*": ["./pages/*"],
       "@context": ["./context"],
       "@src-back": ["./src-back"],
-      "@component": ["./components"]
+      "@component": ["./components"],
     },
     "jsx": "react-jsx"
   },

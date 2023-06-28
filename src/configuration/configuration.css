@@ -93,7 +93,27 @@ input[type="checkbox"]:checked {
     flex-direction: row;
 }
 
+.enter-wallet-inputs-container {
+    background-color: #0e2742;
+}
+
+.enter-wallet-credential-container {
+    background-color: #0e2742;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+}
+
 /* padding */
+
+.p-t-0 {
+    padding-top: 0px;
+}
+
+.p-t-10 {
+    padding-top: 10px;
+}
 
 .p-v-5 {
     padding-top: 5px;
@@ -191,4 +211,8 @@ input[type="checkbox"]:checked {
 
 .max-h-210 {
     max-height: 210px;
+}
+
+.basis-p-150 {
+    flex-basis: 150%;
 }

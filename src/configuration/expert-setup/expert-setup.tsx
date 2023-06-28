@@ -9,6 +9,8 @@ import { SidePanel } from '@/configuration/side-panel';
 import Wallet from '@/configuration/modules/wallet';
 import SelectVersions from './select-versions';
 import SelectDirectories from './select-directories';
+import ExpertSelectSetUpType from '@/configuration/expert-setup/expert-select-setup-type';
+import EnterWalletCredentials from '@/configuration/expert-setup/enter-wallet-credentials';
 
 interface SelectWalletsProps {
     selectWallet?: (versionId: string) => void
@@ -17,6 +19,14 @@ interface SelectWalletsProps {
 
 type Props = SelectWalletsProps & ConfigurationMenuProps;
 
+export enum EXPERT_ROUTE {
+    SELECT_WALLETS = 'selectWallets',
+    SELECT_VERSION = 'selectVersion',
+    SELECT_DIRECTORIES = 'selectDirectories',
+    SELECT_SETUP_TYPE = 'selectSetupType',
+    ENTER_CREDENTIALS = 'enterWalletCredentials'
+}
+
 export default function ExpertSetup({
     setTitle,
     handleNavigation,
@@ -24,7 +34,7 @@ export default function ExpertSetup({
     const { state, updateSingleState } = useContext(ConfigDataContext);
     const { wallets, skipSetup, configurationType, selectedAbbrs: selectedWalletAbbrs } = state;
 
-    const [subRoute, setSubRoute] = useState<SubRouteType>('selectWallet');
+    const [subRoute, setSubRoute] = useState<EXPERT_ROUTE>(EXPERT_ROUTE.SELECT_WALLETS);
     const [dataPaths, setDataPaths] = useState<DataPathsType>({});
 
     const addingWallets = configurationType === 'ADD_WALLET';
@@ -76,24 +86,16 @@ export default function ExpertSetup({
     function handleSelectAll() {
         setSelectedAbbrs(!isAllSelected ? displayWalletList.map(w => w.abbr) : configurationType === 'FRESH_SETUP' ? ['BLOCK'] : []);
     }
-    
-
-    const items = wallets.filter(w => addingWallets ? !selectedAbbrs.includes(w.abbr) : updatingWallets ? selectedAbbrs.includes(w.abbr) : true)
-    .reduce((arr: Wallet[], w) => {
-        return arr.some(ww => ww.abbr === w.abbr) ? arr : [...arr, w];
-    }, []);
-
-    console.log('selected items: ', items);
 
     const showSkip = configurationType === 'FRESH_SETUP';
 
-    function handleSubNavigation(route: SubRouteType) {
+    function handleSubNavigation(route: EXPERT_ROUTE) {
         setSubRoute(route);
     }
 
     function renderContent() {
         switch (subRoute) {
-            case 'selectWallet':
+            case EXPERT_ROUTE.SELECT_WALLETS:
                 return (
                     <div className='d-flex flex-column flex-grow-1'>
                         <div className='p-h-20'>
@@ -157,32 +159,48 @@ export default function ExpertSetup({
                                 className='configuration-continue-btn'
                                 // disabled={selectedAbbrs.length === 0}
                                 onClick={() => {
-                                    setSelectedWallets(wallets.filter(w => selectedAbbrs.includes(w.abbr)));
-                                    handleSubNavigation('selectVersion');
-                                    // handleSubNavigation('selectVersion');
+                                    setSelectedWallets(displayWalletList.filter(w => selectedAbbrs.includes(w.abbr)));
+                                    handleSubNavigation(EXPERT_ROUTE.SELECT_VERSION);
                                 }}
                             >FINISH</Button>
                         </div>
                     </div>
                 );
-            case 'selectVersion':
+            case EXPERT_ROUTE.SELECT_VERSION:
                 return <SelectVersions selectedAbbrs={selectedAbbrs} filteredWallets={selectedWallets} handleSubNavigation={handleSubNavigation}  />
-            case 'selectDirectories':
+            case EXPERT_ROUTE.SELECT_DIRECTORIES:
                 return (
                     <SelectDirectories
                         handleOpenDialog={handleOpenDialog}
-                        filteredWallets={filteredWallets}
-                        dataPaths={dataPaths}
+                        filteredWallets={selectedWallets}
+                        handleSubNavigation={handleSubNavigation}
                     />
                 )
+            case EXPERT_ROUTE.SELECT_SETUP_TYPE:
+                return (
+                    <ExpertSelectSetUpType 
+                        handleSubNavigation={handleSubNavigation}
+                        handleNavigation={handleNavigation}
+                    />
+                );
+            case EXPERT_ROUTE.ENTER_CREDENTIALS:
+                return (
+                    <EnterWalletCredentials 
+                        handleSubNavigation={handleSubNavigation}
+                        selectedAbbrs={selectedAbbrs}
+                        handleNavigation={handleNavigation}
+                    />
+                );
             default:
                 return null;
         }
     }
 
+    const sidePanelStatus = subRoute !== EXPERT_ROUTE.SELECT_SETUP_TYPE ? 0 : 1;
+
     return (
         <div className='d-flex flex-row flex-grow-1'>
-            <SidePanel status={0} />
+            <SidePanel status={sidePanelStatus} />
             { renderContent() }
         </div>
     );
