@@ -7,6 +7,10 @@ export default function ConfigurationComplete() {
     const { handleCloseConfigWindow } = useCloseWindows();
     const { state } = useContext(ConfigDataContext);
 
+    function handleComplete() {
+        window.api?.restart();
+    }
+
     function renderContent(): React.ReactElement {
         const { configurationType } = state;
         switch (configurationType) {
@@ -73,6 +77,7 @@ export default function ConfigurationComplete() {
                 <Button
                     className='configuration-continue-btn'
                     onClick={() => {
+                        handleComplete();
                     }}
                 >
                     RESTART
