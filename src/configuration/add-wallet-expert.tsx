@@ -7,7 +7,7 @@ import SelectWallets from '@/configuration/select-wallets';
 // import SelectVersions from '@/configuration/select-versions';
 import { ConfigDataContext } from '@/context';
 import Wallet from '@/configuration/modules/wallet';
-import SelectDirectories from '@/configuration/expert-setting/select-directories';
+// import SelectDirectories from '@/configuration/expert-setting/select-directories';
 
 type StatusType = 'configSetUp' | 'rpcSettings';
 export type DataPathsType = {
@@ -41,19 +41,11 @@ export default function AddWalletExpert({
         }
     ]
 
-    const steps = [
-        { status: 'configSetUp', title: 'Configuration Setup' },
-        { status: 'rpcSettings', title: 'RPC Settings' },
-    ]
-
-    const handleOpenDialog = async (abbr: string) => {
+    const handleOpenDialog = async () => {
         // ipcRenderer.sendSync('openDialog');
         if (!!window) {
             const directoryPath = await window.api.openDialog();
-            setDataPaths(pre => ({
-                ...pre,
-                [abbr]: directoryPath
-            }));
+            setDataPaths(directoryPath);
         }
     };
 
@@ -80,17 +72,19 @@ export default function AddWalletExpert({
                         selectAll={handleSelectAllWallets}
                         handleSubNavigation={handleSubNavigation}
                         handleNavigation={handleNavigation}
+                        setTitle={setTitle}
                     />
                 )
             // case 'selectVersion':
             //     return <SelectVersions filteredWallets={filteredWallets} handleSubNavigation={handleSubNavigation}  />
             case 'selectDirectories':
                 return (
-                    <SelectDirectories
-                        handleOpenDialog={handleOpenDialog}
-                        filteredWallets={filteredWallets}
-                        dataPaths={dataPaths}
-                    />
+                    null
+                    // <SelectDirectories
+                    //     handleOpenDialog={handleOpenDialog}
+                    //     filteredWallets={filteredWallets}
+                    //     dataPaths={dataPaths}
+                    // />
                 )
             default:
                 return null;
@@ -102,15 +96,73 @@ export default function AddWalletExpert({
             <div className='d-flex flex-row flex-grow-1'>
                 <div className='p-h-20 w-p-55 bg-182a3e'>
                     {
-                        steps.map(({status: stepStatus, title}) => (
-                            <div className='d-flex flex-row align-items-center m-v-10'>
-                                <Text className={` ${(stepStatus === 'configSetUp' || status === 'rpcSettings') ? 'blue-circle-fill' : 'blue-circle-empty'}`} />
-                                <Text className="configuration-setup-label">{title}</Text>
+                        options.map(({ option, content, route }, index) => (
+                            <div className="form-check m-v-20" key={`configuration-menu-${index}`}>
+                                <div>
+                                    <input
+                                        className="form-check-input"
+                                        type="radio" name="exampleRadios"
+                                        id={`menu-${index}`}
+                                        value={route}
+                                        checked={true}
+                                    // onChange={(e) => {
+                                    //     console.log('radio inside input: ', e.target.value)
+                                    //     setSelectedOption(options[index]);
+                                    // }}
+                                    />
+                                    <Text className="configuration-setup-label" >
+                                        {option}
+                                    </Text>
+                                </div>
                             </div>
                         ))
                     }
                 </div>
-                { renderContent() }
+                <div className='m-h-20 d-flex flex-column'>
+                    <div className='d-flex flex-column flex-grow-1'>
+                        <div className='m-v-5'>
+                            <Text>Configuration files will be installed to these default data directories. To accept the default locations, select CONTINUE. To change the location, select BROWSE.</Text>
+                        </div>
+                        <div>
+                            <Text className='error-text'>Errors detected on all wallets, please resolve at least one to continue</Text>
+                        </div>
+                        <div className='m-v-5 flex-grow-1 wallets-list-container p-20'>
+                            <div className='wallet-versions-container p-20'>
+                                <div className='d-flex justify-content-between align-items-center m-v-10'>
+                                    <Text>Xaya</Text>
+                                    <Text className='error-text'>Error: data directory not found</Text>
+                                </div>
+                                <div className='data-directory-select-container'>
+                                    <input
+                                        className='flex-grow-1 data-directory-input'
+                                        type="text"
+                                        name="walletCheckbox"
+                                        disabled={true}
+                                        // value={dataPath}
+                                    />
+                                    <Button className='configuration-browse-btn' onClick={handleOpenDialog}>BROWSE</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className='d-flex flex-row justify-content-between m-v-20'>
+                        <Button
+                            className='configuration-cancel-btn'
+                            onClick={() => {
+                                setTitle(CONFIG_ROUTE.SET_UP);
+                                handleNavigation(CONFIG_ROUTE.SET_UP)
+                            }}
+                        >
+                            CANCEL
+                        </Button>
+                        <Button className='configuration-continue-btn'
+                            onClick={() => {
+                                handleNavigation(CONFIG_ROUTE.ADD_WALLET_EXPERT_FINISH)
+                            }}
+                        >CONTINUE</Button>
+                    </div>
+                </div>
             </div>
         </div>
     );
