@@ -98,7 +98,7 @@ class Wallet {
     const defaultDirectory: string = await window?.api.getDefaultDirectory({
         dirNameWin: this.dirNameWin,
         dirNameLinux: this.dirNameLinux,
-        dirNameMc: this.dirNameMac
+        dirNameMac: this.dirNameMac
     });
 
     return defaultDirectory;
