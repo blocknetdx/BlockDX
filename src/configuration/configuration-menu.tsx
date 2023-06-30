@@ -1,51 +1,52 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE, ConfigurationMenuOptionsType
 } from './configuration.type';
 import { Text, Button, TextLink } from '@components/index'
+import { ConfigDataContext } from '@/context';
+import { useCloseWindows } from '@hooks';
 
 const ConfigurationMenu = ({
     setTitle,
     handleNavigation
 }: ConfigurationMenuProps) => {
+    const { updateSingleState } = useContext(ConfigDataContext);
+    const { handleCloseConfigWindow } = useCloseWindows();
+
     const options: ConfigurationMenuOptionsType[] = [
         {
             option: 'XLite Setup',
             content: 'Use this to configure {{XLite-{https://xlitewallet.com}}} with BlockDX',
-            route: CONFIG_ROUTE.XLITE_SET_UP
+            route: CONFIG_ROUTE.XLITE_SET_UP,
+            configType: 'LITEWALLET_RPC_SETUP'
         },
-        // {
-        //     option: 'XLite Setup',
-        //     content: 'Use this to configure XLite with BlockDX',
-        //     route: CONFIG_ROUTE.XLITE_SET_UP
-        // },
         {
             option: 'Add New Local Wallet(s)',
             content: 'Use this to configure new local wallets for trading. Newly added wallets will need to be restarted before trading',
-            route: CONFIG_ROUTE.ADD_WALLET
+            route: CONFIG_ROUTE.SELECT_SETUP_TYPE,
+            configType: 'ADD_WALLET'
         },
         {
-            option: 'Update Locall Wallet(s)',
+            option: 'Update Local Wallet(s)',
             content: 'Use this to reconfigure existing local wallet(s). Updated wallets will need to be restarted before trading.',
-            route: CONFIG_ROUTE.UPDATE_WALLET
+            route: CONFIG_ROUTE.SELECT_SETUP_TYPE,
+            configType: 'UPDATE_WALLET'
         },
         {
             option: 'Fresh Setup',
             content: 'Use this to reconfigure all you local wallets. This will require all local wallets to be restarted before trading and will cancel any open and in-progress orders from these wallets',
-            route: CONFIG_ROUTE.FRESH_SET_UP
+            route: CONFIG_ROUTE.SELECT_SETUP_TYPE,
+            configType: 'FRESH_SETUP'
         },
         {
             option: 'Update Blocknet RPC Settings',
             content: 'Use this to update the RPC credentials, port, and IP for the Blocknet Core wallet. This will require the Blocknet Core wallet to be restarted, which will cancel any open and in-progress orders from these wallets.',
-            route: CONFIG_ROUTE.UPDATE_RPC_SETTINGS
+            route: CONFIG_ROUTE.ENTER_BLOCKNET_CREDENTIALS,
+            configType: 'RPC_SETTINGS'
         },
     ]
 
     const [selectedOption, setSelectedOption] = useState(options[0]);
-
-    useEffect(() => {
-        setTitle('configuration menu');
-    }, [])
 
     function filterContent(content: string): string | (string | React.ReactElement)[] {
         const array = content.split(/{{(.*?)}}(?!\})/);
@@ -78,11 +79,11 @@ const ConfigurationMenu = ({
             
             <div className='p-h-20 flex-grow-1 m-t-10'>
                 {
-                    options.map(({ option, content, route }, index) => (
+                    options.map(({ option, content, configType }, index) => (
                         <div key={`configuration-menu-${index}`}>
                             <Button className='configuration-menu-option-btn' onClick={() => { setSelectedOption(options[index]) }}>
                                 <div className='d-flex align-items-center'>
-                                    <Text className={` ${selectedOption.route === route ? 'blue-circle-fill' : 'blue-circle-empty'}`} />
+                                    <Text className={` ${selectedOption.configType === configType ? 'blue-circle-fill' : 'blue-circle-empty'}`} />
                                     <Text className="configuration-setup-label m-l-10 text-left">{option}</Text>
                                 </div>
                                 <Text className='m-l-33 text-left'>{filterContent(content)}</Text>
@@ -94,13 +95,14 @@ const ConfigurationMenu = ({
             <div className='d-flex flex-row justify-content-between m-v-20'>
                 <Button
                     className='configuration-cancel-btn'
+                    onClick={() => handleCloseConfigWindow()}
                 >
                     CANCEL
                 </Button>
                 <Button
                     className='configuration-continue-btn'
                     onClick={() => {
-                        setTitle(selectedOption.route)
+                        updateSingleState('configurationType', selectedOption.configType)
                         handleNavigation(selectedOption.route);
                     }}
                 >

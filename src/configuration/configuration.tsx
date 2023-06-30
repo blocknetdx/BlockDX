@@ -3,13 +3,8 @@ import { SvgIcon, Text } from '@components/index';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
 import ConfigurationMenu from './configuration-menu';
-import SelectWallets from '@/configuration/select-wallets';
 import SelectSetUpType from '@/configuration/select-setup-type';
-import AddWalletQuick from '@/configuration/add-wallet-quick';
-import AddWalletQuickFinish from '@/configuration/add-wallet-quick-finish';
 import ConfigurationComplete from '@/configuration/configuration-complete';
-import AddWalletExpert from '@/configuration/add-wallet-expert';
-import AddWalletExpertFinish from '@/configuration/add-wallet-expert-finish';
 import { ManifestType } from '@/main.type';
 import { Set } from 'immutable';
 import Wallet from './modules/wallet';
@@ -20,20 +15,10 @@ import _ from 'lodash';
 import SelectWalletVersions from '@/configuration/select-wallet-versions';
 import { Finish } from '@/configuration/finish';
 import ExpertSetup from '@/configuration/expert-setup/expert-setup';
-
-const configurationTitles = {
-    setUp: 'configuration setup',
-    addWallet: 'add wallet',
-    updateWallet: 'update wallet',
-    xLiteSetup: 'litewallet setup - select wallet',
-    freshSetup: 'fresh setup',
-    updateRpcSettings: 'update rpc settings',
-    addWalletQuick: 'add wallet - quick configuration setup',
-    addWalletQuickFinish: 'add wallet - quick configuration setup',
-    addWalletExpert: 'add wallet - expert configuration setup',
-    addWalletExpertFinish: 'add wallet - expert configuration setup',
-    configurationComplete: 'configuration complete!',
-}
+import { 
+    ExpertSelectWalletVersions,
+    ExpertSelectWallets
+} from '@config-expert-setup';
 
 export const Configuration: React.FC = () => {
     const [title, setTitle] = useState('');
@@ -41,6 +26,7 @@ export const Configuration: React.FC = () => {
      
     const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.SET_UP);
     const { state, updateState, initState } = useContext(ConfigDataContext);
+    const { configurationType, setupType } = state || {};
 
     useEffect(() => {
         if (!!window) {
@@ -48,6 +34,32 @@ export const Configuration: React.FC = () => {
             getManifest();
         }
     }, []);
+
+    useEffect(() => {
+        handleUpdateTitle();
+    }, [route]);
+
+    function handleUpdateTitle() {
+        switch (route) {
+            case CONFIG_ROUTE.SELECT_SETUP_TYPE:
+                setTitle(configurationType === 'FRESH_SETUP' ? 'fresh setup' : configurationType === 'ADD_WALLET' ? 'add wallet' : 'update wallet')
+                break;
+            case CONFIG_ROUTE.CONFIGURATION_MENU:
+                setTitle('configuration menu');
+                break;
+            case CONFIG_ROUTE.SELECT_WALLET_VERSIONS:
+                setTitle(configurationType === 'FRESH_SETUP' ? 'fresh setup - quick configuration setup' : configurationType === 'ADD_WALLET' ? 'add wallet - quick configuration setup' : 'update wallet - quick configuration setup')
+                break;
+            case CONFIG_ROUTE.CONFIGURATION_COMPLETE:
+                setTitle('configuration complete!');
+                break;
+            case CONFIG_ROUTE.FINISH:
+                setTitle(`${configurationType === 'FRESH_SETUP' ? 'fresh setup' : configurationType === 'UPDATE_WALLET' ? 'update wallet' : 'add wallet'} - ${setupType === 'QUICK_SETUP' ? 'quick' : 'expert'} configuration setup`);
+                break;
+            default:
+                break;
+        }
+    }
     
     async function setInitialState() {
         const credentials = await window.api.getCredentials();
@@ -169,38 +181,22 @@ export const Configuration: React.FC = () => {
 
     const renderContent = () => {
         switch (route) {
-            case CONFIG_ROUTE.CONFIGURATION_MENU:
-                return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SELECT_SETUP_TYPE:
                 return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.CONFIGURATION_MENU:
+                return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SELECT_WALLET_VERSIONS:
                 return <SelectWalletVersions setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.FINISH:
-                return <Finish setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.SET_UP:
-                return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.SELECT_WALLETS: 
-                return <ExpertSetup setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.XLITE_SET_UP: 
-                return <SelectWallets setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.ADD_WALLET:
-                return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.FRESH_SET_UP:
-                return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.UPDATE_WALLET:
-                return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} configMode="Update" />
-            case CONFIG_ROUTE.ADD_WALLET_QUICK:
-                return <AddWalletQuick setTitle={setTitle} handleNavigation={handleNavigation} state={state} />
-            case CONFIG_ROUTE.ADD_WALLET_QUICK_FINISH:
-                return <AddWalletQuickFinish setTitle={setTitle} handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.CONFIGURATION_COMPLETE:
                 return <ConfigurationComplete setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.ADD_WALLET_EXPERT:
-                return <AddWalletExpert setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.ADD_WALLET_EXPERT_FINISH:
-                return <AddWalletExpertFinish setTitle={setTitle} handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.UPDATE_RPC_SETTINGS:
-                return <RpcSettings setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.FINISH:
+                return <Finish setTitle={setTitle} handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.SELECT_WALLETS:
+                return <ExpertSelectWallets handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.EXPERT_SELECT_WALLET_VERSIONS: 
+                return <ExpertSelectWalletVersions handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.ENTER_BLOCKNET_CREDENTIALS:
+                return <RpcSettings handleNavigation={handleNavigation} />
             default:
                 return <></>;
         }

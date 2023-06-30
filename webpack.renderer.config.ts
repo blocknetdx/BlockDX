@@ -23,7 +23,9 @@ export const rendererConfig: Configuration = {
       '@context': path.resolve(__dirname, './src/context'),
       '@src-back': path.resolve(__dirname, './src/src-back'),
       '@': path.resolve(__dirname, './src'),
-      "@component": path.resolve(__dirname, './src/components')
+      "@component": path.resolve(__dirname, './src/components'),
+      "@config-expert-setup": path.resolve(__dirname, './src/configuration/expert-setup'),
+      "@hooks":  path.resolve(__dirname, './src/hooks')
     },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
     fallback: {

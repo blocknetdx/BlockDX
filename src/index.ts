@@ -365,6 +365,15 @@ ipcMain.handle('checkWalletDirectories', (e, wallets: Wallet[]) => {
   return wallets;
 });
 
+ipcMain.handle('saveDXData', (e, dxUser, dxPassword, dxPort, dxIP) => {
+  storage.setItems({
+    user: dxUser,
+    password: dxPassword,
+    port: dxPort,
+    blocknetIP: dxIP
+  }, true);
+});
+
 function splitConf(str: string) {
   return str
   .split('\n')

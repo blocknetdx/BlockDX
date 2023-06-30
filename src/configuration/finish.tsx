@@ -7,74 +7,71 @@ import _ from 'lodash';
 import Wallet from '@/configuration/modules/wallet';
 
 export function Finish({
-    setTitle,
     handleNavigation
 }: ConfigurationMenuProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
-    const { setupType, configurationType, addAbbrToVersion, updateAbbrToVersion, skipList, wallets, selectedWallets } = state;
+    const { setupType, configurationType, addAbbrToVersion, updateAbbrToVersion, skipList, wallets, selectedWallets, username, password, rpcIP, rpcPort, configuringWallets } = state;
 
     const addingWallets = configurationType === 'ADD_WALLET';
     const updatingWallets = configurationType === 'UPDATE_WALLET';
 
-    useEffect(() => {
-        setTitle(`${configurationType === 'FRESH_SETUP' ? 'fresh setup' : configurationType === 'UPDATE_WALLET' ? 'update wallet' : 'add wallet'} - ${setupType === 'QUICK_SETUP' ? 'quick' : 'expert'} configuration setup`);
-    }, [])
-
     async function handleFinish() {
-        const userName = await window.api?.getUser();
+        const username = await window.api?.getUser();
         const password = await window.api?.getPassword();
         if (configurationType === 'RPC_SETTINGS') {
+            const { username, password, rpcIP, rpcPort } = state;
+            if (!username || !password || rpcPort || rpcIP) {
+                window.api.showWarning('Something went wrong, please go back and set credentials again');
+                return;
+            }
+            await window.api?.saveDXData(username, password, rpcPort, rpcIP);
         } else if (setupType === 'QUICK_SETUP') {
-            const filtered: Wallet[] = wallets.filter(w => addingWallets ? addAbbrToVersion.has(w.abbr) : updatingWallets ? updateAbbrToVersion.has(w.abbr) : !skipList.includes(w.abbr)).filter(w => addingWallets ? w.versions.includes(addAbbrToVersion.get(w.abbr)) : updatingWallets ? w.versions.includes(updateAbbrToVersion.get(w.abbr)) : selectedWallets.includes(w.versionId)).map(w => {
+            const filtered: Wallet[] = configuringWallets.map(w => {
+                return wallets.find(wallet => wallet.abbr === w.abbr && wallet.versions.includes(w.version))
+            }).map(w => {
                 if (updatingWallets && w.abbr === 'BLOCK') {
                     return w.set({
-                        username: userName,
-                        password: password
+                        username,
+                        password
                     })
                 } else {
-                    const credentials = w.generateCredentials();
+                    const { username, password } = w.generateCredentials();
                     return w.set({
-                        username: credentials.username,
-                        password: credentials.password
+                        username,
+                        password
                     })
                 }
-            });
+            })
+
+            console.log('filteredWallets: ', filtered);
+            
 
             if (configurationType !== 'ADD_WALLET') {
                 await window?.api?.setTokenPaths(null);
             }
 
-            if (addingWallets) {
-                for (const [abbr, version] of addAbbrToVersion.entries()) {
+            let updatingSelectedWallets = [...selectedWallets]
+
+            if (addingWallets || updatingWallets) {
+                filtered.forEach(({abbr, versionId}) => {
                     const filteredWallets = wallets.filter(w => w.abbr === abbr);
-                    const selectedWallet = wallets.find(w => w.abbr === abbr && w.versions.includes(version));
-                    let tempSelectedWallets = [...selectedWallets];
                     for (const w of filteredWallets) {
-                        tempSelectedWallets = [..._.pull(tempSelectedWallets, w.versionId)];
+                        updatingSelectedWallets = [..._.pull(updatingSelectedWallets, w.versionId)];
                     }
-                    updateSingleState('selectedWallets', [...tempSelectedWallets, selectedWallet.versionId]);
-                }
-            } else if (updatingWallets) {
-                for (const [abbr, version] of updateAbbrToVersion.entries()) {
-                    const filteredWallets = wallets.filter(w => w.abbr === abbr);
-                    const selectedWallet = wallets.find(w => w.abbr === abbr && w.versions.includes(version));
-                    let tempSelectedWallets = [...selectedWallets];
-                    for (const w of filteredWallets) {
-                        tempSelectedWallets = [..._.pull(tempSelectedWallets, w.versionId)];
-                    }
-                    updateSingleState('selectedWallets', [...tempSelectedWallets, selectedWallet.versionId]);
-                }
+                    updatingSelectedWallets = _.uniq([...updatingSelectedWallets, versionId])
+                })
             } else {
-                for (const versionId of [...selectedWallets]) {
-                    if (!filtered.some(w => w.versionId === versionId)) {
-                        updateSingleState('selectedWallets', _.pull(selectedWallets, versionId));
-                    }
-                }
+                updatingSelectedWallets = filtered.map(w => w.versionId);
             }
 
+            console.log('updatingSelectedWallets: ', updatingSelectedWallets);
+
+            const block = wallets.find(w => w.abbr === 'BLOCK');
+
             if (addingWallets) {
-                const block = wallets.find(w => w.abbr === 'BLOCK');
                 addConfs(filtered, block.directory);
+            } else if (updatingWallets) {
+                
             }
         }
     }

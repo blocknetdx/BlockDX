@@ -5,6 +5,7 @@ import {
 import { Text, Button, TextLink } from '@components/index';
 import { ConfigDataContext } from '@/context';
 import Wallet from '@/configuration/modules/wallet';
+import { useCloseWindows } from '@hooks';
 
 export default function SelectSetUpType({
     setTitle,
@@ -28,18 +29,9 @@ export default function SelectSetUpType({
 
     const [selectedOption, setSelectedOption] = useState(options[0]);
     const { state, updateSingleState } = useContext(ConfigDataContext);
+    const { handleCloseConfigWindow } = useCloseWindows();
 
     const { isFirstRun, wallets, configurationType } = state;
-
-    useEffect(() => {
-        setTitle(configurationType === 'FRESH_SETUP' ? 'fresh setup' : configurationType === 'ADD_WALLET' ? 'add wallet' : 'update wallet')
-    }, [configurationType]);
-
-    function handleCloseConfigWindow() {
-        if (!!window) {
-            window.api.configurationWindowCancel();
-        }
-    }
 
     async function handleContinue() {
         if (!window) return;
@@ -67,7 +59,6 @@ export default function SelectSetUpType({
         } else {
             const newWallets: Wallet[] = wallets.map(wallet => wallet.set('directory', wallet.customDirectory));
             updateSingleState('wallets', newWallets);
-            // handleNavigation(CONFIG_ROUTE.ADD_WALLET_EXPERT);
             handleNavigation(CONFIG_ROUTE.SELECT_WALLETS);
         }
     }

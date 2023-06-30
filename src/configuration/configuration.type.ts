@@ -1,7 +1,18 @@
-import { StateType } from '@/context';
+import { StateType, configType } from '@/context';
 import React from 'react';
 
 export enum CONFIG_ROUTE {
+    SELECT_SETUP_TYPE = 'selectSetupType',
+    CONFIGURATION_MENU = 'configurationMenu',
+    SELECT_WALLET_VERSIONS = 'selectWalletVersions',
+    CONFIGURATION_COMPLETE = 'configurationComplete',
+    FINISH = 'finish',
+    SELECT_WALLETS = 'selectWallets',
+    EXPERT_SELECT_WALLET_VERSIONS = 'expertSelectWalletVersions',
+    SELECT_WALLET_DIRECTORIES = 'selectWalletDirectories',
+    EXPERT_SELECT_SETUP_TYPE = 'expertSelectSetupType',
+    ENTER_BLOCKNET_CREDENTIALS = 'enterBlocknetCredentials',
+    ENTER_WALLET_CREDENTIALS = 'enterWalletCredentials',
     SET_UP = 'setUp',
     XLITE_SET_UP = 'xLiteSetup',
     ADD_WALLET = 'addWallet',
@@ -12,12 +23,6 @@ export enum CONFIG_ROUTE {
     UPDATE_WALLET = 'updateWallet',
     FRESH_SET_UP = 'freshSetup',
     UPDATE_RPC_SETTINGS = 'updateRpcSettings',
-    CONFIGURATION_COMPLETE = 'configurationComplete',
-    SELECT_SETUP_TYPE = 'selectSetupType',
-    CONFIGURATION_MENU = 'configurationMenu',
-    SELECT_WALLET_VERSIONS = 'selectWalletVersions',
-    FINISH = 'finish',
-    SELECT_WALLETS = 'selectWallets'
 }
 
 export interface ConfigurationMenuProps {
@@ -32,6 +37,7 @@ export type ConfigurationMenuOptionsType = {
     option: string
     route: CONFIG_ROUTE
     type?: 'quickSetup' | 'expertSetup'
+    configType?: configType
 }
 
 export type CredentialsType = {
