@@ -10,7 +10,7 @@ export function Finish({
     handleNavigation
 }: ConfigurationMenuProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
-    const { setupType, configurationType, addAbbrToVersion, updateAbbrToVersion, skipList, wallets, selectedWallets, username, password, rpcIP, rpcPort, configuringWallets } = state;
+    const { setupType, configurationType, wallets, selectedWallets, username, password, rpcIP, rpcPort, configuringWallets, skipSetup, generateCredentials = false } = state;
 
     const addingWallets = configurationType === 'ADD_WALLET';
     const updatingWallets = configurationType === 'UPDATE_WALLET';
@@ -71,18 +71,111 @@ export function Finish({
             if (addingWallets) {
                 addConfs(filtered, block.directory);
             } else if (updatingWallets) {
-                
+                updateConfs(filtered, block.directory);
+            } else {
+                saveConfs(filtered, block.directory);
+                const { username, password } = block;
+                // await window.api?.saveDXData(username, password, rpcPort, rpcIP);
+            }
+
+            await window.api?.saveSelected(updatingSelectedWallets)
+        } else {
+            const filtered: Wallet[] = configuringWallets.map((w: Wallet) => {
+                return wallets.find(wallet => wallet.abbr === w.abbr && wallet.versions.includes(w.version))
+            }).map((w: Wallet) => {
+                if (!generateCredentials) return w;
+
+                if (updatingWallets && w.abbr === 'BLOCK') {
+                    return w.set({
+                        username,
+                        password
+                    })
+                } else {
+                    const { username, password } = w.generateCredentials();
+                    return w.set({
+                        username,
+                        password
+                    })
+                }
+            }).map((w: Wallet, index) => {
+                return w.set({
+                    directory: configuringWallets[index].directory || ''
+                })
+            });
+
+            await window?.api?.setTokenPaths(filtered);
+
+            let updatingSelectedWallets = configurationType === 'FRESH_SETUP' ? [...filtered.map(w => w.versionId)] : [...selectedWallets]
+
+            const block = wallets.find(w => w.abbr === 'BLOCK');
+            if (!skipSetup) {
+
+                if (addingWallets || updatingWallets) {
+                    filtered.forEach(({abbr, versionId}) => {
+                        const filteredWallets = wallets.filter(w => w.abbr === abbr);
+                        for (const w of filteredWallets) {
+                            updatingSelectedWallets = [..._.pull(updatingSelectedWallets, w.versionId)];
+                        }
+                        updatingSelectedWallets = _.uniq([...updatingSelectedWallets, versionId])
+                    });
+                    
+                    if (addingWallets) {
+                        addConfs(filtered, block.directory);
+                    } else {
+                        updateConfs(filtered, block.directory);
+                        if (filtered.some(w => w.abbr === 'BLOCK')) {
+                            await window.api?.saveDXData(block.username || username, block.password || password, rpcPort, rpcIP);
+                        }
+                    }
+                    await window.api?.saveSelected(updatingSelectedWallets)
+                } else {
+                    saveConfs(filtered, block.directory)
+                }
+
+                console.log('expert filtered wallets: ', filtered);
+            }
+
+            if (!addingWallets && !updatingWallets) {
+                await window.api?.saveDXData(block.username, block.password, rpcPort, rpcIP);
+                await window.api?.saveSelected(updatingSelectedWallets)
             }
         }
     }
 
-    function addConfs(wallets: Wallet[], blockDir: string) {
+    async function addConfs(wallets: Wallet[], blockDir: string) {
         const confs = new Map();
         for (const w of wallets) {
             const conf = w.saveWalletConf();
             confs.set(w.abbr, conf);
         }
-        addToXBridgeConf(wallets, blockDir);
+        const data = await getXBridgeConfData(wallets);
+    
+        console.log('data: ', data);
+
+        // await window.api?.addToXBridgeConf({blockDir, data});
+    }
+
+    async function updateConfs(wallets: Wallet[], blockDir: string) {
+        const confs = new Map();
+        for (const w of wallets) {
+            const conf = w.saveWalletConf();
+            confs.set(w.abbr, conf);
+        }
+        const data = await getXBridgeConfData(wallets);
+
+        console.log('data: ', data);
+        // await window.api?.updateToXBridgeConf({blockDir, data});
+    }
+    async function saveConfs(wallets: Wallet[], blockDir: string) {
+        const confs = new Map();
+        for (const w of wallets) {
+            const conf = w.saveWalletConf();
+            confs.set(w.abbr, conf);
+        }
+        const data = await getXBridgeConfData(wallets);
+
+        console.log('data: ', data);
+        await window.api?.saveToXBridgeConf({blockDir, data});
     }
 
     function splitConf(str: string) {
@@ -97,7 +190,7 @@ export function Finish({
             }, {});
     }
 
-    async function addToXBridgeConf(wallets: Wallet[], blockDir: string) {
+    async function getXBridgeConfData(wallets: Wallet[]) {
         const data = new Map();
         for (const wallet of wallets) {
             const { abbr, xBridgeConf, username, password } = wallet;
@@ -113,7 +206,9 @@ export function Finish({
             }));
         }
 
-        await window.api?.addToXBridgeConf();
+        console.log('addToXBridgeConf data: ', data);
+
+        return data;
     }
 
     const backRoute = configurationType === 'RPC_SETTINGS' ? CONFIG_ROUTE.UPDATE_RPC_SETTINGS : CONFIG_ROUTE.SELECT_WALLET_VERSIONS;
@@ -134,7 +229,12 @@ export function Finish({
                         <Button
                             className='configuration-cancel-btn'
                             onClick={() => {
-                                handleNavigation(backRoute);
+                                handleNavigation(
+                                    setupType === 'QUICK_SETUP' ? CONFIG_ROUTE.SELECT_WALLET_VERSIONS 
+                                    : !generateCredentials ? CONFIG_ROUTE.ENTER_BLOCKNET_CREDENTIALS 
+                                    : CONFIG_ROUTE.EXPERT_SELECT_SETUP_TYPE
+
+                                );
                             }}
                         >
                             BACK

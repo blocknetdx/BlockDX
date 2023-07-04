@@ -16,15 +16,18 @@ import SelectWalletVersions from '@/configuration/select-wallet-versions';
 import { Finish } from '@/configuration/finish';
 import ExpertSetup from '@/configuration/expert-setup/expert-setup';
 import { 
+    EnterWalletCredentials,
+    ExpertSelectDirectories,
     ExpertSelectWalletVersions,
     ExpertSelectWallets
 } from '@config-expert-setup';
+import ExpertSelectSetUpType from '@/configuration/expert-setup/expert-select-setup-type';
 
 export const Configuration: React.FC = () => {
     const [title, setTitle] = useState('');
     // const [title, setTitle] = useState(configurationTitles['setUp']);
      
-    const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.SET_UP);
+    const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.CONFIGURATION_MENU);
     const { state, updateState, initState } = useContext(ConfigDataContext);
     const { configurationType, setupType } = state || {};
 
@@ -59,6 +62,10 @@ export const Configuration: React.FC = () => {
             default:
                 break;
         }
+        
+        if (setupType === 'EXPERT_SETUP' && [CONFIG_ROUTE.SELECT_WALLETS, CONFIG_ROUTE.SELECT_WALLET_DIRECTORIES, CONFIG_ROUTE.ENTER_WALLET_CREDENTIALS, CONFIG_ROUTE.EXPERT_SELECT_SETUP_TYPE, CONFIG_ROUTE.EXPERT_SELECT_WALLET_VERSIONS].includes(route)) {
+            setTitle(`${configurationType === 'FRESH_SETUP' ? 'fresh setup' : configurationType === 'UPDATE_WALLET' ? 'update wallet' : 'add wallet'} - expert configuration setup`);
+        }
     }
     
     async function setInitialState() {
@@ -77,6 +84,7 @@ export const Configuration: React.FC = () => {
             skipSetup: false,
             abbrToVersion: new Map(),
         })
+        // setRoute(isFirstRun ? CONFIG_ROUTE.CONFIGURATION_MENU : CONFIG_ROUTE.CONFIGURATION_MENU);
         setRoute(isFirstRun ? CONFIG_ROUTE.SELECT_SETUP_TYPE : CONFIG_ROUTE.CONFIGURATION_MENU);
     }
 
@@ -195,6 +203,12 @@ export const Configuration: React.FC = () => {
                 return <ExpertSelectWallets handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.EXPERT_SELECT_WALLET_VERSIONS: 
                 return <ExpertSelectWalletVersions handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.SELECT_WALLET_DIRECTORIES: 
+                return <ExpertSelectDirectories handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.EXPERT_SELECT_SETUP_TYPE: 
+                return <ExpertSelectSetUpType handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.ENTER_WALLET_CREDENTIALS: 
+                return <EnterWalletCredentials handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ENTER_BLOCKNET_CREDENTIALS:
                 return <RpcSettings handleNavigation={handleNavigation} />
             default:

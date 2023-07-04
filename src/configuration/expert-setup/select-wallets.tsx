@@ -1,9 +1,11 @@
 import Wallet from '@/configuration/modules/wallet';
 import { SidePanel } from '@/configuration/side-panel';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Text, CheckBox, Button, } from '@component'
 import { ConfigDataContext } from '@/context';
 import { CONFIG_ROUTE } from '@/configuration/configuration.type';
+import { compareByVersion } from '@/src-back/util';
+import _ from 'lodash'
 
 interface ISelectWalletsProps {
     displayWalletList?: Wallet[]
@@ -19,9 +21,35 @@ export default function SelectWallets({
     const addingWallets = configurationType === 'ADD_WALLET';
     const updatingWallets = configurationType === 'UPDATE_WALLET';
 
-    const displayWalletList = [...wallets.filter(w => addingWallets ? !selectedAbbrs.includes(w.abbr) : updatingWallets ? selectedAbbrs.includes(w.abbr) : true).reduce((arr, w) => {
-        return arr.some(ww => ww.abbr === w.abbr) ? arr : [...arr, w]
-    }, [])]
+    useEffect(() => {
+        onInit();
+    }, [])
+
+    async function onInit() {
+        const installedWallets: Wallet[] = await window?.api?.getFilteredWallets(wallets);
+        console.log('installedWallets: ', installedWallets);
+
+        updateSingleState('configuringAbbrs', configurationType !== 'ADD_WALLET' ? installedWallets.filter(w => w.abbr !== 'LTC').map(w => w.abbr)
+            : installedWallets.filter(w => !selectedAbbrs.includes(w.abbr) && w.abbr !== 'LTC').map(w => w.abbr)
+        )
+    }
+
+    const displayWalletList: Wallet[] = [...wallets.filter(w => addingWallets ? !selectedAbbrs.includes(w.abbr) : updatingWallets ? selectedAbbrs.includes(w.abbr) : true).reduce((arr: Wallet[], w) => {
+        const idx = arr.findIndex((ww:any )=> ww.abbr === w.abbr);
+        // console.log('idx: ', idx, arr);
+        
+        if (idx > -1) { // coin is already in array
+          arr[idx].versions = _.uniq([...arr[idx].versions, ...w.versions]);
+          return arr;
+        } else {
+          return [...arr, w];
+        }
+      }, [])
+      .map(w => {
+        w?.versions.sort(compareByVersion);
+        return w;
+        })
+    ]
 
     const isAllSelected = configuringAbbrs.length > 0 && displayWalletList.length === configuringAbbrs.length;
 
@@ -100,6 +128,7 @@ export default function SelectWallets({
                         className='configuration-continue-btn'
                         // disabled={selectedAbbrs.length === 0}
                         onClick={() => {
+                            updateSingleState('configuringWallets', displayWalletList.filter(w => configuringAbbrs.includes(w.abbr)));
                             handleNavigation(!skipSetup ? CONFIG_ROUTE.EXPERT_SELECT_WALLET_VERSIONS : CONFIG_ROUTE.ENTER_BLOCKNET_CREDENTIALS)
                         }}
                     >FINISH</Button>

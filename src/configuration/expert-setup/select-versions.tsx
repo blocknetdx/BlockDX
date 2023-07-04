@@ -1,70 +1,46 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Text, Button, Select } from '@/components';
-import Wallet from '@/configuration/modules/wallet';
-import { SubRouteType } from '@/configuration/add-wallet-expert';
 import { ConfigDataContext } from '@/context';
-import { compareByVersion } from '@/src-back/util';
-import { EXPERT_ROUTE } from '@/configuration/expert-setup/expert-setup';
 import { CONFIG_ROUTE } from '@/configuration/configuration.type';
 import { SidePanel } from '@/configuration/side-panel';
+import Wallet from '@/configuration/modules/wallet';
 
 interface SelectVersionsProps {
-    filteredWallets?: Wallet[]
-    handleSubNavigation?: (route: EXPERT_ROUTE) => void
     handleNavigation?: (route: CONFIG_ROUTE) => void
-    selectedAbbrs?: string[]
 }
 
 export default function SelectVersions({
-    filteredWallets = [],
-    selectedAbbrs = [],
-    handleSubNavigation,
     handleNavigation
 }:SelectVersionsProps):React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
-    const { configurationType, wallets, abbrToVersion, configuringAbbrs } = state;
+    const { configuringWallets } = state;
     const [displayWalletList, setDisplayWalletList] = useState<Wallet[]>([]);
 
     useEffect(() => {
-        setDisplayWalletList(
-            [...wallets]
-        .filter(w => selectedAbbrs.includes(w.abbr))
-        .reduce((arr, w) => {
-            const idx = arr.findIndex(ww => ww.abbr === w.abbr);
-            if(idx > -1) { // coin is already in array
-              arr[idx].versions = [...arr[idx].versions, ...w.versions];
-              return arr;
-            } else {
-              return [...arr, w];
-            }
-        }, [])
-        .map(w => {
-            w?.versions.sort(compareByVersion);
-            if (abbrToVersion?.has(w.abbr)) {
-                w.version = abbrToVersion.get(w.abbr);
-            } else {
-                w.version = w.versions[0];
-            }
-            return w;
-        }));
-    }, [])
-    
-    useEffect(() => {
-        if (displayWalletList.length > 0 && abbrToVersion.size === 0) {
-            displayWalletList.forEach(w => {
-                abbrToVersion.set(w.abbr, w.version);
+        setDisplayWalletList(configuringWallets);
+    }, []);
+
+    function onVersionChange(abbr: string, version: string) {
+        // const idx = configuringWallets.findIndex(w => w.abbr === abbr && w.versions.includes(version));
+
+        // updateSingleState('configuringWallets', [
+        //     ...configuringWallets.slice(0, idx),
+        //     {
+        //         ...configuringWallets[idx],
+        //         version: version
+        //     } as Wallet,
+        //     ...configuringWallets.slice(idx + 1)
+        // ])
+
+        updateSingleState('configuringWallets', configuringWallets.map(w => {
+            if (w.abbr !== abbr) return w;
+
+            return w.set({
+                version
             })
-            updateSingleState('abbrToVersion', abbrToVersion);
-        }
-    }, [displayWalletList])
-
-    function handleSelectVersion() {
-        console.log('abbrToVersion: ', abbrToVersion);
-
+        }))
     }
-
-    console.log('displayWalletList: ', displayWalletList);
-    
+    console.log('configuringWallets: ', configuringWallets);
     return (
         <div className='d-flex flex-row flex-grow-1'>
             <SidePanel status={0} />
@@ -86,7 +62,7 @@ export default function SelectVersions({
                                         optionClassName='order-tab-option-text'
                                         lists={wallet.versions}
                                         handleChange={(value) => {
-                                            updateSingleState('abbrToVersion', abbrToVersion.set(wallet.abbr, value))
+                                            onVersionChange(wallet.abbr, value)
                                         }}
                                     />
                                 </div>
@@ -98,7 +74,7 @@ export default function SelectVersions({
                     <Button
                         className='configuration-cancel-btn'
                         onClick={() => {
-                            handleSubNavigation(EXPERT_ROUTE.SELECT_WALLETS)
+                            handleNavigation(CONFIG_ROUTE.SELECT_WALLETS)
                         }}
                     >
                         BACK
@@ -106,9 +82,7 @@ export default function SelectVersions({
                     <Button
                         className='configuration-continue-btn'
                         onClick={() => {
-                            // console.log('abbrToVersion: ', abbrToVersion);
-                            
-                            handleSubNavigation(EXPERT_ROUTE.SELECT_DIRECTORIES);
+                            handleNavigation(CONFIG_ROUTE.SELECT_WALLET_DIRECTORIES);
                         }}
                     >CONTINUE</Button>
                 </div>

@@ -24,10 +24,8 @@ export default function SelectWalletVersions({
 
     console.log('configuringWallets: ', configuringWallets);
     
-
     useEffect(() => {
         setTitle(configurationType === 'FRESH_SETUP' ? 'fresh setup - quick configuration setup' : configurationType === 'ADD_WALLET' ? 'add wallet - quick configuration setup' : 'update wallet - quick configuration setup')
-        updateSingleState('configuringWallets', []);
         if (!!window) {
             getFilteredWallets();
         }
