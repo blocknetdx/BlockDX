@@ -197,7 +197,7 @@ export const Configuration: React.FC = () => {
                 return <ConfigurationComplete />
             case CONFIG_ROUTE.FINISH:
                 return <Finish handleNavigation={handleNavigation} />
-            case CONFIG_ROUTE.SELECT_WALLETS: 
+            case CONFIG_ROUTE.SELECT_WALLETS:
                 return <ExpertSelectWallets handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.EXPERT_SELECT_WALLET_VERSIONS: 
                 return <ExpertSelectWalletVersions handleNavigation={handleNavigation} />
