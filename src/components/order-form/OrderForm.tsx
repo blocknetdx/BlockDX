@@ -6,14 +6,14 @@ import {
     Text,
     InputWithText,
     SvgIcon
-} from '../index'
+} from '@component'
 import { MainForm } from './MainForm';
 
 interface OrderFormProps extends React.HTMLProps<HTMLDivElement> {
     classProp?: string
 }
 
-export const OrderForm = (props : OrderFormProps) => {
+export const OrderForm = (props : OrderFormProps):React.ReactElement => {
     const [status, setStatus] = useState('buy');
     const [step, setStep] = useState('main');
     const [error, setError] = useState(false);

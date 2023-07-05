@@ -1,13 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE, ConfigurationMenuOptionsType
 } from './configuration.type';
-import { Text, Button, TextLink } from '@components/index'
-import { ConfigDataContext } from '@/context';
+import { Text, Button, TextLink } from '@component'
+import { ConfigDataContext } from '@context';
 import { useCloseWindows } from '@hooks';
 
 const ConfigurationMenu = ({
-    setTitle,
     handleNavigation
 }: ConfigurationMenuProps) => {
     const { updateSingleState } = useContext(ConfigDataContext);
@@ -48,34 +47,11 @@ const ConfigurationMenu = ({
 
     const [selectedOption, setSelectedOption] = useState(options[0]);
 
-    function filterContent(content: string): string | (string | React.ReactElement)[] {
-        const array = content.split(/{{(.*?)}}(?!\})/);
-
-        // console.group('filterContent');
-        // console.log('array: ', array);
-        
-
-        if (array.length === 1) {
-            return content;
-        }
-
-        const renderContent = array.map(item => {
-            const linkArray = item.split(/-\{(.*?)\}/);
-            // console.log('linkArray: ', linkArray);  
-            
-            return linkArray.length === 1 ? item : <TextLink externalLink={linkArray[1]}>{linkArray[0]}</TextLink>
-        })
-
-        // console.groupEnd();
-        return renderContent;
-    }
-
     return (
         <div className='d-flex flex-column flex-grow-1'>
             <div className='p-h-20'>
                 <Text>Please select which of the following you would like to do:</Text>
             </div>
-            <Text className='m-l-33 text-left'>{filterContent('')}</Text>
             
             <div className='p-h-20 flex-grow-1 m-t-10'>
                 {
@@ -86,7 +62,7 @@ const ConfigurationMenu = ({
                                     <Text className={` ${selectedOption.configType === configType ? 'blue-circle-fill' : 'blue-circle-empty'}`} />
                                     <Text className="configuration-setup-label m-l-10 text-left">{option}</Text>
                                 </div>
-                                <Text className='m-l-33 text-left'>{filterContent(content)}</Text>
+                                <TextLink parentClass='m-l-33 text-left' content={content} />
                             </Button>
                         </div>
                     ))

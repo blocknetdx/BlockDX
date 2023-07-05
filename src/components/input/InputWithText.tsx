@@ -4,7 +4,7 @@ import {
     Input,
     SvgIcon,
     CategoryTypes
-} from '@components/index'
+} from '@component'
 
 interface InputWithTextProps extends React.HTMLProps<HTMLDivElement> {
     leftContent?: string

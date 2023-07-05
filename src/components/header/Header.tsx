@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
 import './header.css';
 import { SvgIcon } from '../svg-icon';
+import React from 'react';
 
 interface headerNavItemProps {
     label: string
     content: string
 }
 
-export function Header() {
+export function Header():React.ReactElement {
     const headerNavItems = [
         {
             label: 'Selected Market',
@@ -29,7 +29,7 @@ export function Header() {
 
     const headerTitle = 'BLOCK DX';
 
-    const renderNavItems = () => {
+    const renderNavItems = ():React.ReactElement => {
         return (
             <ul className="navbar-nav">
                 {

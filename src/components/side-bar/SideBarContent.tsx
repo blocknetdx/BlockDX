@@ -79,7 +79,7 @@ const allAssets = {
 
 export type AllAssetsType = keyof typeof allAssets;
 
-export const SideBarContent = ({ type, handleCloseSideBarContent }: SideBarContentProps) => {
+export const SideBarContent = ({ type, handleCloseSideBarContent }: SideBarContentProps):React.ReactElement => {
 
     const renderAssets = (assets: any) => {
         return (

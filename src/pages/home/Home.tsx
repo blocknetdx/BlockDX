@@ -6,7 +6,7 @@ import {
     OrderForm,
     Header,
     SideBar
-} from '@components/index'
+} from '@component'
 
 export default function Home() {
     return (

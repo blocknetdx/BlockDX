@@ -1,8 +1,8 @@
-import Wallet from '@/configuration/modules/wallet';
+import Wallet from '@wallet';
 import { SidePanel } from '@/configuration/side-panel';
 import React, { useContext, useEffect } from 'react';
 import { Text, CheckBox, Button, } from '@component'
-import { ConfigDataContext } from '@/context';
+import { ConfigDataContext } from '@context';
 import { CONFIG_ROUTE } from '@/configuration/configuration.type';
 import { compareByVersion } from '@/src-back/util';
 import _ from 'lodash'

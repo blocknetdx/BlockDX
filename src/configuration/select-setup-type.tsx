@@ -1,16 +1,14 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import {
     ConfigurationMenuProps, CONFIG_ROUTE, ConfigurationMenuOptionsType
 } from './configuration.type';
-import { Text, Button, TextLink } from '@components/index';
-import { ConfigDataContext } from '@/context';
-import Wallet from '@/configuration/modules/wallet';
+import { Text, Button, TextLink } from '@component';
+import { ConfigDataContext } from '@context';
+import Wallet from '@wallet';
 import { useCloseWindows } from '@hooks';
 
 export default function SelectSetUpType({
-    setTitle,
     handleNavigation,
-    configMode = 'Add'
 }: ConfigurationMenuProps) {
     const options: ConfigurationMenuOptionsType[] = [
         {
@@ -39,9 +37,7 @@ export default function SelectSetUpType({
         updateSingleState('setupType', selectedOption.type === 'quickSetup' ? 'QUICK_SETUP' : 'EXPERT_SETUP')
 
         if (selectedOption.type === 'quickSetup') {
-            // console.log('select setup type wallets: ', wallets);
-            
-            const newWallets: Wallet[] = wallets.map(wallet => (wallet.set('directory', (configMode === 'Add' && wallet.abbr === 'BLOCK') ? wallet.customDirectory : wallet.defaultDirectory)
+            const newWallets: Wallet[] = wallets.map(wallet => (wallet.set('directory', (configurationType === 'ADD_WALLET' && wallet.abbr === 'BLOCK') ? wallet.customDirectory : wallet.defaultDirectory)
             ))
             updateSingleState('wallets', newWallets);
             const blocknetWallet = newWallets.find(wallet => wallet.abbr === 'BLOCK');
@@ -54,7 +50,7 @@ export default function SelectSetUpType({
             if (checkDirectory) {
                 handleNavigation(CONFIG_ROUTE.SELECT_WALLET_VERSIONS)
             } else {
-                window.api.showWarning('An installation of the Blocknet wallet was not found, but is required to use Block DX. Please install the Blocknet wallet before continuing.','configurationWindowSetupType');
+                window.api.showWarning('An installation of the Blocknet wallet was not found, but is required to use Block DX. Please install the Blocknet wallet before continuing.');
             }
         } else {
             const newWallets: Wallet[] = wallets.map(wallet => wallet.set('directory', wallet.customDirectory));
@@ -70,7 +66,8 @@ export default function SelectSetUpType({
                     <Text>Block DX is the fastees, most secure, most reliable, and most decentralized exchange, allowing for peer-to-eer trading directly from your wallet.{'\n'}</Text>
                 </div>
                 <div className='m-v-5'>
-                    <Text className='text-bold'>Prerequisites: </Text><Text>Block DX requires the <TextLink externalLink='https://github.com/blocknetdx/blocknet/releases/latest'>latest Blocknet wallet</TextLink> and the wallets of any assets you want to trade with. These must be downloaded and installed before continuing. See the full list of <TextLink externalLink='https://docs.blocknet.co/blockdx/listings/#listed-digital-assets'>compatible assets and wallet versions</TextLink>.</Text>
+                    <Text className='text-bold'>Prerequisites: </Text>
+                    <TextLink content={`Block DX requires the {{latest Blocknet wallet-{https://github.com/blocknetdx/blocknet/releases/latest}}} and the wallets of any assets you want to trade with. These must be downloaded and installed before continuing. See the full list of {{compatible assets and wallet versions-{https://docs.blocknet.co/blockdx/listings/#listed-digital-assets}}}`} />
                 </div>
             </div>
             <div className='p-h-20 flex-grow-1 m-t-10'>
@@ -95,7 +92,6 @@ export default function SelectSetUpType({
                         if (isFirstRun) {
                             handleCloseConfigWindow();
                         } else {
-                            // setTitle(CONFIG_ROUTE.SET_UP);
                             handleNavigation(CONFIG_ROUTE.CONFIGURATION_MENU)
                         }
                     }}

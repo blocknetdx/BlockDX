@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Text, Button, Select } from '@/components';
-import { ConfigDataContext } from '@/context';
+import { Text, Button, Select } from '@component';
+import { ConfigDataContext } from '@context';
 import { CONFIG_ROUTE } from '@/configuration/configuration.type';
 import { SidePanel } from '@/configuration/side-panel';
-import Wallet from '@/configuration/modules/wallet';
+import Wallet from '@wallet';
 
 interface SelectVersionsProps {
     handleNavigation?: (route: CONFIG_ROUTE) => void

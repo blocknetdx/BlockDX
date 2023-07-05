@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
-import { Text, Button } from '@/components';
-import Wallet from '@/configuration/modules/wallet';
+import { Text, Button } from '@component';
+import Wallet from '@wallet';
 import { SidePanel } from '@/configuration/side-panel';
 import { CONFIG_ROUTE } from '@/configuration/configuration.type';
-import { ConfigDataContext } from '@/context';
+import { ConfigDataContext } from '@context';
 
 interface SelectDirectoriesProps {
     handleNavigation?: (route: CONFIG_ROUTE) => void

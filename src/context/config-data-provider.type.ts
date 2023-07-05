@@ -1,5 +1,5 @@
 import { ManifestType } from "@/main.type";
-import Wallet from "@/configuration/modules/wallet";
+import Wallet from "@wallet";
 
 export interface ConfigDataProviderProps {
     children?: any

@@ -2,7 +2,7 @@ import React from 'react';
 import { 
     Button,
     Separator 
-} from '@components/index';
+} from '@component';
 
 import './Tab.css';
 

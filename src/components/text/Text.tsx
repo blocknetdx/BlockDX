@@ -7,7 +7,7 @@ interface TextProps extends React.HTMLProps<HTMLSpanElement> {
     innerRef?: React.MutableRefObject<HTMLSpanElement>
 }
 
-export const Text = (props : TextProps) => {
+export const Text = (props : TextProps):React.ReactElement => {
     const { content, children, innerRef} = props;
     return (
         <span {...props} ref={innerRef} className={`common ${props.className}`}>{children ? children : content}</span>
@@ -15,17 +15,37 @@ export const Text = (props : TextProps) => {
 }
 
 interface TextLinkProps extends TextProps {
-    externalLink: string
+    parentClass?: string
 }
 
 export const TextLink = ({
-    externalLink, ...rest
+    className,
+    children,
+    content,
+    parentClass,
 }: TextLinkProps):React.ReactElement => {
-    function openExternal() {
+    function openExternal(link: string) {
         if (!!window) {
-            window.api.openExternal(externalLink);
+            window.api.openExternal(link);
         }
     }
 
-    return <Text {...rest} className='external-link' onClick={openExternal} />
+    function filterContent(content: string, className = ''): string | (string | React.ReactElement)[] {
+        const array = content.split(/{{(.*?)}}(?!\})/);
+
+        if (array.length === 1) {
+            return content;
+        }
+
+        const renderContent = array.map(item => {
+            const linkArray = item.split(/-\{(.*?)\}/);
+            return linkArray.length === 1 ? item : <Text className={`external-link ${className}`} onClick={() => openExternal(linkArray[1])}>{linkArray[0]}</Text>
+        })
+
+        return renderContent;
+    }
+
+    return (
+        <Text className={parentClass}>{ ((children && typeof children === 'string') || content) ? filterContent(children || content, className) : children}</Text>
+    )
 }

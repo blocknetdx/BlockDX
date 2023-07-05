@@ -1,18 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Text, Button, Select, CheckBox } from '@/components';
-import Wallet from '@/configuration/modules/wallet';
-import { SubRouteType } from '@/configuration/add-wallet-expert';
-import { ConfigDataContext } from '@/context';
+import { Text, Button, Select, CheckBox } from '@component';
+import Wallet from '@wallet';
+import { ConfigDataContext } from '@context';
 import { CONFIG_ROUTE, ConfigurationMenuProps } from '@/configuration/configuration.type';
 import _ from 'lodash';
 
-interface SelectVersionsProps {
-    filteredWallets?: Wallet[]
-    handleSubNavigation?: (route: SubRouteType) => void
-}
-
 export default function SelectWalletVersions({
-    setTitle,
     handleNavigation
 }: ConfigurationMenuProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
@@ -25,7 +18,6 @@ export default function SelectWalletVersions({
     console.log('configuringWallets: ', configuringWallets);
     
     useEffect(() => {
-        setTitle(configurationType === 'FRESH_SETUP' ? 'fresh setup - quick configuration setup' : configurationType === 'ADD_WALLET' ? 'add wallet - quick configuration setup' : 'update wallet - quick configuration setup')
         if (!!window) {
             getFilteredWallets();
         }

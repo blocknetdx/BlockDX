@@ -1,20 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SvgIcon, Text } from '@components/index';
+import { SvgIcon, Text } from '@component';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
 import ConfigurationMenu from './configuration-menu';
 import SelectSetUpType from '@/configuration/select-setup-type';
 import ConfigurationComplete from '@/configuration/configuration-complete';
 import { ManifestType } from '@/main.type';
-import { Set } from 'immutable';
 import Wallet from './modules/wallet';
 import path from 'path';
-import { ConfigDataContext } from '@/context';
+import { ConfigDataContext } from '@context';
 import RpcSettings from '@/configuration/rpc-settings';
 import _ from 'lodash';
 import SelectWalletVersions from '@/configuration/select-wallet-versions';
 import { Finish } from '@/configuration/finish';
-import ExpertSetup from '@/configuration/expert-setup/expert-setup';
 import { 
     EnterWalletCredentials,
     ExpertSelectDirectories,
@@ -190,15 +188,15 @@ export const Configuration: React.FC = () => {
     const renderContent = () => {
         switch (route) {
             case CONFIG_ROUTE.SELECT_SETUP_TYPE:
-                return <SelectSetUpType setTitle={setTitle} handleNavigation={handleNavigation} />
+                return <SelectSetUpType handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.CONFIGURATION_MENU:
-                return <ConfigurationMenu setTitle={setTitle} handleNavigation={handleNavigation} />
+                return <ConfigurationMenu handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SELECT_WALLET_VERSIONS:
-                return <SelectWalletVersions setTitle={setTitle} handleNavigation={handleNavigation} />
+                return <SelectWalletVersions handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.CONFIGURATION_COMPLETE:
-                return <ConfigurationComplete setTitle={setTitle} handleNavigation={handleNavigation} />
+                return <ConfigurationComplete />
             case CONFIG_ROUTE.FINISH:
-                return <Finish setTitle={setTitle} handleNavigation={handleNavigation} />
+                return <Finish handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.SELECT_WALLETS:
                 return <ExpertSelectWallets handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.EXPERT_SELECT_WALLET_VERSIONS: 

@@ -1,4 +1,4 @@
-import { ConfigDataContextType } from '@/context/config-data-provider.type';
+import { ConfigDataContextType } from './config-data-provider.type';
 import React from 'react';
 
 const DataContext = React.createContext({});

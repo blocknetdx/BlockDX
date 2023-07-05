@@ -6,7 +6,7 @@ import {
     Text,
     RangeSlider,
     SvgIcon
-} from '../index'
+} from '@component'
 
 const initialValues = {
     quantity: 0,
@@ -19,7 +19,7 @@ interface MainFormProps {
     initialValues?: typeof initialValues
 }
 
-export const MainForm = (props: MainFormProps) => {    
+export const MainForm = (props: MainFormProps):React.ReactElement => {    
     const { status = 'buy', setStep } = props;
 
     const [advancedMode, setAdvancedMode] = useState(true);

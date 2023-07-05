@@ -1,20 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import {
-    ConfigurationMenuProps, CONFIG_ROUTE, ConfigurationMenuOptionsType
+    CONFIG_ROUTE, ConfigurationMenuOptionsType
 } from '../configuration.type';
-import { Text, Button, TextLink } from '@components/index';
-import { ConfigDataContext } from '@/context';
-import Wallet from '@/configuration/modules/wallet';
-import { EXPERT_ROUTE } from '@/configuration/expert-setup/expert-setup';
+import { Text, Button } from '@component';
+import { ConfigDataContext } from '@context';
 import { SidePanel } from '@/configuration/side-panel';
 
 interface IExpertSelectSetUpTypeProps {
-    handleSubNavigation?: (route: EXPERT_ROUTE) => void
     handleNavigation?: (route: CONFIG_ROUTE) => void
 }
 
 export default function ExpertSelectSetUpType({
-    handleSubNavigation,
     handleNavigation
 }: IExpertSelectSetUpTypeProps) {
     const { updateSingleState } = useContext(ConfigDataContext);

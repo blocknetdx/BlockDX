@@ -1,5 +1,5 @@
 import './ToggleSwitch.css';
-import { Text } from '@components/index'
+import { Text } from '@component'
 
 interface ToggleSwitchProps {
     leftContent?: string

@@ -53,7 +53,6 @@ class Wallet {
     this.password = '';
     this.port = '';
     this.version = versions.length > 0 ? versions[versions.length - 1] : '';
-    // this.directory = this.getCustomDirectory();
     if (!!w) {
       this.setCustomDirectory();
     }
