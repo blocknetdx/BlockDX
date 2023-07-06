@@ -26,7 +26,8 @@ export const rendererConfig: Configuration = {
       "@component": path.resolve(__dirname, './src/components'),
       "@config-expert-setup": path.resolve(__dirname, './src/configuration/expert-setup'),
       "@wallet": path.resolve(__dirname, './src/configuration/modules/wallet'),
-      "@hooks":  path.resolve(__dirname, './src/hooks')
+      "@hooks":  path.resolve(__dirname, './src/hooks'),
+      "@configuration": path.resolve(__dirname, './src/configuration')
     },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
     fallback: {

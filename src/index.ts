@@ -204,7 +204,7 @@ ipcMain.handle('getXbridgeConf', (e, xbridgeConfPath) => {
   return fs.readFileSync(xbridgeConfPath, 'utf8');
 });
 
-ipcMain.handle('getFilteredWallets', (e, wallets) => {
+ipcMain.handle('getFilteredWallets', (e, wallets: Wallet[]) => {
   console.log('getFilteredWallets: ');
 
   let filteredWallets = [...wallets]
@@ -217,8 +217,8 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
         return false;
       }
     })
-    .reduce((arr:any, w) => {
-      const idx = arr.findIndex((ww:any )=> ww.abbr === w.abbr);
+    .reduce((arr:Wallet[], w) => {
+      const idx = arr.findIndex((ww:Wallet )=> ww.abbr === w.abbr);
       // console.log('idx: ', idx, arr);
       
       if (idx > -1) { // coin is already in array
@@ -228,7 +228,7 @@ ipcMain.handle('getFilteredWallets', (e, wallets) => {
         return [...arr, w];
       }
     }, [])
-    .map((w:any) => {
+    .map((w:Wallet) => {
       w.versions.sort(compareByVersion);
       w.version = w.versions[0];
       return w;
@@ -371,8 +371,8 @@ ipcMain.handle('saveToXBridgeConf', (e, {blockDir, data}) => {
   console.log('saveToXbridgeConf: ', joined);
   
   const confPath = path.join(blockDir, 'xbridge.conf');
-  // storage.setItem('setXbridgeConfPath', confPath || '')
-  // fs.writeFileSync(confPath, joined, 'utf8');
+  storage.setItem('xbridgeConfPath', confPath || '')
+  fs.writeFileSync(confPath, joined, 'utf8');
 });
 
 
@@ -432,6 +432,11 @@ ipcMain.handle('saveDXData', (e, dxUser, dxPassword, dxPort, dxIP) => {
     port: dxPort,
     blocknetIP: dxIP
   }, true);
+});
+
+ipcMain.handle('restart', () => {
+  // app.relaunch();
+  app.quit();
 });
 
 function splitConf(str: string) {
@@ -535,7 +540,8 @@ function fileExists(path: string):boolean {
 
 (async function () {
   try {
-
+    console.log('main entry');
+    
 
     user = storage.getItem('user');
     password = storage.getItem('password');
@@ -600,10 +606,13 @@ function fileExists(path: string):boolean {
       return;
     }
 
-    // openConfigurationWindow();
+    await onReady;
+    openConfigurationWindow({ isFirstRun: true});
 
     // openAppWindow();
   } catch (error) {
+    console.log('error: ', error);
+    
     dialog.showErrorBox('Oops! There was an error.', error?.message + '\n' + error?.stack);
     app.quit();
   }

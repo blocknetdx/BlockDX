@@ -7,57 +7,16 @@ import { CONFIG_ROUTE } from '@/configuration/configuration.type';
 import { SidePanel } from '@/configuration/side-panel';
 
 interface IEnterWalletCredentialsProps {
-    selectedAbbrs?: string[]
     handleNavigation?: (route: CONFIG_ROUTE) => void
 }
 
 export default function EnterWalletCredentials({
-    selectedAbbrs = [],
     handleNavigation
 }: IEnterWalletCredentialsProps): React.ReactElement {
     const { state, updateSingleState } = useContext(ConfigDataContext);
-    const { configurationType, wallets, abbrToVersion, configuringWallets } = state;
-    const [displayWalletList, setDisplayWalletList] = useState<Wallet[]>([]);
-
-    useEffect(() => {
-        setDisplayWalletList(
-            [...wallets]
-                .filter(w => selectedAbbrs.includes(w.abbr))
-                .reduce((arr, w) => {
-                    const idx = arr.findIndex(ww => ww.abbr === w.abbr);
-                    if (idx > -1) { // coin is already in array
-                        arr[idx].versions = [...arr[idx].versions, ...w.versions];
-                        return arr;
-                    } else {
-                        return [...arr, w];
-                    }
-                }, [])
-                .map(w => {
-                    w?.versions.sort(compareByVersion);
-                    if (abbrToVersion?.has(w.abbr)) {
-                        w.version = abbrToVersion.get(w.abbr);
-                    } else {
-                        w.version = w.versions[0];
-                    }
-                    return w;
-                }));
-    }, [])
-
-    useEffect(() => {
-        if (displayWalletList.length > 0 && abbrToVersion.size === 0) {
-            displayWalletList.forEach(w => {
-                abbrToVersion.set(w.abbr, w.version);
-            })
-            updateSingleState('abbrToVersion', abbrToVersion);
-        }
-    }, [displayWalletList])
+    const { configurationType, configuringWallets } = state;
 
     function handleChangeUsername(abbr: string, username: string) {
-        setDisplayWalletList(displayWalletList.map(w => {
-            if (w.abbr !== abbr) return w;
-            return w.set({ username })
-        }))
-
         updateSingleState('configuringWallets', configuringWallets.map(w => {
             if (w.abbr !== abbr) return w;
 
@@ -66,11 +25,6 @@ export default function EnterWalletCredentials({
     }
     
     function handleChangePassword(abbr: string, password: string) {
-        setDisplayWalletList(displayWalletList.map(w => {
-            if (w.abbr !== abbr) return w;
-            return w.set({ password })
-        }))
-
         updateSingleState('configuringWallets', configuringWallets.map(w => {
             if (w.abbr !== abbr) return w;
 
@@ -78,9 +32,7 @@ export default function EnterWalletCredentials({
         }))
     }
 
-    console.log('displayWalletList: ', displayWalletList);
-
-    const isContinueBtnDisabled = displayWalletList.findIndex(wallet => !wallet.username || !wallet.password) !== -1;
+    const isContinueBtnDisabled = configuringWallets.findIndex(wallet => !wallet.username || !wallet.password) !== -1;
 
     return (
         <div className='d-flex flex-row flex-grow-1'>

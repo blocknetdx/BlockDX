@@ -2,28 +2,29 @@ import React, { useState, useEffect, useContext } from 'react';
 import { SvgIcon, Text } from '@component';
 import './configuration.css';
 import { CONFIG_ROUTE } from './configuration.type';
-import ConfigurationMenu from './configuration-menu';
-import SelectSetUpType from '@/configuration/select-setup-type';
-import ConfigurationComplete from '@/configuration/configuration-complete';
 import { ManifestType } from '@/main.type';
 import Wallet from './modules/wallet';
 import path from 'path';
 import { ConfigDataContext } from '@context';
-import RpcSettings from '@/configuration/rpc-settings';
 import _ from 'lodash';
-import SelectWalletVersions from '@/configuration/select-wallet-versions';
-import { Finish } from '@/configuration/finish';
+import {
+    Finish,
+    SelectWalletVersions,
+    RpcSettings,
+    SelectSetUpType,
+    ConfigurationComplete,
+    ConfigurationMenu
+} from '@configuration';
 import { 
     EnterWalletCredentials,
     ExpertSelectDirectories,
     ExpertSelectWalletVersions,
-    ExpertSelectWallets
+    ExpertSelectWallets,
+    ExpertSelectSetUpType
 } from '@config-expert-setup';
-import ExpertSelectSetUpType from '@/configuration/expert-setup/expert-select-setup-type';
 
 export const Configuration: React.FC = () => {
     const [title, setTitle] = useState('');
-    // const [title, setTitle] = useState(configurationTitles['setUp']);
      
     const [route, setRoute] = useState<CONFIG_ROUTE>(CONFIG_ROUTE.CONFIGURATION_MENU);
     const { state, updateState, initState } = useContext(ConfigDataContext);
@@ -96,8 +97,8 @@ export const Configuration: React.FC = () => {
         const others = [
             ...wallets.slice(0, blockIdx),
             ...wallets.slice(blockIdx + 1)
-            
         ].sort((a, b) => a.name.localeCompare(b.name));
+        
         wallets = [
             wallets[blockIdx],
             ...others

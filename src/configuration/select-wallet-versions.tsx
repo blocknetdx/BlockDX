@@ -25,10 +25,15 @@ export default function SelectWalletVersions({
 
     async function getFilteredWallets() {
         const filteredWallets: Wallet[] = await window?.api?.getFilteredWallets(wallets);
-        console.log('filteredWallets: ', filteredWallets);
 
-        const displayWalletList = addingWallets ? filteredWallets.filter(w => !selectedAbbrs.includes(w.abbr)) :
-            updatingWallets ? filteredWallets.filter(w => selectedAbbrs.includes(w.abbr)) : filteredWallets
+        const newWallets = filteredWallets.map(w => {
+            return Object.assign(new Wallet(), w)
+        })
+        console.log('filteredWallets: ', filteredWallets);
+        console.log('newWallets: ', newWallets);
+
+        const displayWalletList = addingWallets ? newWallets.filter(w => !selectedAbbrs.includes(w.abbr)) :
+            updatingWallets ? newWallets.filter(w => selectedAbbrs.includes(w.abbr)) : newWallets
 
         setDisplayWalletList(displayWalletList);
         updateSingleState('configuringWallets', displayWalletList);
@@ -46,21 +51,22 @@ export default function SelectWalletVersions({
 
     function handleSelectOneWallet(wallet: Wallet) {
         const { abbr } = wallet;
+        // updateSingleState('configuringWallets', 
+        //     configuringWallets.findIndex(w => w.abbr === abbr) !== -1 ? configuringWallets.filter(w => w.abbr !== abbr) : _.uniq([...configuringWallets, wallet])
+        // )
         updateSingleState('configuringWallets', 
-            configuringWallets.findIndex(w => w.abbr === abbr) !== -1 ? configuringWallets.filter(w => w.abbr !== abbr) : _.uniq([...configuringWallets, wallet])
+            configuringWallets.findIndex(w => w.abbr === abbr) !== -1 ? configuringWallets.filter(w => w.abbr !== abbr) : [...configuringWallets, wallet]
         )
     }
 
     function onVersionChange(abbr: string, version: string) {
-        const idx = configuringWallets.findIndex(w => w.abbr === abbr && w.versions.includes(version));
-        updateSingleState('configuringWallets', [
-            ...configuringWallets.slice(0, idx),
-            {
-                ...configuringWallets[idx],
-                version: version
-            },
-            ...configuringWallets.slice(idx + 1)
-        ])
+        updateSingleState('configuringWallets', configuringWallets.map(w => {
+            if (w.abbr !== abbr) return w;
+
+            return w.set({
+                version
+            })
+        }))
     }
 
     const isShowWalletSelectError = configurationType !== 'FRESH_SETUP' && configuringWallets.length === 0;

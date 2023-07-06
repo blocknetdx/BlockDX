@@ -22,7 +22,8 @@
       "@component": ["./components"],
       "@config-expert-setup": ["./configuration/expert-setup"],
       "@hooks": ["./hooks"],
-      "@wallet": ["./configuration/modules/wallet"]
+      "@wallet": ["./configuration/modules/wallet"],
+      "@configuration": ["./configuration"]
     },
     "jsx": "react-jsx"
   },

@@ -7,6 +7,10 @@ export default function ConfigurationComplete() {
     const { handleCloseConfigWindow } = useCloseWindows();
     const { state } = useContext(ConfigDataContext);
 
+    function handleComplete() {
+        window.api?.restart();
+    }
+
     function renderContent(): React.ReactElement {
         const { configurationType } = state;
         switch (configurationType) {
@@ -58,18 +62,7 @@ export default function ConfigurationComplete() {
     return (
         <div className='d-flex flex-column flex-grow-1'>
             <div className='p-h-20 flex-grow-1'>
-                <div className='m-v-5'>
-                    <Text>Before Block DX can be used, these last few steps must be completed</Text>
-                </div>
-                <div className='m-v-5'>
-                    <Text>{`1) The wallets for each of the newly added assets must be restarted to load the new configurations. Make sure that the wallets have been encrypted (Settings > Encrypt), synced and are fully unlocked (Settings > Unlock Wallet).`}</Text>
-                </div>
-                <div className='m-v-5'>
-                    <Text>{`2) Open, sync, and fully unlock the Blocknet wallet`}</Text>
-                </div>
-                <div className='m-v-5'>
-                    <Text>{`3) select RESTART to restart Block DX and begin trading.`}</Text>
-                </div>
+                {renderContent()}
             </div>
 
             <div className='d-flex flex-row justify-content-between m-v-20'>
@@ -84,6 +77,7 @@ export default function ConfigurationComplete() {
                 <Button
                     className='configuration-continue-btn'
                     onClick={() => {
+                        handleComplete();
                     }}
                 >
                     RESTART
