@@ -108,7 +108,7 @@ export default function RpcSettings({
                     <Button
                         className='configuration-cancel-btn'
                         onClick={() => {
-                            handleNavigation(CONFIG_ROUTE.SELECT_WALLETS)
+                            handleNavigation(configurationType === 'RPC_SETTINGS' ? CONFIG_ROUTE.CONFIGURATION_MENU : CONFIG_ROUTE.SELECT_WALLETS)
                         }}
                     >
                         BACK

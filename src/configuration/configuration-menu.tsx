@@ -13,12 +13,12 @@ const ConfigurationMenu = ({
     const { handleCloseConfigWindow } = useCloseWindows();
 
     const options: ConfigurationMenuOptionsType[] = [
-        {
-            option: 'XLite Setup',
-            content: 'Use this to configure {{XLite-{https://xlitewallet.com}}} with BlockDX',
-            route: CONFIG_ROUTE.XLITE_SET_UP,
-            configType: 'LITEWALLET_RPC_SETUP'
-        },
+        // {
+        //     option: 'XLite Setup',
+        //     content: 'Use this to configure {{XLite-{https://xlitewallet.com}}} with BlockDX',
+        //     route: CONFIG_ROUTE.XLITE_SET_UP,
+        //     configType: 'LITEWALLET_RPC_SETUP'
+        // },
         {
             option: 'Add New Local Wallet(s)',
             content: 'Use this to configure new local wallets for trading. Newly added wallets will need to be restarted before trading',

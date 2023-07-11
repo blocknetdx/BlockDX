@@ -55,12 +55,12 @@ class Wallet {
     this.version = versions.length > 0 ? versions[versions.length - 1] : '';
     if (!!w) {
       this.setCustomDirectory();
+      this.setDefaultDirectory();
     }
-    this.setDefaultDirectory();
   }
 
   set(arg1: any, arg2?: any) {
-    const wallet:any = Object.assign({}, this);
+    const wallet:any = Object.assign({}, this);    
     if(typeof arg1 === 'string') {
       wallet[arg1] = arg2;
     } else if(typeof arg1 === 'object') {
@@ -71,7 +71,7 @@ class Wallet {
     } else {
       throw new Error('You must pass in either a string or an object as the first argument to the set() method.');
     }
-    
+
     return Object.assign(new Wallet(), wallet);
   }
 
@@ -98,9 +98,9 @@ class Wallet {
 
   async getDefaultDirectory() {
     const defaultDirectory: string = await window?.api.getDefaultDirectory({
-        dirNameWin: this.dirNameWin,
-        dirNameLinux: this.dirNameLinux,
-        dirNameMac: this.dirNameMac
+      dirNameWin: this.dirNameWin,
+      dirNameLinux: this.dirNameLinux,
+      dirNameMac: this.dirNameMac
     });
 
     return defaultDirectory;
