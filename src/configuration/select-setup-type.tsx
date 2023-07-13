@@ -37,8 +37,11 @@ export default function SelectSetUpType({
         updateSingleState('setupType', selectedOption.type === 'quickSetup' ? 'QUICK_SETUP' : 'EXPERT_SETUP')
 
         if (selectedOption.type === 'quickSetup') {
-            const newWallets: Wallet[] = wallets.map(wallet => (wallet.set('directory', (configurationType === 'ADD_WALLET' && wallet.abbr === 'BLOCK') ? wallet.customDirectory : wallet.defaultDirectory)
-            ))
+            const newWallets: Wallet[] = wallets.map(wallet => {
+                
+                return (wallet.set('directory', (configurationType === 'ADD_WALLET' && wallet.abbr === 'BLOCK') ? wallet.customDirectory : wallet.defaultDirectory))
+            });
+
             updateSingleState('wallets', newWallets);
             const blocknetWallet = newWallets.find(wallet => wallet.abbr === 'BLOCK');
             const dir = blocknetWallet.directory;

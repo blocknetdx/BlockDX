@@ -37,9 +37,9 @@ export const TextLink = ({
             return content;
         }
 
-        const renderContent = array.map(item => {
+        const renderContent = array.map((item, index) => {
             const linkArray = item.split(/-\{(.*?)\}/);
-            return linkArray.length === 1 ? item : <Text className={`external-link ${className}`} onClick={() => openExternal(linkArray[1])}>{linkArray[0]}</Text>
+            return linkArray.length === 1 ? item : <Text key={`text-link-${linkArray[0]}-${index}`} className={`external-link ${className}`} onClick={() => openExternal(linkArray[1])}>{linkArray[0]}</Text>
         })
 
         return renderContent;
