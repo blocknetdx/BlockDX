@@ -171,13 +171,19 @@ export const Configuration: React.FC = () => {
             .map(w => w.abbr)
         ];
 
+        const litewalletConfigdirectory = await window.api?.getLitewalletConfigDirectory();
+
+        console.log('litewalletconfigdirectory: ', litewalletConfigdirectory);
+        
+
         console.log('selectedAbbrs: ', selectedAbbrs);
         console.log('wallets: ', wallets);
         updateState({
             'selectedWallets': selectedWalletIds,
             'selectedAbbrs': selectedAbbrs,
             'lookForWallets': true,
-            'wallets': wallets
+            'wallets': wallets,
+            'litewalletConfigDirectory': litewalletConfigdirectory
         })
         
     }

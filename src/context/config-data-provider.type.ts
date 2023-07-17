@@ -36,11 +36,13 @@ export type StateType = {
     configuringAbbrs?: string[];
 }
 
+export type StateKeyType = 'sidebarSelected' | 'sidebarItems' | 'skipSetup' | 'generateCredentials' | 'rpcPort' | 'rpcIP' | 'username' | 'password' | 'litewalletConfigDirectory' | 'isFirstRun' | 'configurationType' | 'selectedWallets' | 'selectedAbbrs' | 'lookForWallets' | 'wallets' | 'setupType' | 'addAbbrToVersion' | 'updateAbbrToVersion' | 'skipList' | 'abbrToVersion' | 'configuringWallets' | 'configuringAbbrs'
+
 export type ConfigDataContextType = {
     state?: StateType
     configMode?: ConfigModeType
     updateConfigMode?: (mode: ConfigModeType) => void
-    updateSingleState?: (key: any, value: any) => void
+    updateSingleState?: (key: StateKeyType, value: any) => void
     initState?: (initialState: StateType) => void
     updateState?: (state: StateType) => void
 }

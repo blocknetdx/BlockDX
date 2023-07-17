@@ -9,16 +9,17 @@ import { useCloseWindows } from '@hooks';
 const ConfigurationMenu = ({
     handleNavigation
 }: ConfigurationMenuProps) => {
-    const { updateSingleState } = useContext(ConfigDataContext);
+    const { updateSingleState, state } = useContext(ConfigDataContext);
+    const { litewalletConfigDirectory }  = state || {};
     const { handleCloseConfigWindow } = useCloseWindows();
 
     const options: ConfigurationMenuOptionsType[] = [
-        // {
-        //     option: 'XLite Setup',
-        //     content: 'Use this to configure {{XLite-{https://xlitewallet.com}}} with BlockDX',
-        //     route: CONFIG_ROUTE.XLITE_SET_UP,
-        //     configType: 'LITEWALLET_RPC_SETUP'
-        // },
+        {
+            option: 'XLite Setup',
+            content: 'Use this to configure {{XLite-{https://xlitewallet.com}}} with BlockDX',
+            route: CONFIG_ROUTE.XLITE_SET_UP,
+            configType: 'LITEWALLET_RPC_SETUP'
+        },
         {
             option: 'Add New Local Wallet(s)',
             content: 'Use this to configure new local wallets for trading. Newly added wallets will need to be restarted before trading',
@@ -46,6 +47,17 @@ const ConfigurationMenu = ({
     ]
 
     const [selectedOption, setSelectedOption] = useState(options[0]);
+
+    async function handleContinue() {
+        updateSingleState('configurationType', selectedOption.configType);
+        if (selectedOption.configType !== 'LITEWALLET_RPC_SETUP') {
+            handleNavigation(selectedOption.route);
+        } else {
+            const directory = await window?.api?.checkAndGetLiteWalletDirectory(litewalletConfigDirectory);
+            console.log('lite wallet directory: ', directory);
+            handleNavigation(!directory ? CONFIG_ROUTE.XLITE_SET_UP : CONFIG_ROUTE.SELECT_WALLETS);
+        }
+    }
 
     return (
         <div className='d-flex flex-column flex-grow-1'>
@@ -78,8 +90,7 @@ const ConfigurationMenu = ({
                 <Button
                     className='configuration-continue-btn'
                     onClick={() => {
-                        updateSingleState('configurationType', selectedOption.configType)
-                        handleNavigation(selectedOption.route);
+                        handleContinue();
                     }}
                 >
                     CONTINUE

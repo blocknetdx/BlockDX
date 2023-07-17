@@ -12,6 +12,27 @@ type AddToXBridgeConfType = {
   data: Map<string, any>
 }
 
+export type LiteWalletDataType = {
+  abbr: string;
+  name: string;
+  wallet: Wallet;
+  filePath: string;
+  rpcPort?: string;
+  rpcUsername?: string;
+  rpcPassword?: string;
+}
+
+export type SaveLiteWalletsDataType = {
+  litewallets: LiteWalletDataType[]
+  wallets: Wallet[]
+  litewalletConfigDirectory: string
+}
+
+type GetLiteWalletArgsType = {
+  directory: string;
+  wallets: Wallet[];
+}
+
 export type ContextBridgeApi = {
   // Declare a `readFile` function that will return a promise. This promise
   // will contain the data of the file read from the main process.
@@ -41,6 +62,11 @@ export type ContextBridgeApi = {
   checkWalletDirectories: (wallets: Wallet[]) => Promise<Wallet[]>
   saveDXData: (dxUser: string | number, dxPassword: string | number, dxPort: string | number, dxIP: string | number) => void
   restart: () => void
+  getLitewalletConfigDirectory: () => Promise<string>
+  saveLitewalletConfigDirectory: (litewalletConfigDirectory: string) => void
+  getDefaultLiteWalletConfigDirectory: () => Promise<string>
+  checkAndGetLiteWalletDirectory: (directory: string) => Promise<string>
+  getLiteWallets: (data: GetLiteWalletArgsType) => Promise<LiteWalletDataType[]>
 }
 
 type DefaultHomePaths = {
@@ -76,5 +102,10 @@ contextBridge.exposeInMainWorld('api', {
   updateToXBridgeConf: (data: AddToXBridgeConfType) => ipcRenderer.invoke('updateToXBridgeConf', data),
   checkWalletDirectories: (wallets: Wallet[]) => ipcRenderer.invoke('checkWalletDirectories', wallets),
   saveDXData: (dxUser: string | number, dxPassword: string | number, dxPort: string | number, dxIP: string | number) => ipcRenderer.invoke('saveDXData', dxUser, dxPassword, dxPort, dxIP),
-  restart: () => ipcRenderer.invoke('restart')
+  restart: () => ipcRenderer.invoke('restart'),
+  getLitewalletConfigDirectory: () => ipcRenderer.invoke('getLitewalletConfigDirectory'),
+  saveLitewalletConfigDirectory: (litewalletConfigDirectory: string) => ipcRenderer.invoke('saveLitewalletConfigDirectory', litewalletConfigDirectory),
+  getDefaultLiteWalletConfigDirectory: () => ipcRenderer.invoke('getDefaultLiteWalletConfigDirectory'),
+  checkAndGetLiteWalletDirectory: (directory: string) => ipcRenderer.invoke('checkAndGetLiteWalletDirectory', directory),
+  getLiteWallets: (data: GetLiteWalletArgsType) => ipcRenderer.invoke('getLiteWallets', data),
 });
