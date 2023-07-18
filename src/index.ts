@@ -80,7 +80,7 @@ const openConfigurationWindow = (options?: ConfigWindowOptionsType): void => {
     },
   });
   configurationWindow.loadURL(CONFIGURATION_WINDOW_WEBPACK_ENTRY);
-  // configurationWindow.webContents.openDevTools();
+  configurationWindow.webContents.openDevTools();
 };
 
 const handleError = (err: any) => {
@@ -848,9 +848,9 @@ function fileExists(path: string):boolean {
 
     await onReady;
 
-    // openConfigurationWindow({ isFirstRun: true});
+    openConfigurationWindow({ isFirstRun: true});
 
-    openAppWindow();
+    // openAppWindow();
   } catch (error) {
     console.log('error: ', error);
     

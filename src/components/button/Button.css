@@ -121,3 +121,7 @@
 .configuration-menu-option-btn:hover {
     opacity: 0.8;
 }
+
+.flex-basis-40 {
+    flex-basis: 40%;
+}
