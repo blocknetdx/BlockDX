@@ -13,7 +13,8 @@ import {
     RpcSettings,
     SelectSetUpType,
     ConfigurationComplete,
-    ConfigurationMenu
+    ConfigurationMenu,
+    SelectLitewalletConfigDirectory
 } from '@configuration';
 import { 
     EnterWalletCredentials,
@@ -57,6 +58,9 @@ export const Configuration: React.FC = () => {
                 break;
             case CONFIG_ROUTE.FINISH:
                 setTitle(`${configurationType === 'FRESH_SETUP' ? 'fresh setup' : configurationType === 'UPDATE_WALLET' ? 'update wallet' : 'add wallet'} - ${setupType === 'QUICK_SETUP' ? 'quick' : 'expert'} configuration setup`);
+                break;
+            case CONFIG_ROUTE.XLITE_SET_UP:
+                setTitle('Litewallet Setup - Select Config Directory');
                 break;
             default:
                 break;
@@ -171,13 +175,19 @@ export const Configuration: React.FC = () => {
             .map(w => w.abbr)
         ];
 
+        const litewalletConfigdirectory = await window.api?.getLitewalletConfigDirectory();
+
+        console.log('litewalletconfigdirectory: ', litewalletConfigdirectory);
+        
+
         console.log('selectedAbbrs: ', selectedAbbrs);
         console.log('wallets: ', wallets);
         updateState({
             'selectedWallets': selectedWalletIds,
             'selectedAbbrs': selectedAbbrs,
             'lookForWallets': true,
-            'wallets': wallets
+            'wallets': wallets,
+            'litewalletConfigDirectory': litewalletConfigdirectory
         })
         
     }
@@ -210,6 +220,8 @@ export const Configuration: React.FC = () => {
                 return <EnterWalletCredentials handleNavigation={handleNavigation} />
             case CONFIG_ROUTE.ENTER_BLOCKNET_CREDENTIALS:
                 return <RpcSettings handleNavigation={handleNavigation} />
+            case CONFIG_ROUTE.XLITE_SET_UP:
+                return <SelectLitewalletConfigDirectory handleNavigation={handleNavigation} />
             default:
                 return <></>;
         }

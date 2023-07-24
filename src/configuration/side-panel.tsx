@@ -8,6 +8,9 @@ interface ISidePanel {
 export function SidePanel({
     status = 0
 }:ISidePanel): React.ReactElement {
+    if (!status || status === -1) {
+        return <></>
+    }
     return (
         <div className='p-h-20 w-p-55 bg-182a3e'>
 

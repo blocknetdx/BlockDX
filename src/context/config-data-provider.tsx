@@ -1,12 +1,12 @@
 import { ConfigDataContext } from "./data-context";
 import React, { useState } from "react";
-import {ConfigDataProviderProps, ConfigModeType, StateType} from './config-data-provider.type';
+import {ConfigDataProviderProps, ConfigModeType, StateKeyType, StateType} from './config-data-provider.type';
 
 export default function ConfigDataProvider({ children }: ConfigDataProviderProps):React.ReactElement {
   const [state, setState] = useState<StateType>();
   const [configMode, setConfigMode] = useState<ConfigModeType>('Add')
 
-  function updateSingleState(key: any, value: any) {
+  function updateSingleState(key: StateKeyType, value: any) {
     setState(pre => ({
       ...pre,
       [key]: value

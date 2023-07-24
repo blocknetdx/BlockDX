@@ -14,6 +14,7 @@ import { ManifestType, dialogOptionsType } from './main.type';
 import { compareByVersion } from '@/src-back/util';
 import Wallet from '@wallet';
 import _ from 'lodash';
+import { LiteWalletDataType, SaveLiteWalletsDataType } from '@/configuration/preload';
 const path = require('path');
 const fs = require('fs-extra-promise');
 
@@ -58,7 +59,7 @@ const openAppWindow = (): void => {
     },
   });
   appWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  appWindow.webContents.openDevTools();
+  // appWindow.webContents.openDevTools();
 };
 
 type ConfigWindowOptionsType = {
@@ -425,6 +426,233 @@ ipcMain.handle('checkWalletDirectories', (e, wallets: Wallet[]) => {
   return wallets;
 });
 
+const getDefaultCCDirectory = () => {
+  if (platform !== 'linux') {
+    return path.join(appDataPath, 'CloudChains');
+  } else {
+    return path.join(homePath, 'CloudChains');
+  }
+};
+
+ipcMain.handle('checkAndGetLiteWalletDirectory', (e, directory) => {
+  let tempDirectory = directory;
+  if (!directory) {
+    tempDirectory = getDefaultCCDirectory();
+  }
+
+  if (fs.existsSync(tempDirectory) && fs.existsSync(path.join(tempDirectory, 'settings'))) {
+    return tempDirectory;
+  } else {
+    return '';
+  }
+});
+
+ipcMain.handle('getLiteWallets', (e, data) => {
+  const { directory, wallets = [] } = data;
+  const settingsDir = path.join(directory, 'settings');
+  const configFilePatt = /^config-(.+)\.json$/i;
+  const litewallets = fs.readdirSync(settingsDir)
+    .filter((f: string) => configFilePatt.test(f))
+    .map((f: string) => {
+      const filePath = path.join(settingsDir, f);
+      try {
+        const data = fs.readJsonSync(filePath);
+        const matches = f.match(configFilePatt);
+        const abbr = matches[1];
+        const wallet: Wallet = wallets.find((w: Wallet) => w.abbr === abbr);
+        if (!wallet) return null;
+        return Object.assign({}, data, {
+          abbr,
+          name: wallet.name,
+          wallet,
+          filePath
+        })
+      } catch (error) {
+        console.log('error: ', error);
+        
+        return null;
+      }
+    })
+    .filter((data: any) => data)
+  return litewallets;
+})
+
+ipcMain.handle('saveLiteWallets', (e, data: SaveLiteWalletsDataType) => {
+  const { litewallets, wallets, litewalletConfigDirectory } = data || {};
+  for (const litewallet of litewallets) {
+    const { filePath, wallet } = litewallet;
+    const config = fs.readJsonSync(filePath);
+    const rpcPort = config.rpcPort || litewallet.rpcPort;
+    let rpcUsername = config.rpcUsername || litewallet.rpcUsername;
+    let rpcPassword = config.rpcPassword || litewallet.rpcPassword;
+    if (!rpcUsername || !rpcPassword) {
+      const { username, password } = wallet.generateCredentials();
+      rpcUsername = username;
+      rpcPassword = password;
+    }
+    litewallet.rpcPassword = rpcPassword;
+    litewallet.rpcUsername = rpcUsername;
+    litewallet.rpcPort = rpcPort;
+
+    const newConfig = Object.assign({}, config, {
+      rpcUsername,
+      rpcPassword,
+      rpcEnabled: true,
+      rpcPort
+    });
+    fs.writeJsonSync(filePath, newConfig)
+  }
+  const preppedWallets = litewallets.map(w => w.wallet.set({
+    username: w.rpcUsername,
+    password: w.rpcPassword,
+    port: w.rpcPort
+  }));
+  const block = wallets.find(w => w.abbr === 'BLOCK');
+  putConfs(preppedWallets, block.directory);
+  storage.setItem('litewalletConfigDirectory', litewalletConfigDirectory);
+  let ccUpdated;
+  try {
+    const ccConfig = fs.readJsonSync(path.join(litewalletConfigDirectory, 'settings', 'config-master.json'));
+    if (ccConfig.rpcPort && ccConfig.rpcUsername && ccConfig.rpcPassword) {
+      const walletErrors = [];
+      const allReqs = [];
+      let walletCount = 0;
+      for (const { abbr } of litewallets) {
+        walletCount++;
+        // allReqs.push({token: abbr, req: request
+        //   .post(`http://127.0.0.1:${ccConfig.rpcPort}`)
+        //   .timeout(5000)
+        //   .auth(ccConfig.rpcUsername, ccConfig.rpcPassword)
+        //   .send(JSON.stringify({
+        //     method: 'reloadconfig',
+        //     params: [
+        //       abbr
+        //     ]
+        //   }))});
+      }
+    }
+  } catch (error) {
+    ccUpdated = false;
+  }
+});
+
+function getBridgeConf(bridgeConf: string) {
+  try {
+    const xbridgeConfs = storage.getItem('xbridgeConfs') || {};
+    let contents = xbridgeConfs[bridgeConf]
+    if (!contents) {
+      const filePath = path.join(configurationFilesDirectory, 'xbridge-confs', bridgeConf);
+      contents = fs.readFileSync(filePath, 'utf8');
+    }
+
+    return contents;
+  } catch (error) {
+    console.log('getBridgeConf error: ', error);
+    return '';
+  }
+}
+
+function putConfs(wallets: Wallet[], blockDir: string) {
+  const data = new Map();
+  for (const wallet of wallets) {
+    const { abbr, xBridgeConf, username, password } = wallet;
+    const confStr = getBridgeConf(xBridgeConf);
+    if (!confStr) throw new Error(`${xBridgeConf} not found`);
+    const conf: any = splitConf(confStr);
+    data.set(abbr, Object.assign({}, conf, {
+      Username: username,
+      Password: password,
+      Port: wallet.port || conf?.port,
+      Address: ''
+    }))
+  }
+  const confPath = path.join(blockDir, 'xbridge.conf');
+  const bridgeConf = fs.readFileSync(confPath, 'utf8');
+  let split = bridgeConf.replace(/\r/g, '').split(/\n/) || [];
+  const walletsIdx = split.findIndex((s: any) => /^ExchangeWallets\s*=/.test(s));
+  const walletsRaw = split[walletsIdx].match(/=(.*)$/);
+  const walletList = !walletsRaw || walletsRaw.length <= 1 ? [] : walletsRaw[1].split(',').map((str: any) => str.trim());
+
+  const newWalletList = _.compact([...walletList, ...(wallets.map(w => w.abbr))]);
+  split[walletsIdx] = `ExchangeWallets=${[...newWalletList.values()].join(',')}`;
+  for (const [abbr, walletData] of [...data.entries()]) {
+    const startIndex = split.findIndex((s: any) => s.trim() === `[${abbr}]`);
+    const alreadyInConf = startIndex > -1;
+    let endIndex;
+    if (alreadyInConf) {
+      for (let i = startIndex + 1; i< split.length; i++) {
+        const s = split[i].trim();
+        if (!s) {
+          endIndex = i-1;
+          break;
+        } else if (/^\[.+]$/.test(s)) {
+          endIndex = i - 1;
+          break;
+        } else if (i === split.length - 1) {
+          endIndex = i;
+        }
+      }
+      split = [
+        ...split.slice(0, startIndex + 1),
+        joinConf(walletData),
+        ...split.slice(endIndex + 1)
+      ];
+    } else {
+      split = [
+        ...split,
+        `[${abbr}]`,
+        joinConf(walletData)
+      ];
+    }
+  }
+  const joined = split.join('\n');
+  fs.writeFileSync(confPath, joined, 'utf8');
+  putBlockConf(blockDir);
+}
+
+const putBlockConf = (blockDir: string, rpcWorkQueueMinimum=128, rpcXBridgeTimeout=15) => {
+  const blockConf = path.join(blockDir, 'blocknet.conf');
+  let data = fs.readFileSync(blockConf, 'utf8');
+  let split = data
+    .replace(/\r/g, '')
+    .split(/\n/);
+  const rpcQueueIdx = split.findIndex((s: any) => /^rpcworkqueue\s*=/.test(s));
+  if (rpcQueueIdx >= 0) {
+    const rpcWQ = split[rpcQueueIdx].match(/=\s*(.*)$/);
+    if (!rpcWQ || rpcWQ.length <= 1)
+      split[rpcQueueIdx] = `rpcworkqueue=${rpcWorkQueueMinimum}`;
+    else { // if entry already has value
+      const n = parseInt(rpcWQ[1].trim(), 10);
+      if (isNaN(n) || n < rpcWorkQueueMinimum)
+        split[rpcQueueIdx] = `rpcworkqueue=${rpcWorkQueueMinimum}`;
+      else
+        split[rpcQueueIdx] = 'rpcworkqueue=' + n;
+    }
+  } else {
+    // add to front to avoid [test] sections
+    split.splice(0, 0, `rpcworkqueue=${rpcWorkQueueMinimum}`);
+  }
+  const xbridgeTimeoutIdx = split.findIndex((s: any) => /^rpcxbridgetimeout\s*=/.test(s));
+  if (xbridgeTimeoutIdx >= 0) {
+    const rpcWQ = split[xbridgeTimeoutIdx].match(/=\s*(.*)$/);
+    if (!rpcWQ || rpcWQ.length <= 1)
+      split[xbridgeTimeoutIdx] = `rpcxbridgetimeout=${rpcXBridgeTimeout}`;
+  } else {
+    // add to front to avoid [test] sections
+    split.splice(0, 0, `rpcxbridgetimeout=${rpcXBridgeTimeout}`);
+  }
+
+  // Serialize
+  data = split.join('\n');
+  fs.writeFileSync(blockConf, data, 'utf8');
+};
+
+
+
+ipcMain.handle('getDefaultLiteWalletConfigDirectory', () => {
+  return getDefaultCCDirectory();
+});
+
 ipcMain.handle('saveDXData', (e, dxUser, dxPassword, dxPort, dxIP) => {
   storage.setItems({
     user: dxUser,
@@ -436,7 +664,19 @@ ipcMain.handle('saveDXData', (e, dxUser, dxPassword, dxPort, dxIP) => {
 
 ipcMain.handle('restart', () => {
   // app.relaunch();
-  app.quit();
+  app.exit();
+});
+
+ipcMain.handle('getLitewalletConfigDirectory', () => {
+  let litewalletConfigDirectory = storage.getItem('litewalletConfigDirectory') || getDefaultCCDirectory();
+  if (!fs.existsSync(litewalletConfigDirectory)) {
+    litewalletConfigDirectory = '';
+  }
+  return litewalletConfigDirectory;
+});
+
+ipcMain.handle('saveLitewalletConfigDirectory', (litewalletConfigDirectory) => {
+  storage.setItem('litewalletConfigDirectory', litewalletConfigDirectory);
 });
 
 function splitConf(str: string) {
@@ -607,6 +847,7 @@ function fileExists(path: string):boolean {
     }
 
     await onReady;
+
     openConfigurationWindow({ isFirstRun: true});
 
     // openAppWindow();
